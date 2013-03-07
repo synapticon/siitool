@@ -155,9 +155,65 @@ static void print_datatype_section(const unsigned char *buffer, size_t secsize)
 	printf("+++ datatypes section not yet implemented\n");
 }
 
+static char *physport(uint8_t b)
+{
+	switch (b) {
+	case 0x00:
+		return "not used";
+	case 0x01:
+		return "MII";
+	case 0x02:
+		return "reserved";
+	case 0x03:
+		return "EBUS";
+	}
+}
+
 static void print_general_section(const unsigned char *buffer, size_t secsize)
 {
-	printf("+++ general section not yet implemented\n");
+	const unsigned char *b = buffer;
+
+	printf("General:\n");
+
+	printf("  Group Index: %d (Vendor Specific, index of Strings)\n", *b);
+	b++;
+	printf("  Image Index: %d (Vendor Specific, index to Strings)\n", *b++);
+	printf("  Order Index: %d (Vendor Specific, index to Strings)\n", *b++);
+	printf("  Name  Index: %d (Vendor Specific, index to Strings)\n", *b++);
+	b++;
+
+	printf("  CoE Details:\n");
+	printf("    Enable SDO: .................. %s\n", (*b&0x01) == 0 ? "no" : "yes");
+	printf("    Enable SDO Info: ............. %s\n", (*b&0x02) == 0 ? "no" : "yes");
+	printf("    Enable PDO Assign: ........... %s\n", (*b&0x04) == 0 ? "no" : "yes");
+	printf("    Enable PDO Configuration: .... %s\n", (*b&0x08) == 0 ? "no" : "yes");
+	printf("    Enable Upload at Startup: .... %s\n", (*b&0x10) == 0 ? "no" : "yes");
+	printf("    Enable SDO complete access: .. %s\n", (*b&0x20) == 0 ? "no" : "yes");
+	b++;
+
+	printf("  FoE Details: %s\n", (*b & 0x01) == 0 ? "not enabled" : "enabled");
+	b++;
+	printf("  EoE Details: %s\n", (*b & 0x01) == 0 ? "not enabled" : "enabled");
+	b++;
+
+	b+=3; /* SoE Channels, DS402 Channels, Sysman Class - reserved */
+
+	printf("  Flag SafeOp: %s\n", (*b & 0x01) == 0 ? "not enabled" : "enabled");
+	printf("  Flag notLRW: %s\n", (*b & 0x02) == 0 ? "not enabled" : "enabled");
+	b++;
+
+	printf("  CurrentOnEBus: %d mA\n", BYTES_TO_WORD(*b, *(b+1)));
+	b+=2;
+	b+=2;
+
+	printf("  Physical Ports:\n");
+	printf("     Port 0: %s\n", physport(*b&0x07));
+	printf("     Port 1: %s\n", physport((*b>>4)&0x7));
+	b++;
+	printf("     Port 2: %s\n", physport(*b&0x7));
+	printf("     Port 3: %s\n", physport((*b>>4)&0x7));
+
+	b+=14;
 }
 
 static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
