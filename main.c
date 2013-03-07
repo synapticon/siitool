@@ -149,6 +149,37 @@ static void print_stringsection(const unsigned char *buffer, size_t secsize)
 	printf("+++ Ignoring String section\n");
 }
 
+static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
+{
+	int fmmunbr = 0;
+	size_t count=0;
+	const unsigned char *b = buffer;
+
+	printf("\nFMMU Settings:\n");
+	while ((b-buffer)<secsize) {
+		printf("FMMU%d: ", fmmunbr++);
+		switch (*b) {
+		case 0x00:
+		case 0xff:
+			printf("not used\n");
+			break;
+		case 0x01:
+			printf("used for Outputs\n");
+			break;
+		case 0x02:
+			printf("used for Inputs\n");
+			break;
+		case 0x03:
+			printf("used for SyncM status\n");
+			break;
+		default:
+			printf("WARNING: undefined behavior\n");
+			break;
+		}
+		b++;
+	}
+}
+
 static void print_syncm_section(const unsigned char *buffer, size_t secsize)
 {
 	size_t count=0;
@@ -269,8 +300,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_CAT_FMMU:
-			//print_fmmu_section(buffer, secsize);
-			printf("+++ fmmu not yet implemented\n");
+			print_fmmu_section(buffer, secsize);
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
