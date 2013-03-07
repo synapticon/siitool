@@ -35,7 +35,7 @@ int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 	int input;
 
 	while ((input=getchar()) != EOF) {
-		printf("%.2x ", (unsigned char)(input&0xff));
+		//printf("%.2x ", (unsigned char)(input&0xff));
 
 		buffer[count++] = (unsigned char)(input&0xff);
 	}
@@ -361,7 +361,6 @@ static void print_dclock_section(const unsigned char *buffer, size_t secsize)
 
 int main(int argc, char *argv[])
 {
-	printf("Hello World\n");
 	/* FIXME if '-f' command line argument is available no read from stdin */
 
 	enum eSection section = SII_PREAMBLE;
