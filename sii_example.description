@@ -7,7 +7,7 @@
 #        |    ` init value PDI config register 0x150 - 0x151
 #         ` init value for PDI control register 0x140 - 0x141
 
-# user id
+# vendor id
 0000010: d222 0000                                ."..............
 
 # Product id
