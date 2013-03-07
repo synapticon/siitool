@@ -150,6 +150,16 @@ static void print_stringsection(const unsigned char *buffer, size_t secsize)
 	printf("+++ Ignoring String section\n");
 }
 
+static void print_datatype_section(const unsigned char *buffer, size_t secsize)
+{
+	printf("+++ datatypes section not yet implemented\n");
+}
+
+static void print_general_section(const unsigned char *buffer, size_t secsize)
+{
+	printf("+++ general section not yet implemented\n");
+}
+
 static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
 {
 	int fmmunbr = 0;
@@ -404,8 +414,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_CAT_DATATYPES:
-			//print_syncmsection(buffer, secsize);
-			printf("+++ datatypes not yet implemented\n");
+			print_datatype_section(buffer, secsize);
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
@@ -413,8 +422,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_CAT_GENERAL:
-			//print_syncmsection(buffer, secsize);
-			printf("+++ general not yet implemented\n");
+			print_general_section(buffer, secsize);
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
