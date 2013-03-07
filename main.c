@@ -225,6 +225,65 @@ static void print_syncm_section(const unsigned char *buffer, size_t secsize)
 	}
 }
 
+enum ePdoType {
+	RxPDO,
+	TxPDO
+};
+
+static void print_pdo_section(const unsigned char *buffer, size_t secsize, enum ePdoType t)
+{
+	const unsigned char *b = buffer;
+	char *pdo;
+	int pdonbr=0;
+	int entries = 0;
+	int entry = 0;
+
+	switch (t) {
+	case RxPDO:
+		pdo = "RxPDO";
+		break;
+	case TxPDO:
+		pdo = "TxPDO";
+		break;
+	default:
+		pdo = "undefined";
+		break;
+	}
+
+	printf("\n%s%d:\n", pdo, pdonbr);
+	printf("  PDO Index: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+	b+=2;
+	entries = *b;
+	printf("  Entries: %d\n", entries);
+	b++;
+	printf("  SyncM: %d\n", *b);
+	b++;
+	printf("  Synchronization: 0x%02x\n", *b);
+	b++;
+	printf("  Name Index: %d\n", *b);
+	b++;
+	printf("  Flags for future use: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+	b+=2;
+
+	while ((b-buffer)<secsize) {
+		printf("\n    Entry %d:\n", entry);
+		printf("    Entry Index: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+		b+=2;
+		printf("    Subindex: 0x%02x\n", *b);
+		b++;
+		printf("    String Index: %d\n", *b);
+		b++;
+		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", *b);
+		b++;
+		printf("    Bitlength: %d\n", *b);
+		b++;
+		printf("     Flags (for future use): 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+		b+=2;
+
+		entry++;
+	}
+}
+
 static enum eSection get_next_section(const unsigned char *b, size_t len, size_t *secsize)
 {
 	enum eSection next = SII_CAT_NOP;
@@ -316,8 +375,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_CAT_TXPDO:
-			//print_txpdo_section(buffer, secsize);
-			printf("+++ txpdo not yet implemented\n");
+			print_pdo_section(buffer, secsize, TxPDO);
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
@@ -325,8 +383,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_CAT_RXPDO:
-			//print_rxpdo_section(buffer, secsize);
-			printf("+++ rxpdo not yet implemented\n");
+			print_pdo_section(buffer, secsize, RxPDO);
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
