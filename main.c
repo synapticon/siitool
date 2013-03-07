@@ -295,6 +295,70 @@ static enum eSection get_next_section(const unsigned char *b, size_t len, size_t
 	return next;
 }
 
+
+static void print_dclock_section(const unsigned char *buffer, size_t secsize)
+{
+	const unsigned char *b = buffer+1; /* first byte is reserved */
+
+	printf("\nDC Sync Parameter\n");
+
+	printf("  Cyclic Operation Enable: %s\n", (*b & 0x01) == 0 ? "no" : "yes");
+	printf("  SYNC0 activate: %s\n", (*b & 0x02) == 0 ? "no" : "yes");
+	printf("  SYNC1 activate: %s\n", (*b & 0x04) == 0 ? "no" : "yes");
+	b++; /* next 5 bit reserved */
+
+	printf("  SYNC Pulse: %d (ns?)\n", BYTES_TO_WORD(*b, *(b+1)));
+	b+=2;
+
+	b+=10; /* skipped reserved */
+
+	printf("  Interrupt 0 Status: %s\n",  (*b & 0x01) == 0 ? "not active" : "active");
+	b++;
+	printf("  Interrupt 1 Status: %s\n",  (*b & 0x01) == 0 ? "not active" : "active");
+	b++;
+
+	b+=12; /* skipped reserved */
+
+	printf("  Cyclic Operation Startime: %d ns\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+
+	printf("\nLatch Description\n");
+	printf("  Latch 0 PosEdge: %s\n", (*b & 0x01) == 0 ? "continous" : "single");
+	printf("  Latch 0 NegEdge: %s\n", (*b & 0x02) == 0 ? "continous" : "single");
+	b+=2; /* the follwing 14 bits are reserved */
+
+	printf("  Latch 1 PosEdge: %s\n", (*b & 0x01) == 0 ? "continous" : "single");
+	printf("  Latch 1 NegEdge: %s\n", (*b & 0x02) == 0 ? "continous" : "single");
+	b+=2; /* the follwing 14 bits are reserved */
+
+	b+=4; /* another reserved block */
+
+	printf("  Latch 0 PosEvnt: %s\n", (*b & 0x01) == 0 ? "no Event" : "Event stored");
+	printf("  Latch 0 NegEvnt: %s\n", (*b & 0x02) == 0 ? "no Event" : "Event stored");
+	b+=1; /* the follwing 14 bits are reserved */
+
+	printf("  Latch 1 PosEvnt: %s\n", (*b & 0x01) == 0 ? "no Event" : "Event stored");
+	printf("  Latch 1 NegEvnt: %s\n", (*b & 0x02) == 0 ? "no Event" : "Event stored");
+	b+=1; /* the follwing 14 bits are reserved */
+
+	printf("  Latch0PosEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+	b+=4;
+	printf("  Latch0NegEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+	b+=4;
+	printf("  Latch0PosEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+	b+=4;
+	printf("  Latch0NegEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	b+=4;
+	b+=4;
+}
+
 int main(int argc, char *argv[])
 {
 	printf("Hello World\n");
@@ -391,8 +455,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_CAT_DCLOCK:
-			//print_dclock_section(buffer, secsize);
-			printf("+++ dclock not yet implemented\n");
+			print_dclock_section(buffer, secsize);
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
