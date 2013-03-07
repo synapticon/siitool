@@ -189,7 +189,7 @@ static void print_syncm_section(const unsigned char *buffer, size_t secsize)
 			break;
 		}
 		b++;
-		count+=8;
+		count=(size_t)(b-buffer);
 		smnbr++;
 	}
 }
