@@ -151,9 +151,47 @@ static void print_stringsection(const unsigned char *buffer, size_t secsize)
 
 static void print_syncm_section(const unsigned char *buffer, size_t secsize)
 {
-	size_t count;
+	size_t count=0;
+	int smnbr = 0;
 	const unsigned char *b = buffer;
-	printf("+++ syncmanager printout not yet implemented\n");
+
+	while (count<secsize) {
+		printf("\nSyncManager SM%d\n", smnbr);
+		printf("  Physical Startaddress: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+		b+=2;
+		printf("  Length: %d\n", BYTES_TO_WORD(*b, *(b+1)));
+		b+=2;
+		printf("  Control Register: 0x%02x\n", *b);
+		b++;
+		printf("  Status Register: 0x%02x\n", *b);
+		b++;
+		printf("  Enable byte: 0x%02x\n", *b);
+		b++;
+		printf("  SM Type: ");
+		switch (*b) {
+		case 0x00:
+			printf("not used or unknown\n");
+			break;
+		case 0x01:
+			printf("Mailbox Out\n");
+			break;
+		case 0x02:
+			printf("Mailbox In\n");
+			break;
+		case 0x03:
+			printf("Process Data Out\n");
+			break;
+		case 0x04:
+			printf("Process Data In\n");
+			break;
+		default:
+			printf("undefined\n");
+			break;
+		}
+		b++;
+		count+=8;
+		smnbr++;
+	}
 }
 
 static enum eSection get_next_section(const unsigned char *b, size_t len, size_t *secsize)
