@@ -89,41 +89,41 @@ static void print_stdconfig(unsigned char *buffer, size_t size)
 {
 	size_t count =0;
 	unsigned char *b = buffer;
-	printf("Standard config:\n");
-
-	printf("Vendor ID: %08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	printf("General Information:\n");
+	printf("Vendor ID: ....... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
 	b+=4;
-	printf("Product ID: %08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	printf("Product ID: ...... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
 	b+=4;
-	printf("Revision ID: %08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	printf("Revision ID: ..... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
 	b+=4;
-	printf("Serial Number: %08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	printf("Serial Number: ... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
 	b+=4;
 
 	b+=8; /* another reserved 8 bytes */
 
 	/* mailbox settings */
-	printf("Bootstrap received mailbox offset: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("\nDefault mailbox settings:\n");
+	printf("Bootstrap received mailbox offset: 0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
-	printf("Bootstrap received mailbox size: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Bootstrap received mailbox size:   %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
-	printf("Bootstrap send mailbox offset: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Bootstrap send mailbox offset:     0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
-	printf("Bootstrap send mailbox size: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Bootstrap send mailbox size:       %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
 
-	printf("Standard received mailbox offset: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Standard received mailbox offset:  0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
-	printf("Standard received mailbox size: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Standard received mailbox size:    %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
-	printf("Standard send mailbox offset: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Standard send mailbox offset:      0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
-	printf("Standard send mailbox size: %04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("Standard send mailbox size:        %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
 
 	uint16_t recmbox = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Supported Mailboxes: ");
+	printf("\nSupported Mailboxes: ");
 	if (recmbox&MBOX_EOE)
 		printf("EoE, ");
 	if (recmbox&MBOX_COE)
@@ -141,6 +141,7 @@ static void print_stdconfig(unsigned char *buffer, size_t size)
 	printf("EEPROM size: %d kbit\n", BYTES_TO_WORD(*(b+0), *(b+1)));
 	b+=2;
 	printf("Version: %d\n",  BYTES_TO_WORD(*(b+0), *(b+1)));
+	printf("\n");
 }
 
 static void print_stringsection(const unsigned char *buffer, size_t secsize)
