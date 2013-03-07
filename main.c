@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
 #define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \
@@ -32,12 +33,34 @@ enum eSection {
 	,SII_END = 0xffff
 };
 
-int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
+static const char *base(const char *prog)
+{
+	const char *p = prog;
+
+	while (*p != '\0') {
+		if (*p == '/')
+			prog = ++p;
+		else
+			p++;
+	}
+
+	return prog;
+}
+
+static void printhelp(const char *prog)
+{
+	printf("Simple program to dump SII content in human readable form\n");
+	printf("Usage: %s [-h] [filename]\n", prog);
+	printf("  -h         print this help and exit\n");
+	printf("  filename   path to eeprom file, if missing read from stdin\n");
+}
+
+static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 {
 	size_t count = 0;
 	int input;
 
-	while ((input=getchar()) != EOF)
+	while ((input=fgetc(f)) != EOF)
 		buffer[count++] = (unsigned char)(input&0xff);
 
 	return count;
@@ -520,15 +543,42 @@ finish:
 
 int main(int argc, char *argv[])
 {
-	/* FIXME if '-f' command line argument is available no read from stdin */
-
+	FILE *f;
 	unsigned char eeprom[1024];
-	unsigned char *buffer;
-
+	const char *filename = NULL;
 	int input = 0;
+	int i;
 
-	read_eeprom(stdin, eeprom, 1024);
+	for (i=1; i<argc; i++) {
+		switch (argv[i][0]) {
+		case '-':
+			if (argv[i][1] != 'h') {
+				fprintf(stderr, "Invalid argument\n");
+			}
+			printhelp(base(argv[0]));
+			return 0;
 
+		default:
+			/* asuming file name */
+			filename = argv[i];
+			break;
+		}
+	}
+
+	if (filename == NULL)
+		read_eeprom(stdin, eeprom, 1024);
+	else {
+		f = fopen(filename, "r");
+		if (f == NULL) {
+			perror("Error open input file");
+			return -1;
+		}
+
+		printf("Start reading contents of file\n");
+
+		read_eeprom(f, eeprom, 1024);
+		fclose(f);
+	}
 
 	return parse_and_print_content(eeprom, 1024);
 }
