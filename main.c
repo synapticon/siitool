@@ -34,11 +34,8 @@ int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 	size_t count = 0;
 	int input;
 
-	while ((input=getchar()) != EOF) {
-		//printf("%.2x ", (unsigned char)(input&0xff));
-
+	while ((input=getchar()) != EOF)
 		buffer[count++] = (unsigned char)(input&0xff);
-	}
 
 	return count;
 }
@@ -147,12 +144,12 @@ static void print_stdconfig(unsigned char *buffer, size_t size)
 
 static void print_stringsection(const unsigned char *buffer, size_t secsize)
 {
-	printf("+++ Ignoring String section\n");
+	printf("\n+++ Ignoring String section\n");
 }
 
 static void print_datatype_section(const unsigned char *buffer, size_t secsize)
 {
-	printf("+++ datatypes section not yet implemented\n");
+	printf("\n+++ datatypes section not yet implemented\n");
 }
 
 static char *physport(uint8_t b)
@@ -173,7 +170,7 @@ static void print_general_section(const unsigned char *buffer, size_t secsize)
 {
 	const unsigned char *b = buffer;
 
-	printf("General:\n");
+	printf("\nGeneral:\n");
 
 	printf("  Group Index: %d (Vendor Specific, index of Strings)\n", *b);
 	b++;
@@ -224,7 +221,7 @@ static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
 
 	printf("\nFMMU Settings:\n");
 	while ((b-buffer)<secsize) {
-		printf("FMMU%d: ", fmmunbr++);
+		printf("  FMMU%d: ", fmmunbr++);
 		switch (*b) {
 		case 0x00:
 		case 0xff:
@@ -458,7 +455,6 @@ int main(int argc, char *argv[])
 			buffer = buffer+46+66;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer += 4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_STRINGS:
@@ -466,7 +462,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_DATATYPES:
@@ -474,7 +469,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_GENERAL:
@@ -482,7 +476,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_FMMU:
@@ -490,7 +483,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_SYNCM:
@@ -498,7 +490,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_TXPDO:
@@ -506,7 +497,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_RXPDO:
@@ -514,7 +504,6 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_CAT_DCLOCK:
@@ -522,11 +511,9 @@ int main(int argc, char *argv[])
 			buffer+=secsize;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
-			printf("+++ next section: %x\n", section);
 			break;
 
 		case SII_END:
-			printf("finished\n");
 			goto finish;
 			break;
 		}
