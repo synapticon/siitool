@@ -47,6 +47,7 @@ void print_preamble(unsigned char *buffer, size_t size)
 {
 	size_t count = 0;
 
+	printf("Preamble:\n");
 	/* pdi control */
 	int pdi_ctrl = ((int)buffer[1]<<8) | buffer[0];
 	printf("PDI Control: %.4x\n", pdi_ctrl);
@@ -380,7 +381,6 @@ int main(int argc, char *argv[])
 			break;
 
 		case SII_PREAMBLE:
-			printf("Print Preamble:\n");
 			print_preamble(buffer, 16);
 			buffer = eeprom+16;
 			section = SII_STD_CONFIG;
