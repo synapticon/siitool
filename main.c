@@ -1,5 +1,8 @@
 /* siicode
- * 
+ *
+ * Simple program to print the values of the SII EEPROM content. It reads the
+ * raw binaries.
+ *
  * 2013-02-27 jeschke@fjes.de
  */
 
