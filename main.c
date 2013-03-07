@@ -426,20 +426,12 @@ static void print_dclock_section(const unsigned char *buffer, size_t secsize)
 	b+=4;
 }
 
-int main(int argc, char *argv[])
+static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 {
-	/* FIXME if '-f' command line argument is available no read from stdin */
-
 	enum eSection section = SII_PREAMBLE;
 	size_t count = 0;
-	unsigned char eeprom[1024];
-	unsigned char *buffer;
 	size_t secsize = 0;
-
-	int input = 0;
-
-	read_eeprom(stdin, eeprom, 1024);
-	buffer = eeprom;
+	unsigned char *buffer = eeprom;
 
 	while (1) {
 		switch (section) {
@@ -524,4 +516,19 @@ int main(int argc, char *argv[])
 
 finish:
 	return 0;
+}
+
+int main(int argc, char *argv[])
+{
+	/* FIXME if '-f' command line argument is available no read from stdin */
+
+	unsigned char eeprom[1024];
+	unsigned char *buffer;
+
+	int input = 0;
+
+	read_eeprom(stdin, eeprom, 1024);
+
+
+	return parse_and_print_content(eeprom, 1024);
 }
