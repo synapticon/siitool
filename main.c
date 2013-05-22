@@ -97,11 +97,9 @@ void print_preamble(unsigned char *buffer, size_t size)
 	count+=4; /* next 4 bytes are reserved */
 
 	/* checksum FIXME add checksum test */
-	printf("DEBUG: buffer[%u] buffer[%u] = %2x %2x\n", (unsigned int)count, (unsigned int)count+1, buffer[count+0], buffer[count+1]);
-	/* FIXME wrong bytes are displayed! PANIC */
-	int checksum = BYTES_TO_WORD(buffer[count++], buffer[count++]);
+	int checksum = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	count += 2;
 	printf("Checksum of preamble: %.4x\n", checksum);
-	printf("DEBUG: buffer[%u] buffer[%u] = %2x %2x\n", (unsigned int)count-2, (unsigned int)count-1, buffer[count-2], buffer[count-1]);
 }
 
 
