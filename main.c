@@ -215,6 +215,8 @@ static char *physport(uint8_t b)
 	case 0x03:
 		return "EBUS";
 	}
+
+	return NULL;
 }
 
 static void print_general_section(const unsigned char *buffer, size_t secsize)
