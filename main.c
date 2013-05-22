@@ -33,6 +33,8 @@ enum eSection {
 	,SII_END = 0xffff
 };
 
+static char **strings; /* all strings */
+
 static const char *base(const char *prog)
 {
 	const char *p = prog;
@@ -174,20 +176,26 @@ static void print_stringsection(const unsigned char *buffer, size_t secsize)
 	unsigned index = 0;
 	unsigned strcount = 0;
 	char str[1024];
-	size_t strlen = 0;
+	size_t len = 0;
 	memset(str, '\0', 1024);
 
-	printf("\n+++ Ignoring String section\n");
+	printf("String section:\n");
 	strcount = *pos++;
-	printf("Number of Strings: %d\n", strcount);
+	printf("Number of Strings: %d\n", strcount+1);
+
+	strings = (char **)malloc((strcount+1) * sizeof(char *));
 
 	for (index=0; index<strcount; index++) {
-		strlen = *pos++;
-		memmove(str, pos, strlen);
-		pos += strlen;
-		printf("Index: %d, length: %lu] '%s'\n", index, strlen, str);
+		len = *pos++;
+		memmove(str, pos, len);
+		pos += len;
+		printf("Index: %d, length: %lu] '%s'\n", index, len, str);
+		strings[index] = malloc(len+1);
+		memmove(strings[index], str, len+1);
 		memset(str, '\0', 1024);
 	}
+
+	strings[index] = NULL;
 }
 
 static void print_datatype_section(const unsigned char *buffer, size_t secsize)
