@@ -225,11 +225,11 @@ static void print_general_section(const unsigned char *buffer, size_t secsize)
 
 	printf("\nGeneral:\n");
 
-	printf("  Group Index: %d (Vendor Specific, index of Strings)\n", *b);
+	printf("  Group Index: %d (Vendor Specific, index of Strings): %s\n", *b, strings[*b]);
 	b++;
-	printf("  Image Index: %d (Vendor Specific, index to Strings)\n", *b++);
-	printf("  Order Index: %d (Vendor Specific, index to Strings)\n", *b++);
-	printf("  Name  Index: %d (Vendor Specific, index to Strings)\n", *b++);
+	printf("  Image Index: %d (Vendor Specific, index to Strings): %s\n", *b, strings[*b++]);
+	printf("  Order Index: %d (Vendor Specific, index to Strings): %s\n", *b, strings[*b++]);
+	printf("  Name  Index: %d (Vendor Specific, index to Strings): %s\n", *b, strings[*b++]);
 	b++;
 
 	printf("  CoE Details:\n");
@@ -388,7 +388,7 @@ static void print_pdo_section(const unsigned char *buffer, size_t secsize, enum 
 		b+=2;
 		printf("    Subindex: 0x%02x\n", *b);
 		b++;
-		printf("    String Index: %d\n", *b);
+		printf("    String Index: %d (%s)\n", *b, strings[*b]);
 		b++;
 		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", *b);
 		b++;
