@@ -170,7 +170,24 @@ static void print_stdconfig(unsigned char *buffer, size_t size)
 
 static void print_stringsection(const unsigned char *buffer, size_t secsize)
 {
+	const unsigned char *pos = buffer;
+	unsigned index = 0;
+	unsigned strcount = 0;
+	char str[1024];
+	size_t strlen = 0;
+	memset(str, '\0', 1024);
+
 	printf("\n+++ Ignoring String section\n");
+	strcount = *pos++;
+	printf("Number of Strings: %d\n", strcount);
+
+	for (index=0; index<strcount; index++) {
+		strlen = *pos++;
+		memmove(str, pos, strlen);
+		pos += strlen;
+		printf("Index: %d, length: %lu] '%s'\n", index, strlen, str);
+		memset(str, '\0', 1024);
+	}
 }
 
 static void print_datatype_section(const unsigned char *buffer, size_t secsize)

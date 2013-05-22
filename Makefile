@@ -4,8 +4,8 @@ CC = gcc
 LD = gcc
 
 WARNINGS = -Wall -pedantic
-CFLGAS = -g $(WARNINGS) -O2 -std=gnu99
-LDFLAGS = -g $(WARNINGS)
+CFLAGS = -g $(WARNINGS) -O2 -std=gnu99
+LDFLAGS = -g  $(WARNINGS)
 
 TARGET = siicode
 OBJECTS = main.o
