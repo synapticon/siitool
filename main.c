@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define VERSION_MAJOR    0
+#define VERSION_MINNOR   2
+
 #define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
 #define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \
 	                            ((unsigned int)(c&0xff)<<16) | \
@@ -52,8 +55,9 @@ static const char *base(const char *prog)
 static void printhelp(const char *prog)
 {
 	printf("Simple program to dump SII content in human readable form\n");
-	printf("Usage: %s [-h] [filename]\n", prog);
+	printf("Usage: %s [-h] [-v] [filename]\n", prog);
 	printf("  -h         print this help and exit\n");
+	printf("  -v         print version an exit\n");
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
 }
 
@@ -577,11 +581,17 @@ int main(int argc, char *argv[])
 	for (i=1; i<argc; i++) {
 		switch (argv[i][0]) {
 		case '-':
-			if (argv[i][1] != 'h') {
+			if (argv[i][1] == 'h') {
+				printhelp(base(argv[0]));
+				return 0;
+			} else if (argv[i][1] == 'v') {
+				printf("Version %d.%d\n", VERSION_MAJOR, VERSION_MINNOR);
+				return 0;
+			} else {
 				fprintf(stderr, "Invalid argument\n");
+				printhelp(base(argv[0]));
+				return 0;
 			}
-			printhelp(base(argv[0]));
-			return 0;
 
 		default:
 			/* asuming file name */
