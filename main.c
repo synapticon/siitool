@@ -225,7 +225,7 @@ static void print_general_section(const unsigned char *buffer, size_t secsize)
 {
 	const unsigned char *b = buffer;
 
-	printf("\nGeneral:\n");
+	printf("General:\n");
 
 	printf("  Group Index: %d (Vendor Specific, index of Strings): %s\n", *b, strings[*b]);
 	b++;
@@ -274,7 +274,7 @@ static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
 	size_t count=0;
 	const unsigned char *b = buffer;
 
-	printf("\nFMMU Settings:\n");
+	printf("FMMU Settings:\n");
 	while ((b-buffer)<secsize) {
 		printf("  FMMU%d: ", fmmunbr++);
 		switch (*b) {
@@ -306,7 +306,7 @@ static void print_syncm_section(const unsigned char *buffer, size_t secsize)
 	const unsigned char *b = buffer;
 
 	while (count<secsize) {
-		printf("\nSyncManager SM%d\n", smnbr);
+		printf("SyncManager SM%d\n", smnbr);
 		printf("  Physical Startaddress: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
 		b+=2;
 		printf("  Length: %d\n", BYTES_TO_WORD(*b, *(b+1)));
@@ -369,7 +369,7 @@ static void print_pdo_section(const unsigned char *buffer, size_t secsize, enum 
 		break;
 	}
 
-	printf("\n%s%d:\n", pdo, pdonbr);
+	printf("%s%d:\n", pdo, pdonbr);
 	printf("  PDO Index: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
 	b+=2;
 	entries = *b;
@@ -419,7 +419,7 @@ static void print_dclock_section(const unsigned char *buffer, size_t secsize)
 {
 	const unsigned char *b = buffer+1; /* first byte is reserved */
 
-	printf("\nDC Sync Parameter\n");
+	printf("DC Sync Parameter\n");
 
 	printf("  Cyclic Operation Enable: %s\n", (*b & 0x01) == 0 ? "no" : "yes");
 	printf("  SYNC0 activate: %s\n", (*b & 0x02) == 0 ? "no" : "yes");
