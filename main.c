@@ -37,6 +37,7 @@ enum eSection {
 };
 
 static char **strings; /* all strings */
+static int g_print_offsets = 0;
 
 static const char *base(const char *prog)
 {
@@ -58,6 +59,7 @@ static void printhelp(const char *prog)
 	printf("Usage: %s [-h] [-v] [filename]\n", prog);
 	printf("  -h         print this help and exit\n");
 	printf("  -v         print version an exit\n");
+	printf("  -o         add offset information to section start\n");
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
 }
 
@@ -478,6 +480,16 @@ static void print_dclock_section(const unsigned char *buffer, size_t secsize)
 	b+=4;
 }
 
+static void print_offsets(unsigned char *start, unsigned char *current)
+{
+	if (!g_print_offsets) {
+		printf("\n");
+		return;
+	}
+
+	printf("\n[Offset: 0x%0lx (%ld)] ", current-start, current-start);
+}
+
 static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 {
 	enum eSection section = SII_PREAMBLE;
@@ -486,6 +498,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 	unsigned char *buffer = eeprom;
 
 	while (1) {
+		print_offsets(eeprom, buffer);
 		switch (section) {
 		case SII_CAT_NOP:
 			break;
@@ -587,6 +600,8 @@ int main(int argc, char *argv[])
 			} else if (argv[i][1] == 'v') {
 				printf("Version %d.%d\n", VERSION_MAJOR, VERSION_MINNOR);
 				return 0;
+			} else if (argv[i][1] == 'o') {
+				g_print_offsets = 1;
 			} else {
 				fprintf(stderr, "Invalid argument\n");
 				printhelp(base(argv[0]));
