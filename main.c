@@ -496,9 +496,10 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 	size_t count = 0;
 	size_t secsize = 0;
 	unsigned char *buffer = eeprom;
+	unsigned char *secstart = eeprom;
 
 	while (1) {
-		print_offsets(eeprom, buffer);
+		print_offsets(eeprom, secstart);
 		switch (section) {
 		case SII_CAT_NOP:
 			break;
@@ -506,6 +507,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_PREAMBLE:
 			print_preamble(buffer, 16);
 			buffer = eeprom+16;
+			secstart = buffer;
 			section = SII_STD_CONFIG;
 			break;
 
@@ -513,6 +515,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 			printf("Print std config:\n");
 			print_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer += 4;
 			break;
@@ -520,6 +523,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_STRINGS:
 			print_stringsection(buffer, secsize);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -527,6 +531,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_DATATYPES:
 			print_datatype_section(buffer, secsize);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -534,6 +539,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_GENERAL:
 			print_general_section(buffer, secsize);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -541,6 +547,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_FMMU:
 			print_fmmu_section(buffer, secsize);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -548,6 +555,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_SYNCM:
 			print_syncm_section(buffer, secsize);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -555,6 +563,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_TXPDO:
 			print_pdo_section(buffer, secsize, TxPDO);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -562,6 +571,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_RXPDO:
 			print_pdo_section(buffer, secsize, RxPDO);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
@@ -569,6 +579,7 @@ static int parse_and_print_content(unsigned char *eeprom, size_t maxsize)
 		case SII_CAT_DCLOCK:
 			print_dclock_section(buffer, secsize);
 			buffer+=secsize;
+			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
 			buffer+=4;
 			break;
