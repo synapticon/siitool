@@ -13,7 +13,7 @@
 #include <errno.h>
 
 #define VERSION_MAJOR    0
-#define VERSION_MINNOR   2
+#define VERSION_MINNOR   3
 
 #define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
 #define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \
