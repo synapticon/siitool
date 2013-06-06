@@ -1,0 +1,9 @@
+
+v0.3:
+- added optional section offset printout
+
+v0.2:
+- added versioning
+- print of string section
+- use of strings in string section (basic)
+
