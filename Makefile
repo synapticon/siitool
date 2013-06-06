@@ -10,6 +10,8 @@ LDFLAGS = -g  $(WARNINGS)
 TARGET = siicode
 OBJECTS = main.o
 
+PREFIX = /usr/local/bin
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
@@ -18,7 +20,10 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-.PHONY: clean
+.PHONY: clean install
+
+install:
+	install $(TARGET) $(PREFIX)
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
