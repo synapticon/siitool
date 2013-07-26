@@ -224,7 +224,7 @@ static void print_stringsection(const unsigned char *buffer, size_t secsize)
 		len = *pos++;
 		memmove(str, pos, len);
 		pos += len;
-		printf("Index: %d, length: %lu] '%s'\n", index, len, str);
+		printf("Index: %d, length: %lu = '%s'\n", index, len, str);
 		strings[index] = malloc(len+1);
 		memmove(strings[index], str, len+1);
 		memset(str, '\0', 1024);
