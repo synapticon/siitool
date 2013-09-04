@@ -8,7 +8,7 @@ CFLAGS = -g $(WARNINGS) -O2 -std=gnu99
 LDFLAGS = -g  $(WARNINGS)
 
 TARGET = siicode
-OBJECTS = main.o
+OBJECTS = main.o sii.o
 
 PREFIX = /usr/local/bin
 
