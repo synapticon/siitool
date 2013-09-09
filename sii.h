@@ -67,12 +67,12 @@ struct _sii_general {
 	int orderindex;
 	int nameindex;
 	/* CoE Details: each 0 - not enabled, 1 enabled */
-	int enable_sdo;
-	int enable_sdo_info;
-	int enable_pdo_assign;
-	int enable_pdo_conf;
-	int enable_upload_start;
-	int enable_sdo_complete;
+	int coe_enable_sdo;
+	int coe_enable_sdo_info;
+	int coe_enable_pdo_assign;
+	int coe_enable_pdo_conf;
+	int coe_enable_upload_start;
+	int coe_enable_sdo_complete;
 	int foe_enabled;
 	int eoe_enabled;
 	int flag_safe_op;
@@ -161,16 +161,16 @@ struct _sii_dclock {
 };
 
 typedef struct _sii_info {
-	struct _sii_preamble preamble;
-	struct _sii_stdconfig stdconfig;
+	struct _sii_preamble *preamble;
+	struct _sii_stdconfig *stdconfig;
 	char **strings; /* array of strings from string section */
 	/* struct _sii_datatypes; -- not yet available */
-	struct _sii_general general;
-	struct _sii_fmmu fmmu; /* contains linked list with each fmmu */
-	struct _sii_syncm syncmanager; /* contains linked list with each syncmanager */
-	struct _sii_pdo txpdo; /* contains list of pdoentries */
-	struct _sii_pdo rxpdo; /* contains list of pdoentries */
-	struct _sii_dclock distributedclock;
+	struct _sii_general *general;
+	struct _sii_fmmu *fmmu; /* contains linked list with each fmmu */
+	struct _sii_syncm *syncmanager; /* contains linked list with each syncmanager */
+	struct _sii_pdo *txpdo; /* contains list of pdoentries */
+	struct _sii_pdo *rxpdo; /* contains list of pdoentries */
+	struct _sii_dclock *distributedclock;
 } SiiInfo;
 
 SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size);
