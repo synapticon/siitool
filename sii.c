@@ -214,7 +214,7 @@ static void print_datatype_section(const unsigned char *buffer, size_t secsize)
 	printf("\n+++ datatypes section not yet implemented\n");
 }
 
-static char *physport(uint8_t b)
+static char *physport_type(uint8_t b)
 {
 	switch (b) {
 	case 0x00:
@@ -230,54 +230,83 @@ static char *physport(uint8_t b)
 	return NULL;
 }
 
-static void print_general_section(const unsigned char *buffer, size_t secsize)
+static struct _sii_general *parse_general_section(const unsigned char *buffer, size_t secsize)
 {
 	const unsigned char *b = buffer;
+	struct _sii_general *siig = malloc(sizeof(struct _sii_general));
 
-	printf("General:\n");
-
-	printf("  Group Index: %d (Vendor Specific, index of Strings): %s\n", *b, strings[*b]);
+	siig->groupindex = *b;
 	b++;
-	printf("  Image Index: %d (Vendor Specific, index to Strings): %s\n", *b, strings[*b]);
+	siig->imageindex = *b;
 	b++;
-	printf("  Order Index: %d (Vendor Specific, index to Strings): %s\n", *b, strings[*b]);
+	siig->orderindex = *b;
 	b++;
-	printf("  Name  Index: %d (Vendor Specific, index to Strings): %s\n", *b, strings[*b]);
+	siig->nameindex = *b;
 	b++;
-	b++;
-
-	printf("  CoE Details:\n");
-	printf("    Enable SDO: .................. %s\n", (*b&0x01) == 0 ? "no" : "yes");
-	printf("    Enable SDO Info: ............. %s\n", (*b&0x02) == 0 ? "no" : "yes");
-	printf("    Enable PDO Assign: ........... %s\n", (*b&0x04) == 0 ? "no" : "yes");
-	printf("    Enable PDO Configuration: .... %s\n", (*b&0x08) == 0 ? "no" : "yes");
-	printf("    Enable Upload at Startup: .... %s\n", (*b&0x10) == 0 ? "no" : "yes");
-	printf("    Enable SDO complete access: .. %s\n", (*b&0x20) == 0 ? "no" : "yes");
 	b++;
 
-	printf("  FoE Details: %s\n", (*b & 0x01) == 0 ? "not enabled" : "enabled");
-	b++;
-	printf("  EoE Details: %s\n", (*b & 0x01) == 0 ? "not enabled" : "enabled");
+	siig->coe_enable_sdo = (*b&0x01) == 0 ? 0 : 1;
+	siig->coe_enable_sdo_info = (*b&0x02) == 0 ? 0 : 1;
+	siig->coe_enable_pdo_assign = (*b&0x04) == 0 ? 0 : 1;
+	siig->coe_enable_pdo_conf = (*b&0x08) == 0 ? 0 : 1;
+	siig->coe_enable_upload_start = (*b&0x10) == 0 ? 0 : 1;
+	siig->coe_enable_sdo_complete = (*b&0x20) == 0 ? 0 : 1;
 	b++;
 
+	siig->foe_enabled = (*b & 0x01) == 0 ? 0 : 1;
+	b++;
+	siig->eoe_enabled = (*b & 0x01) == 0 ? 0 : 1;
+	b++;
 	b+=3; /* SoE Channels, DS402 Channels, Sysman Class - reserved */
 
-	printf("  Flag SafeOp: %s\n", (*b & 0x01) == 0 ? "not enabled" : "enabled");
-	printf("  Flag notLRW: %s\n", (*b & 0x02) == 0 ? "not enabled" : "enabled");
+	siig->flag_safe_op = (*b & 0x01) == 0 ? 0 : 1;
+	siig->flag_notLRW = (*b & 0x02) == 0 ? 0 : 1;
 	b++;
 
-	printf("  CurrentOnEBus: %d mA\n", BYTES_TO_WORD(*b, *(b+1)));
+	siig->current_ebus = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
 	b+=2;
+
+	siig->phys_port_0 = *b&0x07;
+	siig->phys_port_1 = (*b>>4)&0x7;
+	b++;
+	siig->phys_port_2 = *b&0x7;
+	siig->phys_port_3 = (*b>>4)&0x7;
+	b+=14;
+
+
+	/* DEBUG printout */
+	printf("General:\n");
+
+	printf("  Group Index: %d (Vendor Specific, index of Strings): %s\n", siig->groupindex, "tba");
+	printf("  Image Index: %d (Vendor Specific, index to Strings): %s\n", siig->imageindex, "tba");
+	printf("  Order Index: %d (Vendor Specific, index to Strings): %s\n", siig->orderindex, "tba");
+	printf("  Name  Index: %d (Vendor Specific, index to Strings): %s\n", siig->nameindex, "tba");
+
+	printf("  CoE Details:\n");
+	printf("    Enable SDO: .................. %s\n", siig->coe_enable_sdo == 0 ? "no" : "yes");
+	printf("    Enable SDO Info: ............. %s\n", siig->coe_enable_sdo_info == 0 ? "no" : "yes");
+	printf("    Enable PDO Assign: ........... %s\n", siig->coe_enable_pdo_assign == 0 ? "no" : "yes");
+	printf("    Enable PDO Configuration: .... %s\n", siig->coe_enable_pdo_conf == 0 ? "no" : "yes");
+	printf("    Enable Upload at Startup: .... %s\n", siig->coe_enable_upload_start == 0 ? "no" : "yes");
+	printf("    Enable SDO complete access: .. %s\n", siig->coe_enable_sdo_complete == 0 ? "no" : "yes");
+
+	printf("  FoE Details: %s\n", siig->foe_enabled == 0 ? "not enabled" : "enabled");
+	printf("  EoE Details: %s\n", siig->eoe_enabled == 0 ? "not enabled" : "enabled");
+
+
+	printf("  Flag SafeOp: %s\n", siig->flag_safe_op == 0 ? "not enabled" : "enabled");
+	printf("  Flag notLRW: %s\n", siig->flag_notLRW == 0 ? "not enabled" : "enabled");
+
+	printf("  CurrentOnEBus: %d mA\n", siig->current_ebus);
 
 	printf("  Physical Ports:\n");
-	printf("     Port 0: %s\n", physport(*b&0x07));
-	printf("     Port 1: %s\n", physport((*b>>4)&0x7));
-	b++;
-	printf("     Port 2: %s\n", physport(*b&0x7));
-	printf("     Port 3: %s\n", physport((*b>>4)&0x7));
+	printf("     Port 0: %s\n", physport_type(siig->phys_port_0));
+	printf("     Port 1: %s\n", physport_type(siig->phys_port_1));
+	printf("     Port 2: %s\n", physport_type(siig->phys_port_2));
+	printf("     Port 3: %s\n", physport_type(siig->phys_port_3));
 
-	b+=14;
+	return siig;
 }
 
 static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
@@ -547,7 +576,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_GENERAL:
-			print_general_section(buffer, secsize);
+			parse_general_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -644,6 +673,10 @@ SiiInfo *sii_init_file(const char *filename)
 
 void sii_release(SiiInfo *sii)
 {
+	free(sii->preamble);
+	free(sii->stdconfig);
+	free(sii->strings);
+	free(sii->general);
 	free(sii);
 }
 
