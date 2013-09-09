@@ -309,15 +309,42 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	return siig;
 }
 
-static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
+static void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
+{
+	struct _fmmu_entry *new = malloc(sizeof(struct _fmmu_entry));
+	new->prev = NULL;
+	new->next = NULL;
+	new->id = -1;
+	new->usage = usage;
+
+	if (fmmu->list == NULL) {
+		new->id = 0;
+		fmmu->list = new;
+	} else {
+		struct _fmmu_entry *f = fmmu->list;
+		while (f->next == NULL)
+			f = f->next;
+
+		f->next = new;
+		new->prev = f;
+		new->id = f->id+1;
+	}
+}
+
+static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t secsize)
 {
 	int fmmunbr = 0;
 	//size_t count=0;
 	const unsigned char *b = buffer;
 
+	struct _sii_fmmu *fmmu = malloc(sizeof(struct _sii_fmmu));
+	fmmu->count = 0;
+	fmmu->list = NULL;
+
 	printf("FMMU Settings:\n");
 	while ((b-buffer)<secsize) {
 		printf("  FMMU%d: ", fmmunbr++);
+		fmmu_add_entry(fmmu, *b);
 		switch (*b) {
 		case 0x00:
 		case 0xff:
@@ -338,6 +365,8 @@ static void print_fmmu_section(const unsigned char *buffer, size_t secsize)
 		}
 		b++;
 	}
+
+	return fmmu;
 }
 
 static void print_syncm_section(const unsigned char *buffer, size_t secsize)
@@ -584,7 +613,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_FMMU:
-			print_fmmu_section(buffer, secsize);
+			sii->fmmu = parse_fmmu_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
