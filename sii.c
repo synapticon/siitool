@@ -369,26 +369,65 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 	return fmmu;
 }
 
-static void print_syncm_section(const unsigned char *buffer, size_t secsize)
+static void syncm_add_entry(struct _sii_syncm *sm,
+		int phys_address, int length, int control, int status, int enable, int type)
+{
+	struct _syncm_entry *entry = malloc(sizeof(struct _syncm_entry));
+	entry->id = -1;
+	entry->phys_address = phys_address;
+	entry->length = length;
+	entry->control = control;
+	entry->status = status;
+	entry->enable = enable;
+	entry->type = type;
+
+	if (sm->list == NULL) {
+		entry->id = 0;
+		sm->list = entry;
+	} else {
+		struct _syncm_entry *list = sm->list;
+		while (list->next != NULL)
+			list = list->next;
+
+		list->next = entry;
+		entry->id = list->id+1;
+		entry->prev = list;
+		entry->next = NULL;
+	}
+}
+
+static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_t secsize)
 {
 	size_t count=0;
 	int smnbr = 0;
 	const unsigned char *b = buffer;
 
+	struct _sii_syncm *sm = malloc(sizeof(struct _sii_syncm));
+
 	while (count<secsize) {
+		int physadr = BYTES_TO_WORD(*b, *(b+1));
+		b+=2;
+		int length =  BYTES_TO_WORD(*b, *(b+1));
+		b+=2;
+		int control = *b;
+		b++;
+		int status = *b;
+		b++;
+		int enable = *b;
+		b++;
+		int type = *b;
+		b++;
+
+		syncm_add_entry(sm, physadr, length, control, status, enable, type);
+
 		printf("SyncManager SM%d\n", smnbr);
-		printf("  Physical Startaddress: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
-		b+=2;
-		printf("  Length: %d\n", BYTES_TO_WORD(*b, *(b+1)));
-		b+=2;
-		printf("  Control Register: 0x%02x\n", *b);
-		b++;
-		printf("  Status Register: 0x%02x\n", *b);
-		b++;
-		printf("  Enable byte: 0x%02x\n", *b);
-		b++;
+		printf("  Physical Startaddress: 0x%04x\n", physadr);
+		printf("  Length: %d\n", length);
+		printf("  Control Register: 0x%02x\n", control);
+		printf("  Status Register: 0x%02x\n", status);
+		printf("  Enable byte: 0x%02x\n", enable);
 		printf("  SM Type: ");
-		switch (*b) {
+		switch (type) {
 		case 0x00:
 			printf("not used or unknown\n");
 			break;
@@ -408,10 +447,11 @@ static void print_syncm_section(const unsigned char *buffer, size_t secsize)
 			printf("undefined\n");
 			break;
 		}
-		b++;
 		count=(size_t)(b-buffer);
 		smnbr++;
 	}
+
+	return sm;
 }
 
 enum ePdoType {
@@ -621,7 +661,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_SYNCM:
-			print_syncm_section(buffer, secsize);
+			sii->syncmanager = parse_syncm_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);

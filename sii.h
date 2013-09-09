@@ -98,6 +98,7 @@ struct _sii_fmmu {
 };
 
 struct _syncm_entry {
+	int id;
 	int phys_address;
 	int length;
 	int control;
