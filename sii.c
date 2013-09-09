@@ -459,58 +459,111 @@ enum ePdoType {
 	TxPDO
 };
 
-static void print_pdo_section(const unsigned char *buffer, size_t secsize, enum ePdoType t)
+static void pdo_add_entry(struct _sii_pdo *pdo,
+		int index, int subindex, int string_index, int data_type,
+		int bit_length, int flags)
+{
+	struct _pdo_entry *entry = malloc(sizeof(struct _pdo_entry));
+
+	entry->count = -1;
+	entry->index = index;
+	entry->subindex = subindex;
+	entry->string_index = string_index;
+	entry->data_type = data_type;
+	entry->bit_length = bit_length;
+	entry->flags = flags;
+	entry->next = NULL;
+	entry->prev = NULL;
+
+	if (pdo->list == NULL) {
+		entry->count = 0;
+		pdo->list = entry;
+	} else {
+		struct _pdo_entry *list = pdo->list;
+		while (list->next != NULL)
+			list = list->next;
+
+		list->next = entry;
+		entry->count = list->count+1;
+		entry->prev = list;
+		entry->next = NULL;
+	}
+}
+
+static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t secsize, enum ePdoType t)
 {
 	const unsigned char *b = buffer;
-	char *pdo;
+	char *pdostr;
 	int pdonbr=0;
-	int entries = 0;
+	//int entries = 0;
 	int entry = 0;
+
+	struct _sii_pdo *pdo = malloc(sizeof(struct _sii_pdo));
 
 	switch (t) {
 	case RxPDO:
-		pdo = "RxPDO";
+		pdo->type = SII_RX_PDO;
+		pdostr = "RxPDO";
 		break;
 	case TxPDO:
-		pdo = "TxPDO";
+		pdo->type = SII_TX_PDO;
+		pdostr = "TxPDO";
 		break;
 	default:
-		pdo = "undefined";
+		pdo->type = SII_UNDEF_PDO;
+		pdostr = "undefined";
 		break;
 	}
 
-	printf("%s%d:\n", pdo, pdonbr);
-	printf("  PDO Index: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+	pdo->index = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
-	entries = *b;
-	printf("  Entries: %d\n", entries);
+	pdo->entries = *b;
 	b++;
-	printf("  SyncM: %d\n", *b);
+	pdo->syncmanager = *b;
 	b++;
-	printf("  Synchronization: 0x%02x\n", *b);
+	pdo->sync = *b;
 	b++;
-	printf("  Name Index: %d\n", *b);
+	pdo->name_index = *b;
 	b++;
-	printf("  Flags for future use: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
+	pdo->flags = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
 
+	printf("%s%d:\n", pdostr, pdonbr);
+	printf("  PDO Index: 0x%04x\n", pdo->index);
+	printf("  Entries: %d\n", pdo->entries);
+	printf("  SyncM: %d\n", pdo->syncmanager);
+	printf("  Synchronization: 0x%02x\n", pdo->sync);
+	printf("  Name Index: %d\n", pdo->name_index);
+	printf("  Flags for future use: 0x%04x\n", pdo->flags);
+
 	while ((b-buffer)<secsize) {
+		int index = BYTES_TO_WORD(*b, *(b+1));
+		b+=2;
+		int subindex =  *b;
+		b++;
+		int string_index = *b;
+		b++;
+		int data_type = *b;
+		b++;
+		int bit_length = *b;
+		b++;
+		int flags = BYTES_TO_WORD(*b, *(b+1));
+		b+=2;
+
+		pdo_add_entry(pdo, index, subindex, string_index, data_type, bit_length, flags);
+
 		printf("\n    Entry %d:\n", entry);
-		printf("    Entry Index: 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
-		b+=2;
-		printf("    Subindex: 0x%02x\n", *b);
-		b++;
-		printf("    String Index: %d (%s)\n", *b, strings[*b]);
-		b++;
-		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", *b);
-		b++;
-		printf("    Bitlength: %d\n", *b);
-		b++;
-		printf("     Flags (for future use): 0x%04x\n", BYTES_TO_WORD(*b, *(b+1)));
-		b+=2;
+		printf("    Entry Index: 0x%04x\n", index);
+		printf("    Subindex: 0x%02x\n", subindex);
+		printf("    String Index: %d (%s)\n", string_index, strings[string_index]);
+		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", data_type);
+		printf("    Bitlength: %d\n", bit_length);
+		printf("     Flags (for future use): 0x%04x\n", flags);
 
 		entry++;
 	}
+
+	return pdo;
 }
 
 static enum eSection get_next_section(const unsigned char *b, size_t len, size_t *secsize)
@@ -669,7 +722,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_TXPDO:
-			print_pdo_section(buffer, secsize, TxPDO);
+			sii->txpdo = parse_pdo_section(buffer, secsize, TxPDO);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -677,7 +730,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_RXPDO:
-			print_pdo_section(buffer, secsize, RxPDO);
+			sii->rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);

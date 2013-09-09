@@ -126,6 +126,10 @@ struct _pdo_entry {
 	struct _pdo_entry *prev;
 };
 
+#define SII_UNDEF_PDO  0
+#define SII_RX_PDO     1
+#define SII_TX_PDO     2
+
 struct _sii_pdo {
 	int type; /* rx or tx pdo */
 	int index;
