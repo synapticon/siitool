@@ -98,63 +98,85 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 #define MBOX_VOE    0x0020
 #endif
 
-static void print_stdconfig(const unsigned char *buffer, size_t size)
+static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_t size)
 {
 	//size_t count =0;
 	const unsigned char *b = buffer;
-	printf("General Information:\n");
-	printf("Vendor ID: ....... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	struct _sii_stdconfig *stdc = malloc(sizeof(struct _sii_stdconfig));
+	stdc->vendor_id = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
 	b+=4;
-	printf("Product ID: ...... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	stdc->product_id = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
 	b+=4;
-	printf("Revision ID: ..... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	stdc->revision_id = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
 	b+=4;
-	printf("Serial Number: ... 0x%08x\n", BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3)));
+	stdc->serial = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
 	b+=4;
-
 	b+=8; /* another reserved 8 bytes */
 
-	/* mailbox settings */
-	printf("\nDefault mailbox settings:\n");
-	printf("Bootstrap received mailbox offset: 0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->bs_rec_mbox_offset = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Bootstrap received mailbox size:   %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->bs_rec_mbox_size =  BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Bootstrap send mailbox offset:     0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->bs_snd_mbox_offset = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Bootstrap send mailbox size:       %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->bs_snd_mbox_size = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
 
-	printf("Standard received mailbox offset:  0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->std_rec_mbox_offset = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Standard received mailbox size:    %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->std_rec_mbox_size = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Standard send mailbox offset:      0x%04x\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->std_snd_mbox_offset = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Standard send mailbox size:        %d\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->std_snd_mbox_size = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
 
-	uint16_t recmbox = BYTES_TO_WORD(*(b+0), *(b+1));
+	stdc->supported_mailbox = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("\nSupported Mailboxes: ");
-	if (recmbox&MBOX_EOE)
-		printf("EoE, ");
-	if (recmbox&MBOX_COE)
-		printf("CoE, ");
-	if (recmbox&MBOX_FOE)
-		printf("FoE, ");
-	if (recmbox&MBOX_SOE)
-		printf("SoE, ");
-	if (recmbox&MBOX_VOE)
-		printf("VoE, ");
-	printf("\n");
 
 	b+=66; /* more reserved bytes */
 
-	printf("EEPROM size: %d kbit\n", BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->eeprom_size = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
-	printf("Version: %d\n",  BYTES_TO_WORD(*(b+0), *(b+1)));
+	stdc->version =  BYTES_TO_WORD(*(b+0), *(b+1));
+
+	/* DEBUG print */
+	printf("General Information:\n");
+	printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
+	printf("Product ID: ...... 0x%08x\n", stdc->product_id);
+	printf("Revision ID: ..... 0x%08x\n", stdc->revision_id);
+	printf("Serial Number: ... 0x%08x\n", stdc->serial);
+
+	/* mailbox settings */
+	printf("\nDefault mailbox settings:\n");
+	printf("Bootstrap received mailbox offset: 0x%04x\n", stdc->bs_rec_mbox_offset);
+	printf("Bootstrap received mailbox size:   %d\n", stdc->bs_rec_mbox_size);
+	printf("Bootstrap send mailbox offset:     0x%04x\n", stdc->bs_snd_mbox_offset);
+	printf("Bootstrap send mailbox size:       %d\n", stdc->bs_snd_mbox_size);
+
+	printf("Standard received mailbox offset:  0x%04x\n", stdc->std_rec_mbox_offset);
+	printf("Standard received mailbox size:    %d\n", stdc->std_rec_mbox_size);
+	printf("Standard send mailbox offset:      0x%04x\n", stdc->std_snd_mbox_offset);
+	printf("Standard send mailbox size:        %d\n", stdc->std_snd_mbox_size);
+
+	printf("\nSupported Mailboxes: ");
+	if (stdc->supported_mailbox&MBOX_EOE)
+		printf("EoE, ");
+	if (stdc->supported_mailbox&MBOX_COE)
+		printf("CoE, ");
+	if (stdc->supported_mailbox&MBOX_FOE)
+		printf("FoE, ");
+	if (stdc->supported_mailbox&MBOX_SOE)
+		printf("SoE, ");
+	if (stdc->supported_mailbox&MBOX_VOE)
+		printf("VoE, ");
 	printf("\n");
+
+	printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
+	printf("Version: %d\n", stdc->version);
+	printf("\n");
+
+	return stdc;
 }
 
 static void print_stringsection(const unsigned char *buffer, size_t secsize)
@@ -499,7 +521,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 
 		case SII_STD_CONFIG:
 			printf("Print std config:\n");
-			print_stdconfig(buffer, 46+66);
+			sii->stdconfig = parse_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
