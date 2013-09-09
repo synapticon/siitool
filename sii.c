@@ -476,7 +476,7 @@ static void print_offsets(const unsigned char *start, const unsigned char *curre
 	printf("\n[Offset: 0x%0x (%d)] ", current-start, current-start);
 }
 
-static int parse_and_print_content(const unsigned char *eeprom, size_t maxsize)
+static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, size_t maxsize)
 {
 	enum eSection section = SII_PREAMBLE;
 	//size_t count = 0;
@@ -594,7 +594,7 @@ SiiInfo *sii_init(const unsigned char *eeprom, size_t size)
 		return NULL;
 	}
 
-	parse_and_print_content(/*sii, */eeprom, size);
+	parse_content(sii, eeprom, size);
 
 	return sii;
 }
@@ -612,7 +612,7 @@ SiiInfo *sii_init_file(const char *filename)
 		return NULL;
 	}
 
-	parse_and_print_content(/*sii, */eeprom, 1024);
+	parse_content(sii, eeprom, 1024);
 
 	return sii;
 }
