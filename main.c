@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 	}
 
 	//return parse_and_print_content(eeprom, 1024);
-	SiiInfo *sii = sii_init(eeprom, 1024);
+	SiiInfo *sii = sii_init_string(eeprom, 1024);
 	//alternative: SiiInfo *sii = sii_init_file(filename) */
 	sii_release(sii);
 
