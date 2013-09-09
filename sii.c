@@ -322,7 +322,7 @@ static void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 		fmmu->list = new;
 	} else {
 		struct _fmmu_entry *f = fmmu->list;
-		while (f->next == NULL)
+		while (f->next != NULL)
 			f = f->next;
 
 		f->next = new;
@@ -609,26 +609,9 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	dc->sync1_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 
-	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
-	printf("  SYNC0 activate: %s\n", dc->sync0_active == 0 ? "no" : "yes");
-	printf("  SYNC1 activate: %s\n", dc->sync1_active == 0 ? "no" : "yes");
-
-	printf("  SYNC Pulse: %d (ns?)\n", dc->sync_pulse);
-
-	printf("  Interrupt 0 Status: %s\n",  dc->int0_status == 0 ? "not active" : "active");
-	printf("  Interrupt 1 Status: %s\n",  dc->int1_status == 0 ? "not active" : "active");
-
-	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_starttime);
-	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync0_cycle_time);
-	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync1_cycle_time);
-
 	dc->latch0_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch0_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
 	b+=2;
-
-	printf("\nLatch Description\n");
-	printf("  Latch 0 PosEdge: %s\n", dc->latch0_pos_edge == 0 ? "continous" : "single");
-	printf("  Latch 0 NegEdge: %s\n", dc->latch0_neg_edge == 0 ? "continous" : "single");
 
 	dc->latch1_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch1_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
@@ -660,20 +643,36 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	b+=4;
 
 	/* DEBUG printout */
+	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
+	printf("  SYNC0 activate: %s\n", dc->sync0_active == 0 ? "no" : "yes");
+	printf("  SYNC1 activate: %s\n", dc->sync1_active == 0 ? "no" : "yes");
+
+	printf("  SYNC Pulse: %d (ns?)\n", dc->sync_pulse);
+
+	printf("  Interrupt 0 Status: %s\n",  dc->int0_status == 0 ? "not active" : "active");
+	printf("  Interrupt 1 Status: %s\n",  dc->int1_status == 0 ? "not active" : "active");
+
+	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_starttime);
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync0_cycle_time);
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync1_cycle_time);
+
+	printf("\nLatch Description\n");
+	printf("  Latch 0 PosEdge: %s\n", dc->latch0_pos_edge == 0 ? "continous" : "single");
+	printf("  Latch 0 NegEdge: %s\n", dc->latch0_neg_edge == 0 ? "continous" : "single");
+
 	printf("  Latch 1 PosEdge: %s\n", dc->latch1_pos_edge == 0 ? "continous" : "single");
 	printf("  Latch 1 NegEdge: %s\n", dc->latch1_neg_edge == 0 ? "continous" : "single");
 
-	printf("  Latch 0 PosEvnt: %s\n", dc->latch1_pos_event == 0 ? "no Event" : "Event stored");
-	printf("  Latch 0 NegEvnt: %s\n", dc->latch1_neg_event == 0 ? "no Event" : "Event stored");
+	printf("  Latch 0 PosEvnt: %s\n", dc->latch0_pos_event == 0 ? "no Event" : "Event stored");
+	printf("  Latch 0 NegEvnt: %s\n", dc->latch0_neg_event == 0 ? "no Event" : "Event stored");
 
 	printf("  Latch 1 PosEvnt: %s\n", dc->latch1_pos_event == 0 ? "no Event" : "Event stored");
 	printf("  Latch 1 NegEvnt: %s\n", dc->latch1_neg_event == 0 ? "no Event" : "Event stored");
 
-
 	printf("  Latch0PosEdgeValue: 0x%08x\n", dc->latch0_pos_edge_value);
 	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch0_neg_edge_value);
-	printf("  Latch0PosEdgeValue: 0x%08x\n", dc->latch1_pos_edge_value);
-	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
+	printf("  Latch1PosEdgeValue: 0x%08x\n", dc->latch1_pos_edge_value);
+	printf("  Latch1NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
 
 	return dc;
 }
@@ -836,6 +835,10 @@ void sii_release(SiiInfo *sii)
 	free(sii->stdconfig);
 	free(sii->strings);
 	free(sii->general);
+	free(sii->fmmu); /* FIXME clean up all sub elements */
+	free(sii->txpdo); /* FIXME clean up all sub elements */
+	free(sii->rxpdo); /* FIXME clean up all sub elements */
+	free(sii->distributedclock);
 	free(sii);
 }
 
