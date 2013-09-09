@@ -578,67 +578,104 @@ static enum eSection get_next_section(const unsigned char *b, size_t len, size_t
 }
 
 
-static void print_dclock_section(const unsigned char *buffer, size_t secsize)
+static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, size_t secsize)
 {
 	const unsigned char *b = buffer+1; /* first byte is reserved */
 
+	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
+
 	printf("DC Sync Parameter\n");
 
-	printf("  Cyclic Operation Enable: %s\n", (*b & 0x01) == 0 ? "no" : "yes");
-	printf("  SYNC0 activate: %s\n", (*b & 0x02) == 0 ? "no" : "yes");
-	printf("  SYNC1 activate: %s\n", (*b & 0x04) == 0 ? "no" : "yes");
+	dc->cyclic_op_enabled = (*b & 0x01) == 0 ? 0 : 1;
+	dc->sync0_active = (*b & 0x02) == 0 ? 0 : 1;
+	dc->sync1_active = (*b & 0x04) == 0 ? 0 : 1;
 	b++; /* next 5 bit reserved */
 
-	printf("  SYNC Pulse: %d (ns?)\n", BYTES_TO_WORD(*b, *(b+1)));
+	dc->sync_pulse = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
 
 	b+=10; /* skipped reserved */
 
-	printf("  Interrupt 0 Status: %s\n",  (*b & 0x01) == 0 ? "not active" : "active");
+	dc->int0_status = (*b & 0x01) == 0 ? 0 : 1;
 	b++;
-	printf("  Interrupt 1 Status: %s\n",  (*b & 0x01) == 0 ? "not active" : "active");
+	dc->int1_status = (*b & 0x01) == 0 ? 0 : 1;
 	b++;
-
 	b+=12; /* skipped reserved */
 
-	printf("  Cyclic Operation Startime: %d ns\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	dc->cyclic_starttime = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	printf("  SYNC0 Cycle Time: %d (ns?)\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	dc->sync0_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	printf("  SYNC0 Cycle Time: %d (ns?)\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	dc->sync1_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
+
+	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
+	printf("  SYNC0 activate: %s\n", dc->sync0_active == 0 ? "no" : "yes");
+	printf("  SYNC1 activate: %s\n", dc->sync1_active == 0 ? "no" : "yes");
+
+	printf("  SYNC Pulse: %d (ns?)\n", dc->sync_pulse);
+
+	printf("  Interrupt 0 Status: %s\n",  dc->int0_status == 0 ? "not active" : "active");
+	printf("  Interrupt 1 Status: %s\n",  dc->int1_status == 0 ? "not active" : "active");
+
+	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_starttime);
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync0_cycle_time);
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync1_cycle_time);
+
+	dc->latch0_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
+	dc->latch0_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
+	b+=2;
 
 	printf("\nLatch Description\n");
-	printf("  Latch 0 PosEdge: %s\n", (*b & 0x01) == 0 ? "continous" : "single");
-	printf("  Latch 0 NegEdge: %s\n", (*b & 0x02) == 0 ? "continous" : "single");
-	b+=2; /* the follwing 14 bits are reserved */
+	printf("  Latch 0 PosEdge: %s\n", dc->latch0_pos_edge == 0 ? "continous" : "single");
+	printf("  Latch 0 NegEdge: %s\n", dc->latch0_neg_edge == 0 ? "continous" : "single");
 
-	printf("  Latch 1 PosEdge: %s\n", (*b & 0x01) == 0 ? "continous" : "single");
-	printf("  Latch 1 NegEdge: %s\n", (*b & 0x02) == 0 ? "continous" : "single");
-	b+=2; /* the follwing 14 bits are reserved */
-
+	dc->latch1_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
+	dc->latch1_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
+	b+=2;
 	b+=4; /* another reserved block */
 
-	printf("  Latch 0 PosEvnt: %s\n", (*b & 0x01) == 0 ? "no Event" : "Event stored");
-	printf("  Latch 0 NegEvnt: %s\n", (*b & 0x02) == 0 ? "no Event" : "Event stored");
+	dc->latch0_pos_event = (*b & 0x01) == 0 ? 0 : 1;
+	dc->latch0_neg_event = (*b & 0x02) == 0 ? 0 : 1;
 	b+=1; /* the follwing 14 bits are reserved */
 
-	printf("  Latch 1 PosEvnt: %s\n", (*b & 0x01) == 0 ? "no Event" : "Event stored");
-	printf("  Latch 1 NegEvnt: %s\n", (*b & 0x02) == 0 ? "no Event" : "Event stored");
+	dc->latch1_pos_event = (*b & 0x01) == 0 ? 0 : 1;
+	dc->latch1_neg_event = (*b & 0x02) == 0 ? 0 : 1;
 	b+=1; /* the follwing 14 bits are reserved */
 
-	printf("  Latch0PosEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+	dc->latch0_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 	b+=4;
-	printf("  Latch0NegEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+
+	dc->latch0_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 	b+=4;
-	printf("  Latch0PosEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+
+	dc->latch1_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 	b+=4;
-	printf("  Latch0NegEdgeValue: 0x%08x\n", BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3)));
+
+	dc->latch1_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 	b+=4;
+
+	/* DEBUG printout */
+	printf("  Latch 1 PosEdge: %s\n", dc->latch1_pos_edge == 0 ? "continous" : "single");
+	printf("  Latch 1 NegEdge: %s\n", dc->latch1_neg_edge == 0 ? "continous" : "single");
+
+	printf("  Latch 0 PosEvnt: %s\n", dc->latch1_pos_event == 0 ? "no Event" : "Event stored");
+	printf("  Latch 0 NegEvnt: %s\n", dc->latch1_neg_event == 0 ? "no Event" : "Event stored");
+
+	printf("  Latch 1 PosEvnt: %s\n", dc->latch1_pos_event == 0 ? "no Event" : "Event stored");
+	printf("  Latch 1 NegEvnt: %s\n", dc->latch1_neg_event == 0 ? "no Event" : "Event stored");
+
+
+	printf("  Latch0PosEdgeValue: 0x%08x\n", dc->latch0_pos_edge_value);
+	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch0_neg_edge_value);
+	printf("  Latch0PosEdgeValue: 0x%08x\n", dc->latch1_pos_edge_value);
+	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
+
+	return dc;
 }
 
 static void print_offsets(const unsigned char *start, const unsigned char *current)
@@ -738,7 +775,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_DCLOCK:
-			print_dclock_section(buffer, secsize);
+			sii->distributedclock = parse_dclock_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
