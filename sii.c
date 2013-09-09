@@ -47,41 +47,47 @@ static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 	return count;
 }
 
-static void print_preamble(const unsigned char *buffer, size_t size)
+static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t size)
 {
+	struct _sii_preamble *preamble = malloc(sizeof(struct _sii_preamble));
 	size_t count = 0;
 
-	printf("Preamble:\n");
 	/* pdi control */
-	int pdi_ctrl = ((int)buffer[1]<<8) | buffer[0];
-	printf("PDI Control: %.4x\n", pdi_ctrl);
+	preamble->pdi_ctrl = ((int)buffer[1]<<8) | buffer[0];
 
 	/* pdi config */
-	int pdi_conf = ((int)buffer[3]<<8) | buffer[2];
-	printf("PDI config: %.4x\n", pdi_conf);
+	preamble->pdi_conf = ((int)buffer[3]<<8) | buffer[2];
 
 	count = 4;
 
-	/* sync impulse len (multiples of 10ns) */
-	int sync_imp = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	/* sync impulse len (multiples of 10ns), stored as nano seconds */
+	preamble->sync_impulse = BYTES_TO_WORD(buffer[count], buffer[count+1]) * 10;
 	count+=2;
-	printf("Sync Impulse length = %d ns (raw: %.4x)\n", sync_imp*10, sync_imp);
 
 	/* PDI config 2 */
-	int pdi_conf2 = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	preamble->pdi_conf2 = BYTES_TO_WORD(buffer[count], buffer[count+1]);
 	count+=2;
-	printf("PDI config 2: %.4x\n", pdi_conf2);
 
 	/* configured station alias */
-	printf("Configured station alias: %.4x\n", BYTES_TO_WORD(buffer[count], buffer[count+1]));
+	preamble->alias = BYTES_TO_WORD(buffer[count], buffer[count+1]);
 	count+=2;
 
 	count+=4; /* next 4 bytes are reserved */
 
 	/* checksum FIXME add checksum test */
-	int checksum = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	preamble->checksum = BYTES_TO_WORD(buffer[count], buffer[count+1]);
 	count += 2;
-	printf("Checksum of preamble: %.4x\n", checksum);
+
+	/* DEBUG print out */
+	printf("Preamble:\n");
+	printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
+	printf("PDI config: %.4x\n", preamble->pdi_conf);
+	printf("Sync Impulse length = %d ns (raw: %.4x)\n", preamble->sync_impulse*10, preamble->sync_impulse);
+	printf("PDI config 2: %.4x\n", preamble->pdi_conf2);
+	printf("Configured station alias: %.4x\n", preamble->alias);
+	printf("Checksum of preamble: %.4x\n", preamble->checksum);
+
+	return preamble;
 }
 
 #if 0 /* defined in sii.h */
@@ -485,7 +491,7 @@ static int parse_and_print_content(const unsigned char *eeprom, size_t maxsize)
 			break;
 
 		case SII_PREAMBLE:
-			print_preamble(buffer, 16);
+			sii->preamble = parse_preamble(buffer, 16);
 			buffer = eeprom+16;
 			secstart = buffer;
 			section = SII_STD_CONFIG;
