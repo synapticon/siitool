@@ -7,7 +7,7 @@ WARNINGS = -Wall -pedantic
 CFLAGS = -g $(WARNINGS) -O2 -std=gnu99
 LDFLAGS = -g  $(WARNINGS)
 
-TARGET = siicode
+TARGET = siitoolbox
 OBJECTS = main.o sii.o
 
 PREFIX = /usr/local/bin
