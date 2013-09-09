@@ -179,7 +179,7 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	return stdc;
 }
 
-static void print_stringsection(const unsigned char *buffer, size_t secsize)
+static char **parse_stringsection(const unsigned char *buffer, size_t secsize)
 {
 	const unsigned char *pos = buffer;
 	unsigned index = 0;
@@ -205,6 +205,8 @@ static void print_stringsection(const unsigned char *buffer, size_t secsize)
 	}
 
 	strings[index] = NULL;
+
+	return strings;
 }
 
 static void print_datatype_section(const unsigned char *buffer, size_t secsize)
@@ -529,7 +531,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_STRINGS:
-			print_stringsection(buffer, secsize);
+			sii->strings = parse_stringsection(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
