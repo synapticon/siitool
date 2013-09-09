@@ -173,7 +173,7 @@ typedef struct _sii_info {
 	struct _sii_dclock distributedclock;
 } SiiInfo;
 
-SiiInfo *sii_init(const unsigned char *eeprom, size_t size);
+SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size);
 SiiInfo *sii_init_file(const char *filename);
 void sii_release(SiiInfo *sii);
 

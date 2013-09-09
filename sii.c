@@ -637,7 +637,7 @@ finish:
 /* API functions */
 /*****************/
 
-SiiInfo *sii_init(const unsigned char *eeprom, size_t size)
+SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size)
 {
 	SiiInfo *sii = malloc(sizeof(SiiInfo));
 
