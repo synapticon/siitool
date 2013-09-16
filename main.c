@@ -1,4 +1,4 @@
-/* siicode
+/* siitool
  *
  * Simple program to print the values of the SII EEPROM content. It reads the
  * raw binaries.
@@ -46,7 +46,7 @@
 #include <errno.h>
 
 #define VERSION_MAJOR    0
-#define VERSION_MINNOR   3
+#define VERSION_MINNOR   1
 
 #define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
 #define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \

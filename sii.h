@@ -1,6 +1,6 @@
 /* sii.h
  *
- * 2013-09-04 Frank Jeschke <jeschke@fjes.de>
+ * 2013-09-04 Frank Jeschke <fjeschke@synapticon.com>
  */
 
 #ifndef SII_H

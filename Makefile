@@ -1,4 +1,4 @@
-# project file for siicode
+# project file for siitool
 
 CC = gcc
 LD = gcc
@@ -7,7 +7,7 @@ WARNINGS = -Wall -pedantic
 CFLAGS = -g $(WARNINGS) -O2 -std=gnu99
 LDFLAGS = -g  $(WARNINGS)
 
-TARGET = siitoolbox
+TARGET = siitool
 OBJECTS = main.o sii.o
 
 PREFIX = /usr/local/bin
