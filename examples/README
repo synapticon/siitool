@@ -1,0 +1,28 @@
+Example XML files for use with siitool.
+
+Files:
+Somanet_CtrlProto.xml
+	simple ESI for use with controlproto.
+	Features:
+	- no mailbox
+	- single set of predefined PDOs
+	
+Somanet_CiA402-single.xml
+	simple CiA402 ESI
+	Features:
+	- Mailbox
+	- single set of predefined PDOs
+
+Somanet_CiA402-multi.xml
+	a more complex CiA402 ESI which supports a set of PDOs for various
+	CiA402 modes.
+	Features:
+	- Mailbox
+	- multiple PDOs
+
+The original example from the EtherCAT specification can be found here:
+
+./ModulesSlots_DS402_Simple:
+ETG2001_ModulesSlots_CiA402.xml
+EtherCATBase.xsd
+EtherCATInfo.xsd
