@@ -3,7 +3,7 @@
 CC = gcc
 LD = gcc
 
-WARNINGS = -Wall -pedantic
+WARNINGS = -Wall -Wextra
 CFLAGS = -g $(WARNINGS) -O2 -std=gnu99
 LDFLAGS = -g  $(WARNINGS)
 
