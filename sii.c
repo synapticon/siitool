@@ -131,7 +131,7 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	stdc->std_snd_mbox_size = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
 
-	stdc->supported_mailbox = BYTES_TO_WORD(*(b+0), *(b+1));
+	stdc->mailbox_protocol.word = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
 
 	b+=66; /* more reserved bytes */
@@ -160,15 +160,15 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	printf("Standard send mailbox size:        %d\n", stdc->std_snd_mbox_size);
 
 	printf("\nSupported Mailboxes: ");
-	if (stdc->supported_mailbox&MBOX_EOE)
+	if (stdc->mailbox_protocol.word&MBOX_EOE)
 		printf("EoE, ");
-	if (stdc->supported_mailbox&MBOX_COE)
+	if (stdc->mailbox_protocol.word&MBOX_COE)
 		printf("CoE, ");
-	if (stdc->supported_mailbox&MBOX_FOE)
+	if (stdc->mailbox_protocol.word&MBOX_FOE)
 		printf("FoE, ");
-	if (stdc->supported_mailbox&MBOX_SOE)
+	if (stdc->mailbox_protocol.word&MBOX_SOE)
 		printf("SoE, ");
-	if (stdc->supported_mailbox&MBOX_VOE)
+	if (stdc->mailbox_protocol.word&MBOX_VOE)
 		printf("VoE, ");
 	printf("\n");
 
@@ -342,7 +342,7 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 	fmmu->list = NULL;
 
 	printf("FMMU Settings:\n");
-	while ((b-buffer)<secsize) {
+	while ((unsigned int)(b-buffer)<secsize) {
 		printf("  FMMU%d: ", fmmunbr++);
 		fmmu_add_entry(fmmu, *b);
 		switch (*b) {
@@ -521,7 +521,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	b++;
 	pdo->syncmanager = *b;
 	b++;
-	pdo->sync = *b;
+	pdo->dcsync = *b;
 	b++;
 	pdo->name_index = *b;
 	b++;
@@ -532,11 +532,11 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	printf("  PDO Index: 0x%04x\n", pdo->index);
 	printf("  Entries: %d\n", pdo->entries);
 	printf("  SyncM: %d\n", pdo->syncmanager);
-	printf("  Synchronization: 0x%02x\n", pdo->sync);
+	printf("  Synchronization: 0x%02x\n", pdo->dcsync);
 	printf("  Name Index: %d\n", pdo->name_index);
 	printf("  Flags for future use: 0x%04x\n", pdo->flags);
 
-	while ((b-buffer)<secsize) {
+	while ((unsigned int)(b-buffer)<secsize) {
 		int index = BYTES_TO_WORD(*b, *(b+1));
 		b+=2;
 		int subindex =  *b;
@@ -602,7 +602,7 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	b++;
 	b+=12; /* skipped reserved */
 
-	dc->cyclic_starttime = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
+	dc->cyclic_op_starttime = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 	dc->sync0_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
@@ -652,7 +652,7 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	printf("  Interrupt 0 Status: %s\n",  dc->int0_status == 0 ? "not active" : "active");
 	printf("  Interrupt 1 Status: %s\n",  dc->int1_status == 0 ? "not active" : "active");
 
-	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_starttime);
+	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_op_starttime);
 	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync0_cycle_time);
 	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync1_cycle_time);
 
@@ -687,13 +687,23 @@ static void print_offsets(const unsigned char *start, const unsigned char *curre
 	printf("\n[Offset: 0x%0x (%d)] ", current-start, current-start);
 }
 
-static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, size_t maxsize)
+static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t maxsize)
 {
 	enum eSection section = SII_PREAMBLE;
 	//size_t count = 0;
 	size_t secsize = 0;
 	const unsigned char *buffer = eeprom;
 	const unsigned char *secstart = eeprom;
+
+	struct _sii_preamble *preamble;
+	struct _sii_stdconfig *stdconfig;
+	char **strings;
+	struct _sii_general *general;
+	struct _sii_fmmu *fmmu;
+	struct _sii_syncm *syncmanager;
+	struct _sii_pdo *txpdo;
+	struct _sii_pdo *rxpdo;
+	struct _sii_dclock *distributedclock;
 
 	while (1) {
 		print_offsets(eeprom, secstart);
@@ -702,7 +712,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_PREAMBLE:
-			sii->preamble = parse_preamble(buffer, 16);
+			preamble = parse_preamble(buffer, 16);
 			buffer = eeprom+16;
 			secstart = buffer;
 			section = SII_STD_CONFIG;
@@ -710,7 +720,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 
 		case SII_STD_CONFIG:
 			printf("Print std config:\n");
-			sii->stdconfig = parse_stdconfig(buffer, 46+66);
+			stdconfig = parse_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -718,7 +728,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_STRINGS:
-			sii->strings = parse_stringsection(buffer, secsize);
+			strings = parse_stringsection(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -734,7 +744,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_GENERAL:
-			sii->general = parse_general_section(buffer, secsize);
+			general = parse_general_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -742,7 +752,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_FMMU:
-			sii->fmmu = parse_fmmu_section(buffer, secsize);
+			fmmu = parse_fmmu_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -750,7 +760,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_SYNCM:
-			sii->syncmanager = parse_syncm_section(buffer, secsize);
+			syncmanager = parse_syncm_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -758,7 +768,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_TXPDO:
-			sii->txpdo = parse_pdo_section(buffer, secsize, TxPDO);
+			txpdo = parse_pdo_section(buffer, secsize, TxPDO);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -766,7 +776,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_RXPDO:
-			sii->rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
+			rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -774,7 +784,7 @@ static int parse_content(struct _sii_info *sii, const unsigned char *eeprom, siz
 			break;
 
 		case SII_CAT_DCLOCK:
-			sii->distributedclock = parse_dclock_section(buffer, secsize);
+			distributedclock = parse_dclock_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -831,14 +841,15 @@ SiiInfo *sii_init_file(const char *filename)
 
 void sii_release(SiiInfo *sii)
 {
-	free(sii->preamble);
-	free(sii->stdconfig);
-	free(sii->strings);
-	free(sii->general);
-	free(sii->fmmu); /* FIXME clean up all sub elements */
-	free(sii->txpdo); /* FIXME clean up all sub elements */
-	free(sii->rxpdo); /* FIXME clean up all sub elements */
-	free(sii->distributedclock);
+	/* FIXME free the data structure correctly */
+	//free(sii->preamble);
+	//free(sii->stdconfig);
+	//free(sii->strings);
+	//free(sii->general);
+	//free(sii->fmmu); /* FIXME clean up all sub elements */
+	//free(sii->txpdo); /* FIXME clean up all sub elements */
+	//free(sii->rxpdo); /* FIXME clean up all sub elements */
+	//free(sii->distributedclock);
 	free(sii);
 }
 
