@@ -965,15 +965,10 @@ SiiInfo *sii_init_file(const char *filename)
 
 void sii_release(SiiInfo *sii)
 {
-	/* FIXME free the data structure correctly */
-	//free(sii->preamble);
-	//free(sii->stdconfig);
-	//free(sii->strings);
-	//free(sii->general);
-	//free(sii->fmmu); /* FIXME clean up all sub elements */
-	//free(sii->txpdo); /* FIXME clean up all sub elements */
-	//free(sii->rxpdo); /* FIXME clean up all sub elements */
-	//free(sii->distributedclock);
+	while (cat_rm(sii) != 1)
+		;
+
+	free(sii->rawbytes);
 	free(sii);
 }
 
