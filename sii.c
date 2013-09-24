@@ -109,6 +109,9 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 	printf("Configured station alias: %.4x\n", preamble->alias);
 	printf("Checksum of preamble: %.4x\n", preamble->checksum);
 
+	if (size != count)
+		printf("Warning counter differs from size\n");
+
 	return preamble;
 }
 
@@ -122,7 +125,7 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 
 static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_t size)
 {
-	//size_t count =0;
+	size_t count =0;
 	const unsigned char *b = buffer;
 	struct _sii_stdconfig *stdc = malloc(sizeof(struct _sii_stdconfig));
 	stdc->vendor_id = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
@@ -162,6 +165,7 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	b+=2;
 	stdc->version =  BYTES_TO_WORD(*(b+0), *(b+1));
 
+#if 1
 	/* DEBUG print */
 	printf("General Information:\n");
 	printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
@@ -197,11 +201,15 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
 	printf("Version: %d\n", stdc->version);
 	printf("\n");
+#endif
+	count = b-buffer;
+	if (size != count)
+		printf("Warning counter differs from size\n");
 
 	return stdc;
 }
 
-static char **parse_stringsection(const unsigned char *buffer, size_t secsize)
+static char **parse_stringsection(const unsigned char *buffer, size_t size)
 {
 	const unsigned char *pos = buffer;
 	unsigned index = 0;
@@ -228,12 +236,16 @@ static char **parse_stringsection(const unsigned char *buffer, size_t secsize)
 
 	strings[index] = NULL;
 
+	if (size != strcount)
+		printf("Warning counter differs from size\n");
+
 	return strings;
 }
 
-static void print_datatype_section(const unsigned char *buffer, size_t secsize)
+static void print_datatype_section(const unsigned char *buffer, size_t size)
 {
-	printf("\n+++ datatypes section not yet implemented\n");
+	printf("\n+++ datatypes section not yet implemented (first byte: 0x%.2x, size: %d)\n",
+			*buffer, size);
 }
 
 static char *physport_type(uint8_t b)
@@ -252,7 +264,7 @@ static char *physport_type(uint8_t b)
 	return NULL;
 }
 
-static struct _sii_general *parse_general_section(const unsigned char *buffer, size_t secsize)
+static struct _sii_general *parse_general_section(const unsigned char *buffer, size_t size)
 {
 	const unsigned char *b = buffer;
 	struct _sii_general *siig = malloc(sizeof(struct _sii_general));
@@ -296,7 +308,7 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	siig->phys_port_3 = (*b>>4)&0x7;
 	b+=14;
 
-
+#if 0
 	/* DEBUG printout */
 	printf("General:\n");
 
@@ -327,6 +339,10 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	printf("     Port 1: %s\n", physport_type(siig->phys_port_1));
 	printf("     Port 2: %s\n", physport_type(siig->phys_port_2));
 	printf("     Port 3: %s\n", physport_type(siig->phys_port_3));
+#endif
+	size_t count = b-buffer;
+	if (size != count)
+		printf("Warning counter differs from size\n");
 
 	return siig;
 }
@@ -588,7 +604,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	return pdo;
 }
 
-static enum eSection get_next_section(const unsigned char *b, size_t len, size_t *secsize)
+static enum eSection get_next_section(const unsigned char *b, size_t *secsize)
 {
 	enum eSection next = SII_CAT_NOP;
 
@@ -600,7 +616,7 @@ static enum eSection get_next_section(const unsigned char *b, size_t len, size_t
 }
 
 
-static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, size_t secsize)
+static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, size_t size)
 {
 	const unsigned char *b = buffer+1; /* first byte is reserved */
 
@@ -664,6 +680,7 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	b+=4;
 	b+=4;
 
+#if 0
 	/* DEBUG printout */
 	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
 	printf("  SYNC0 activate: %s\n", dc->sync0_active == 0 ? "no" : "yes");
@@ -695,6 +712,10 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch0_neg_edge_value);
 	printf("  Latch1PosEdgeValue: 0x%08x\n", dc->latch1_pos_edge_value);
 	printf("  Latch1NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
+#endif
+	size_t count = b-buffer;
+	if (size != count)
+		printf("Warning counter differs from size\n");
 
 	return dc;
 }
@@ -719,8 +740,8 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 	struct _sii_cat *newcat;
 
-	struct _sii_preamble *preamble;
-	struct _sii_stdconfig *stdconfig;
+	//struct _sii_preamble *preamble;
+	//struct _sii_stdconfig *stdconfig;
 	char **strings;
 	struct _sii_general *general;
 	struct _sii_fmmu *fmmu;
@@ -747,7 +768,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			sii->config = parse_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer += 4;
 			break;
 
@@ -759,7 +780,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -767,7 +788,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			print_datatype_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -779,7 +800,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -791,7 +812,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -803,7 +824,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -815,7 +836,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -827,7 +848,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -839,7 +860,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 			buffer+=secsize;
 			secstart = buffer;
-			section = get_next_section(buffer, 4, &secsize);
+			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
 
@@ -849,7 +870,10 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 		}
 	}
 
+	if ((size_t)(buffer-eeprom) > maxsize)
+		printf("Warning, read more bytes than are available\n");
 finish:
+
 	return 0;
 }
 
