@@ -978,6 +978,18 @@ int sii_generate(SiiInfo *sii, const char *outfile)
 	return -1;
 }
 
+void sii_print(SiiInfo *sii)
+{
+	printf("First print preamble and config\n");
+
+	cat_rewind(sii);
+	struct _sii_cat *cats = cat_next(sii);
+	while (cats != NULL) {
+		cat_print(cats);
+		cats = cat_next(sii);
+	}
+}
+
 int sii_check(SiiInfo *sii)
 {
 	fprintf(stderr, "Not yet implemented\n");

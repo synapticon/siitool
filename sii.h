@@ -270,6 +270,8 @@ void sii_release(SiiInfo *sii);
  */
 int sii_generate(SiiInfo *sii, const char *outfile);
 
+void sii_print(SiiInfo *sii);
+
 /**
  * \brief Sanity check of current config
  */
