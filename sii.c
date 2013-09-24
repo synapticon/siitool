@@ -934,6 +934,18 @@ static void cat_print(struct _sii_cat *cats)
 /* API functions */
 /*****************/
 
+SiiInfo *sii_init(void)
+{
+	SiiInfo *sii = malloc(sizeof(SiiInfo));
+
+	sii->cat_head = NULL;
+	sii->cat_current = NULL;
+	sii->rawbytes = NULL;
+	sii->rawvalid = 0;
+
+	return sii;
+}
+
 SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size)
 {
 	SiiInfo *sii = malloc(sizeof(SiiInfo));
