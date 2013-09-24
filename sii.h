@@ -30,7 +30,7 @@ enum eSection {
 	,SII_CAT_TXPDO = 50
 	,SII_CAT_RXPDO = 51
 	,SII_CAT_DCLOCK = 60/* future use */
-	,SII_END = 0xff
+	,SII_END = 0xffff
 };
 
 struct _sii_preamble {
