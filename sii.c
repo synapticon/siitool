@@ -218,9 +218,9 @@ static char **parse_stringsection(const unsigned char *buffer, size_t size)
 	size_t len = 0;
 	memset(str, '\0', 1024);
 
-	printf("String section:\n");
+	//printf("String section:\n");
 	strcount = *pos++;
-	printf("Number of Strings: %d\n", strcount+1);
+	//printf("Number of Strings: %d\n", strcount+1);
 
 	strings = (char **)malloc((strcount+1) * sizeof(char *));
 
@@ -228,7 +228,7 @@ static char **parse_stringsection(const unsigned char *buffer, size_t size)
 		len = *pos++;
 		memmove(str, pos, len);
 		pos += len;
-		printf("Index: %d, length: %u = '%s'\n", index, len, str);
+		//printf("Index: %d, length: %u = '%s'\n", index, len, str);
 		strings[index] = malloc(len+1);
 		memmove(strings[index], str, len+1);
 		memset(str, '\0', 1024);
@@ -994,7 +994,16 @@ static void cat_print(struct _sii_cat *cat)
 
 static void cat_print_strings(struct _sii_cat *cat)
 {
-	printf("printing categorie strings - not yet implemented\n");
+	printf("printing categorie strings (0x%x size: %d)\n",
+			cat->type, cat->size);
+
+	char **strings = (char **)cat->data;
+
+	int i=0;
+	while (strings[i] != NULL) {
+		printf("%i: %s\n", i, strings[i]);
+		i++;
+	}
 }
 
 static void cat_print_datatypes(struct _sii_cat *cat)
@@ -1218,7 +1227,7 @@ void sii_print(SiiInfo *sii)
 
 	/* now print the categories */
 	cat_rewind(sii);
-	struct _sii_cat *cats = cat_next(sii);
+	struct _sii_cat *cats = sii->cat_current;
 
 	while (cats != NULL) {
 		cat_print(cats);
