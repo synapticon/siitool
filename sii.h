@@ -239,8 +239,8 @@ struct _sii_cat {
 };
 
 struct _sii {
-	struct _sii_preamble preamble;
-	struct _sii_stdconfig config;
+	struct _sii_preamble *preamble;
+	struct _sii_stdconfig *config;
 	struct _sii_cat *cat_head;
 	struct _sii_cat *cat_current;
 	/* meta information */

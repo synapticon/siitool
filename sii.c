@@ -728,7 +728,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_PREAMBLE:
-			preamble = parse_preamble(buffer, 16);
+			sii->preamble = parse_preamble(buffer, 16);
 			buffer = eeprom+16;
 			secstart = buffer;
 			section = SII_STD_CONFIG;
@@ -736,7 +736,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_STD_CONFIG:
 			printf("Print std config:\n");
-			stdconfig = parse_stdconfig(buffer, 46+66);
+			sii->config = parse_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
