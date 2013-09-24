@@ -44,6 +44,14 @@ static int cat_rm(SiiInfo *sii);
 static struct _sii_cat * cat_next(SiiInfo *sii);
 static void cat_rewind(SiiInfo *sii);
 static void cat_print(struct _sii_cat *cats);
+static void cat_print_strings(struct _sii_cat *cat);
+static void cat_print_datatypes(struct _sii_cat *cat);
+static void cat_print_general(struct _sii_cat *cat);
+static void cat_print_fmmu(struct _sii_cat *cat);
+static void cat_print_syncm(struct _sii_cat *cat);
+static void cat_print_rxpdo(struct _sii_cat *cat);
+static void cat_print_txpdo(struct _sii_cat *cat);
+static void cat_print_dc(struct _sii_cat *cat);
 
 static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 {
@@ -925,10 +933,144 @@ static void cat_rewind(SiiInfo *sii)
 	sii->cat_current = sii->cat_head;
 }
 
-static void cat_print(struct _sii_cat *cats)
+static void cat_print(struct _sii_cat *cat)
 {
-	printf("Print categorie: 0x%x\n", cats->type);
+	/* preamble and std config should printed here */
+	printf("Print categorie: 0x%x\n", cat->type);
+	switch (cat->type) {
+	case SII_CAT_STRINGS:
+		cat_print_strings(cat);
+		break;
+	case SII_CAT_DATATYPES:
+		cat_print_datatypes(cat);
+		break;
+	case SII_CAT_GENERAL:
+		cat_print_general(cat);
+		break;
+	case SII_CAT_FMMU:
+		cat_print_fmmu(cat);
+		break;
+	case SII_CAT_SYNCM:
+		cat_print_syncm(cat);
+		break;
+	case SII_CAT_TXPDO:
+		cat_print_txpdo(cat);
+		break;
+	case SII_CAT_RXPDO:
+		cat_print_rxpdo(cat);
+		break;
+	case SII_CAT_DCLOCK:
+		cat_print_dc(cat);
+		break;
+	default:
+		printf("Warning no valid categorie\n");
+		break;
+	}
 }
+
+static void cat_print_strings(struct _sii_cat *cat)
+{
+	printf("printing categorie strings - not yet implemented\n");
+}
+
+static void cat_print_datatypes(struct _sii_cat *cat)
+{
+	printf("printing categorie datatypes - not yet implemented\n");
+}
+
+static void cat_print_general(struct _sii_cat *cat)
+{
+	printf("Printing Categorie General 0x%x (byte size: %d)\n", cat->type, cat->size);
+	struct _sii_general *gen = (struct _sii_general *)cat->data;
+
+	//printf("General:\n");
+
+	printf("  Group Index: %d (Vendor Specific, index of Strings): %s\n", gen->groupindex, "tba");
+	printf("  Image Index: %d (Vendor Specific, index to Strings): %s\n", gen->imageindex, "tba");
+	printf("  Order Index: %d (Vendor Specific, index to Strings): %s\n", gen->orderindex, "tba");
+	printf("  Name  Index: %d (Vendor Specific, index to Strings): %s\n", gen->nameindex, "tba");
+
+	printf("  CoE Details:\n");
+	printf("    Enable SDO: .................. %s\n", gen->coe_enable_sdo == 0 ? "no" : "yes");
+	printf("    Enable SDO Info: ............. %s\n", gen->coe_enable_sdo_info == 0 ? "no" : "yes");
+	printf("    Enable PDO Assign: ........... %s\n", gen->coe_enable_pdo_assign == 0 ? "no" : "yes");
+	printf("    Enable PDO Configuration: .... %s\n", gen->coe_enable_pdo_conf == 0 ? "no" : "yes");
+	printf("    Enable Upload at Startup: .... %s\n", gen->coe_enable_upload_start == 0 ? "no" : "yes");
+	printf("    Enable SDO complete access: .. %s\n", gen->coe_enable_sdo_complete == 0 ? "no" : "yes");
+
+	printf("  FoE Details: %s\n", gen->foe_enabled == 0 ? "not enabled" : "enabled");
+	printf("  EoE Details: %s\n", gen->eoe_enabled == 0 ? "not enabled" : "enabled");
+
+
+	printf("  Flag SafeOp: %s\n", gen->flag_safe_op == 0 ? "not enabled" : "enabled");
+	printf("  Flag notLRW: %s\n", gen->flag_notLRW == 0 ? "not enabled" : "enabled");
+
+	printf("  CurrentOnEBus: %d mA\n", gen->current_ebus);
+
+	printf("  Physical Ports:\n");
+	printf("     Port 0: %s\n", physport_type(gen->phys_port_0));
+	printf("     Port 1: %s\n", physport_type(gen->phys_port_1));
+	printf("     Port 2: %s\n", physport_type(gen->phys_port_2));
+	printf("     Port 3: %s\n", physport_type(gen->phys_port_3));
+}
+
+static void cat_print_fmmu(struct _sii_cat *cat)
+{
+	printf("printing categorie fmmu - not yet implemented\n");
+}
+
+static void cat_print_syncm(struct _sii_cat *cat)
+{
+	printf("printing categorie syncm - not yet implemented\n");
+}
+
+static void cat_print_rxpdo(struct _sii_cat *cat)
+{
+	printf("printing categorie rxpdo - not yet implemented\n");
+}
+
+static void cat_print_txpdo(struct _sii_cat *cat)
+{
+	printf("printing categorie txpdo - not yet implemented\n");
+}
+
+static void cat_print_dc(struct _sii_cat *cat)
+{
+	printf("printing categorie distributed clock (dc) - not yet implemented\n");
+	struct _sii_dclock *dc = (struct _sii_dclock *)cat->data;
+
+	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
+	printf("  SYNC0 activate: %s\n", dc->sync0_active == 0 ? "no" : "yes");
+	printf("  SYNC1 activate: %s\n", dc->sync1_active == 0 ? "no" : "yes");
+
+	printf("  SYNC Pulse: %d (ns?)\n", dc->sync_pulse);
+
+	printf("  Interrupt 0 Status: %s\n",  dc->int0_status == 0 ? "not active" : "active");
+	printf("  Interrupt 1 Status: %s\n",  dc->int1_status == 0 ? "not active" : "active");
+
+	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_op_starttime);
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync0_cycle_time);
+	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync1_cycle_time);
+
+	printf("\nLatch Description\n");
+	printf("  Latch 0 PosEdge: %s\n", dc->latch0_pos_edge == 0 ? "continous" : "single");
+	printf("  Latch 0 NegEdge: %s\n", dc->latch0_neg_edge == 0 ? "continous" : "single");
+
+	printf("  Latch 1 PosEdge: %s\n", dc->latch1_pos_edge == 0 ? "continous" : "single");
+	printf("  Latch 1 NegEdge: %s\n", dc->latch1_neg_edge == 0 ? "continous" : "single");
+
+	printf("  Latch 0 PosEvnt: %s\n", dc->latch0_pos_event == 0 ? "no Event" : "Event stored");
+	printf("  Latch 0 NegEvnt: %s\n", dc->latch0_neg_event == 0 ? "no Event" : "Event stored");
+
+	printf("  Latch 1 PosEvnt: %s\n", dc->latch1_pos_event == 0 ? "no Event" : "Event stored");
+	printf("  Latch 1 NegEvnt: %s\n", dc->latch1_neg_event == 0 ? "no Event" : "Event stored");
+
+	printf("  Latch0PosEdgeValue: 0x%08x\n", dc->latch0_pos_edge_value);
+	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch0_neg_edge_value);
+	printf("  Latch1PosEdgeValue: 0x%08x\n", dc->latch1_pos_edge_value);
+	printf("  Latch1NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
+}
+
 
 /*****************/
 /* API functions */
@@ -992,15 +1134,68 @@ void sii_release(SiiInfo *sii)
 int sii_generate(SiiInfo *sii, const char *outfile)
 {
 	fprintf(stderr, "Not yet implemented\n");
+	uint8_t *out = (uint8_t*) malloc(sii->config->eeprom_size);
+	size_t outsize = 0;
+
 	return -1;
 }
 
 void sii_print(SiiInfo *sii)
 {
 	printf("First print preamble and config\n");
+	struct _sii_preamble *preamble = sii->preamble;
 
+	/* DEBUG print out */
+	printf("Preamble:\n");
+	printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
+	printf("PDI config: %.4x\n", preamble->pdi_conf);
+	printf("Sync Impulse length = %d ns (raw: %.4x)\n", preamble->sync_impulse*10, preamble->sync_impulse);
+	printf("PDI config 2: %.4x\n", preamble->pdi_conf2);
+	printf("Configured station alias: %.4x\n", preamble->alias);
+	printf("Checksum of preamble: %.4x\n", preamble->checksum);
+
+	struct _sii_stdconfig *stdc = sii->config;
+
+	/* DEBUG print */
+	printf("General Information:\n");
+	printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
+	printf("Product ID: ...... 0x%08x\n", stdc->product_id);
+	printf("Revision ID: ..... 0x%08x\n", stdc->revision_id);
+	printf("Serial Number: ... 0x%08x\n", stdc->serial);
+
+	/* mailbox settings */
+	printf("\nDefault mailbox settings:\n");
+	printf("Bootstrap received mailbox offset: 0x%04x\n", stdc->bs_rec_mbox_offset);
+	printf("Bootstrap received mailbox size:   %d\n", stdc->bs_rec_mbox_size);
+	printf("Bootstrap send mailbox offset:     0x%04x\n", stdc->bs_snd_mbox_offset);
+	printf("Bootstrap send mailbox size:       %d\n", stdc->bs_snd_mbox_size);
+
+	printf("Standard received mailbox offset:  0x%04x\n", stdc->std_rec_mbox_offset);
+	printf("Standard received mailbox size:    %d\n", stdc->std_rec_mbox_size);
+	printf("Standard send mailbox offset:      0x%04x\n", stdc->std_snd_mbox_offset);
+	printf("Standard send mailbox size:        %d\n", stdc->std_snd_mbox_size);
+
+	printf("\nSupported Mailboxes: ");
+	if (stdc->mailbox_protocol.word&MBOX_EOE)
+		printf("EoE, ");
+	if (stdc->mailbox_protocol.word&MBOX_COE)
+		printf("CoE, ");
+	if (stdc->mailbox_protocol.word&MBOX_FOE)
+		printf("FoE, ");
+	if (stdc->mailbox_protocol.word&MBOX_SOE)
+		printf("SoE, ");
+	if (stdc->mailbox_protocol.word&MBOX_VOE)
+		printf("VoE, ");
+	printf("\n");
+
+	printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
+	printf("Version: %d\n", stdc->version);
+	printf("\n");
+
+	/* now print the categories */
 	cat_rewind(sii);
 	struct _sii_cat *cats = cat_next(sii);
+
 	while (cats != NULL) {
 		cat_print(cats);
 		cats = cat_next(sii);
