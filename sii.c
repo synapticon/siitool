@@ -100,6 +100,7 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 	preamble->checksum = BYTES_TO_WORD(buffer[count], buffer[count+1]);
 	count += 2;
 
+#if 0
 	/* DEBUG print out */
 	printf("Preamble:\n");
 	printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
@@ -108,9 +109,9 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 	printf("PDI config 2: %.4x\n", preamble->pdi_conf2);
 	printf("Configured station alias: %.4x\n", preamble->alias);
 	printf("Checksum of preamble: %.4x\n", preamble->checksum);
-
+#endif
 	if (size != count)
-		printf("Warning counter differs from size\n");
+		printf("%s: Warning counter differs from size\n", __func__);
 
 	return preamble;
 }
@@ -165,7 +166,7 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	b+=2;
 	stdc->version =  BYTES_TO_WORD(*(b+0), *(b+1));
 
-#if 1
+#if 0
 	/* DEBUG print */
 	printf("General Information:\n");
 	printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
@@ -622,7 +623,7 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 
 	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
 
-	printf("DC Sync Parameter\n");
+	//printf("DC Sync Parameter\n");
 
 	dc->cyclic_op_enabled = (*b & 0x01) == 0 ? 0 : 1;
 	dc->sync0_active = (*b & 0x02) == 0 ? 0 : 1;
