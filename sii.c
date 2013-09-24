@@ -50,8 +50,13 @@ static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 	size_t count = 0;
 	int input;
 
-	while ((input=fgetc(f)) != EOF)
+	while ((input=fgetc(f)) != EOF) {
+		if (count >= size) {
+			fprintf(stderr, "Error, buffer too small\n");
+			return -1;
+		}
 		buffer[count++] = (unsigned char)(input&0xff);
+	}
 
 	return count;
 }
