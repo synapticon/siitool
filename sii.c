@@ -36,6 +36,15 @@ enum eSection {
 static char **strings; /* all strings */
 static int g_print_offsets = 0;
 
+/* category functions */
+static struct _sii_cat *cat_new(uint16_t type, uint16_t size);
+static void cat_data_cleanup(void *data, uint16_t type);
+static int cat_add(SiiInfo *sii, struct _sii_cat *new);
+static int cat_rm(SiiInfo *sii);
+static struct _sii_cat * cat_next(SiiInfo *sii);
+static void cat_rewind(SiiInfo *sii);
+static void cat_print(struct _sii_cat *cats);
+
 static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 {
 	size_t count = 0;
@@ -695,6 +704,8 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 	const unsigned char *buffer = eeprom;
 	const unsigned char *secstart = eeprom;
 
+	struct _sii_cat *newcat;
+
 	struct _sii_preamble *preamble;
 	struct _sii_stdconfig *stdconfig;
 	char **strings;
@@ -728,7 +739,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_STRINGS:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			strings = parse_stringsection(buffer, secsize);
+			newcat->data = (void *)strings;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -744,7 +759,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_GENERAL:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			general = parse_general_section(buffer, secsize);
+			newcat->data = (void *)general;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -752,7 +771,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_FMMU:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			fmmu = parse_fmmu_section(buffer, secsize);
+			newcat->data = (void *)fmmu;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -760,7 +783,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_SYNCM:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			syncmanager = parse_syncm_section(buffer, secsize);
+			newcat->data = (void *)syncmanager;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -768,7 +795,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_TXPDO:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			txpdo = parse_pdo_section(buffer, secsize, TxPDO);
+			newcat->data = (void *)txpdo;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -776,7 +807,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_RXPDO:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
+			newcat->data = (void *)rxpdo;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -784,7 +819,11 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_DCLOCK:
+			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
 			distributedclock = parse_dclock_section(buffer, secsize);
+			newcat->data = (void *)distributedclock;
+			cat_add(sii, newcat);
+
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, 4, &secsize);
@@ -799,6 +838,91 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 finish:
 	return 0;
+}
+
+/*** categroy list handling ***/
+
+static void cat_data_cleanup(void *data, uint16_t type)
+{
+	/* clean up type specific data */
+	free(data); /* FIXME IMO this is not enough since some cats are complex */
+}
+
+static struct _sii_cat *cat_new(uint16_t type, uint16_t size)
+{
+	struct _sii_cat *new = malloc(sizeof(struct _sii_cat));
+
+	new->type   = type&0x7fff;
+	new->vendor = (type>>16)&0x1;
+	new->size   = size;
+	new->data   = NULL;
+	new->next   = NULL;
+	new->prev   = NULL;
+
+	return new;
+}
+
+/* add new element to the end of the list */
+static int cat_add(SiiInfo *sii, struct _sii_cat *new)
+{
+	struct _sii_cat *curr = sii->cat_head;
+
+	if (curr == NULL) {
+		sii->cat_head = new;
+		new->prev = NULL;
+		new->next = NULL;
+		return 0;
+	}
+
+	while (curr->next != NULL)
+		curr = curr->next;
+
+	curr->next = new;
+	new->prev = curr;
+
+	return 0;
+}
+
+/* removes the last category element */
+static int cat_rm(SiiInfo *sii)
+{
+	struct _sii_cat *curr = sii->cat_head;
+
+	if (curr == NULL)
+		return 1;
+
+	while (curr->next != NULL)
+		curr = curr->next;
+
+	if (curr->prev != NULL) {
+		curr->prev->next = NULL;
+		curr->prev = NULL;
+	}
+
+	//cat_data_cleanup(curr->data, curr->type);
+	curr->data = NULL; /* FIXME lost pointer */
+	if (curr == sii->cat_head)
+		sii->cat_head = NULL;
+
+	free(curr);
+
+	return 0;
+}
+
+static struct _sii_cat * cat_next(SiiInfo *sii)
+{
+	sii->cat_current = sii->cat_current->next;
+	return sii->cat_current;
+}
+
+static void cat_rewind(SiiInfo *sii)
+{
+	sii->cat_current = sii->cat_head;
+}
+
+static void cat_print(struct _sii_cat *cats)
+{
+	printf("Print categorie: 0x%x\n", cats->type);
 }
 
 /*****************/

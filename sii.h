@@ -235,13 +235,14 @@ struct _sii_cat {
 	uint16_t size;
 	void *data;
 	struct _sii_cat *next;
+	struct _sii_cat *prev;
 };
 
 struct _sii {
 	struct _sii_preamble preamble;
 	struct _sii_stdconfig config;
-	struct _sii_cat *head;
-	struct _sii_cat *current;
+	struct _sii_cat *cat_head;
+	struct _sii_cat *cat_current;
 	/* meta information */
 	uint8_t *rawbytes;
 	int rawvalid;
