@@ -43,6 +43,7 @@ static int cat_add(SiiInfo *sii, struct _sii_cat *new);
 static int cat_rm(SiiInfo *sii);
 static struct _sii_cat * cat_next(SiiInfo *sii);
 static void cat_rewind(SiiInfo *sii);
+
 static void cat_print(struct _sii_cat *cats);
 static void cat_print_strings(struct _sii_cat *cat);
 static void cat_print_datatypes(struct _sii_cat *cat);

@@ -20,7 +20,7 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-.PHONY: clean install
+.PHONY: clean install lint
 
 install:
 	install $(TARGET) $(PREFIX)
@@ -28,3 +28,5 @@ install:
 clean:
 	rm -f $(TARGET) $(OBJECTS)
 
+lint:
+	splint -weak +posixlib -skipposixheaders -skipisoheaders +trytorecover  main.c
