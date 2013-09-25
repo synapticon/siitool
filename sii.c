@@ -244,9 +244,9 @@ static char **parse_stringsection(const unsigned char *buffer, size_t size)
 	return strings;
 }
 
-static void print_datatype_section(const unsigned char *buffer, size_t size)
+static void parse_datatype_section(const unsigned char *buffer, size_t size)
 {
-	printf("\n+++ datatypes section not yet implemented (first byte: 0x%.2x, size: %d)\n",
+	printf("\n+++ parsing of datatype section not yet implemented (first byte: 0x%.2x, size: %d)\n",
 			*buffer, size);
 }
 
@@ -788,7 +788,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_CAT_DATATYPES:
-			print_datatype_section(buffer, secsize);
+			parse_datatype_section(buffer, secsize);
 			buffer+=secsize;
 			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
