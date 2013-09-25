@@ -778,6 +778,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			strings = parse_stringsection(buffer, secsize);
 			newcat->data = (void *)strings;
 			cat_add(sii, newcat);
+			printf("DEBUG Added string section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -798,6 +799,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			general = parse_general_section(buffer, secsize);
 			newcat->data = (void *)general;
 			cat_add(sii, newcat);
+			printf("DEBUG Added general section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -810,6 +812,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			fmmu = parse_fmmu_section(buffer, secsize);
 			newcat->data = (void *)fmmu;
 			cat_add(sii, newcat);
+			printf("DEBUG Added fmmu section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -822,6 +825,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			syncmanager = parse_syncm_section(buffer, secsize);
 			newcat->data = (void *)syncmanager;
 			cat_add(sii, newcat);
+			printf("DEBUG Added syncm section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -834,6 +838,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			txpdo = parse_pdo_section(buffer, secsize, TxPDO);
 			newcat->data = (void *)txpdo;
 			cat_add(sii, newcat);
+			printf("DEBUG Added txpdo section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -846,6 +851,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
 			newcat->data = (void *)rxpdo;
 			cat_add(sii, newcat);
+			printf("DEBUG Added rxpdo section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -858,6 +864,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			distributedclock = parse_dclock_section(buffer, secsize);
 			newcat->data = (void *)distributedclock;
 			cat_add(sii, newcat);
+			printf("DEBUG Added dclock section\n");
 
 			buffer+=secsize;
 			secstart = buffer;
