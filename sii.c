@@ -883,6 +883,21 @@ finish:
 static void cat_data_cleanup(void *data, uint16_t type)
 {
 	/* clean up type specific data */
+	switch (type) {
+	case SII_PREAMBLE:
+	case SII_STD_CONFIG:
+	case SII_CAT_STRINGS:
+	case SII_CAT_DATATYPES:
+	case SII_CAT_GENERAL:
+	case SII_CAT_FMMU:
+	case SII_CAT_SYNCM:
+	case SII_CAT_TXPDO:
+	case SII_CAT_RXPDO:
+	case SII_CAT_DCLOCK:
+	default:
+		printf("Warning: category clean up not implemented\n");
+		break;
+	}
 	free(data); /* FIXME IMO this is not enough since some cats are complex */
 }
 
@@ -937,7 +952,7 @@ static int cat_rm(SiiInfo *sii)
 		curr->prev = NULL;
 	}
 
-	//cat_data_cleanup(curr->data, curr->type);
+	cat_data_cleanup(curr->data, curr->type);
 	curr->data = NULL; /* FIXME lost pointer */
 	if (curr == sii->cat_head)
 		sii->cat_head = NULL;
@@ -1009,7 +1024,8 @@ static void cat_print_strings(struct _sii_cat *cat)
 
 static void cat_print_datatypes(struct _sii_cat *cat)
 {
-	printf("printing categorie datatypes - not yet implemented\n");
+	printf("printing categorie datatypes (0x%x size: %d) - not yet implemented\n",
+			cat->type, cat->size);
 }
 
 static void cat_print_general(struct _sii_cat *cat)
@@ -1050,27 +1066,32 @@ static void cat_print_general(struct _sii_cat *cat)
 
 static void cat_print_fmmu(struct _sii_cat *cat)
 {
-	printf("printing categorie fmmu - not yet implemented\n");
+	printf("printing categorie fmmu (0x%x size: %d) - not yet implemented\n",
+			cat->type, cat->size);
 }
 
 static void cat_print_syncm(struct _sii_cat *cat)
 {
-	printf("printing categorie syncm - not yet implemented\n");
+	printf("printing categorie syncm (0x%x size: %d) - not yet implemented\n",
+			cat->type, cat->size);
 }
 
 static void cat_print_rxpdo(struct _sii_cat *cat)
 {
-	printf("printing categorie rxpdo - not yet implemented\n");
+	printf("printing categorie rxpdo (0x%x size: %d) - not yet implemented\n",
+			cat->type, cat->size);
 }
 
 static void cat_print_txpdo(struct _sii_cat *cat)
 {
-	printf("printing categorie txpdo - not yet implemented\n");
+	printf("printing categorie txpdo (0x%x size: %d) - not yet implemented\n",
+			cat->type, cat->size);
 }
 
 static void cat_print_dc(struct _sii_cat *cat)
 {
-	printf("printing categorie distributed clock (dc) - not yet implemented\n");
+	printf("printing categorie distributed clock (dc) (0x%x size: %d)\n",
+			cat->type, cat->size);
 	struct _sii_dclock *dc = (struct _sii_dclock *)cat->data;
 
 	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
@@ -1165,13 +1186,19 @@ void sii_release(SiiInfo *sii)
 	free(sii);
 }
 
-int sii_generate(SiiInfo *sii, const char *outfile)
+size_t sii_generate(SiiInfo *sii, const char *outfile)
 {
 	fprintf(stderr, "Not yet implemented\n");
 	uint8_t *out = (uint8_t*) malloc(sii->config->eeprom_size);
+	memset(out, 0, sii->config->eeprom_size);
 	size_t outsize = 0;
 
-	return -1;
+	sii->rawbytes = out;
+	sii->rawvalid = outsize>0 ? 1 : 0;
+	sii->outfile = malloc(strlen(outfile+1));
+	strncpy(sii->outfile, outfile, strlen(outfile));
+
+	return outsize;
 }
 
 void sii_print(SiiInfo *sii)
@@ -1239,6 +1266,6 @@ void sii_print(SiiInfo *sii)
 int sii_check(SiiInfo *sii)
 {
 	fprintf(stderr, "Not yet implemented\n");
-	return -1;
+	return sii->rawvalid;
 }
 

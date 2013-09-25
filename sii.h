@@ -59,7 +59,7 @@ struct _sii_stdconfig {
 	uint16_t std_rec_mbox_size;
 	uint16_t std_snd_mbox_offset;
 	uint16_t std_snd_mbox_size;
-	//uint16_t mailbox_protocol;  /* bitmask of supported mailbox protocols */
+	/*uint16_t mailbox_protocol;  / * bitmask of supported mailbox protocols */
 	union {
 		uint16_t word;
 		struct {
@@ -244,6 +244,7 @@ struct _sii {
 	struct _sii_cat *cat_head;
 	struct _sii_cat *cat_current;
 	/* meta information */
+	char *outfile;
 	uint8_t *rawbytes;
 	int rawvalid;
 };
@@ -266,9 +267,9 @@ void sii_release(SiiInfo *sii);
  *
  * \param *sii  pointer to sii structure
  * \param outfile  output filename
- * \return 0 success; otherwise failure
+ * \return number of bytes written
  */
-int sii_generate(SiiInfo *sii, const char *outfile);
+size_t sii_generate(SiiInfo *sii, const char *outfile);
 
 void sii_print(SiiInfo *sii);
 
