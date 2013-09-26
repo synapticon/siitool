@@ -89,6 +89,9 @@ static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 	while ((input=fgetc(f)) != EOF)
 		buffer[count++] = (unsigned char)(input&0xff);
 
+	if (count>size)
+		fprintf(stderr, "Error: read size is larger than expected (bytes read: %d)\n", count);
+
 	return count;
 }
 
