@@ -143,6 +143,11 @@ struct _sii_syncm {
 #define SII_RX_PDO     1
 #define SII_TX_PDO     2
 
+enum ePdoType {
+	RxPDO,
+	TxPDO
+};
+
 struct _pdo_entry {
 	uint16_t index;
 	uint8_t subindex;

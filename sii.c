@@ -519,11 +519,6 @@ static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_
 	return sm;
 }
 
-enum ePdoType {
-	RxPDO,
-	TxPDO
-};
-
 static void pdo_add_entry(struct _sii_pdo *pdo,
 		int index, int subindex, int string_index, int data_type,
 		int bit_length, int flags)
