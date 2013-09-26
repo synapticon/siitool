@@ -52,6 +52,7 @@ static void cat_print_fmmu(struct _sii_cat *cat);
 static void cat_print_syncm(struct _sii_cat *cat);
 static void cat_print_rxpdo(struct _sii_cat *cat);
 static void cat_print_txpdo(struct _sii_cat *cat);
+static void cat_print_pdo(struct _sii_cat *cat);
 static void cat_print_dc(struct _sii_cat *cat);
 
 static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
@@ -542,7 +543,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 {
 	const unsigned char *b = buffer;
 	char *pdostr;
-	int pdonbr=0;
+	//int pdonbr=0;
 	//int entries = 0;
 	int entry = 0;
 
@@ -576,6 +577,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	pdo->flags = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
 
+#if 0
 	printf("%s%d:\n", pdostr, pdonbr);
 	printf("  PDO Index: 0x%04x\n", pdo->index);
 	printf("  Entries: %d\n", pdo->entries);
@@ -583,6 +585,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	printf("  Synchronization: 0x%02x\n", pdo->dcsync);
 	printf("  Name Index: %d\n", pdo->name_index);
 	printf("  Flags for future use: 0x%04x\n", pdo->flags);
+#endif
 
 	while ((unsigned int)(b-buffer)<secsize) {
 		int index = BYTES_TO_WORD(*b, *(b+1));
@@ -600,6 +603,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 
 		pdo_add_entry(pdo, index, subindex, string_index, data_type, bit_length, flags);
 
+#if 0
 		printf("\n    Entry %d:\n", entry);
 		printf("    Entry Index: 0x%04x\n", index);
 		printf("    Subindex: 0x%02x\n", subindex);
@@ -607,7 +611,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", data_type);
 		printf("    Bitlength: %d\n", bit_length);
 		printf("     Flags (for future use): 0x%04x\n", flags);
-
+#endif
 		entry++;
 	}
 
@@ -1138,15 +1142,55 @@ static void cat_print_syncm(struct _sii_cat *cat)
 
 static void cat_print_rxpdo(struct _sii_cat *cat)
 {
-	printf("printing categorie rxpdo (0x%x size: %d) - not yet implemented\n",
-			cat->type, cat->size);
+	cat_print_pdo(cat);
 }
 
 static void cat_print_txpdo(struct _sii_cat *cat)
 {
-	printf("printing categorie txpdo (0x%x size: %d) - not yet implemented\n",
-			cat->type, cat->size);
+	cat_print_pdo(cat);
 }
+
+static void cat_print_pdo(struct _sii_cat *cat)
+{
+	printf("printing categorie rx-/txpdo (0x%x size: %d) - not yet implemented\n",
+			cat->type, cat->size);
+
+	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
+
+	char *pdostr = NULL;
+	switch (pdo->type) {
+	case RxPDO:
+		pdostr = "RxPDO";
+		break;
+	case TxPDO:
+		pdostr = "TxPDO";
+		break;
+	default:
+		pdostr = "undefined";
+		break;
+	}
+	printf("%s:\n", pdostr);
+	printf("  PDO Index: 0x%04x\n", pdo->index);
+	printf("  Entries: %d\n", pdo->entries);
+	printf("  SyncM: %d\n", pdo->syncmanager);
+	printf("  Synchronization: 0x%02x\n", pdo->dcsync);
+	printf("  Name Index: %d\n", pdo->name_index);
+	printf("  Flags for future use: 0x%04x\n", pdo->flags);
+
+	struct _pdo_entry *list = pdo->list;
+	while (list != NULL) {
+		printf("\n    Entry %d:\n", list->count);
+		printf("    Entry Index: 0x%04x\n", list->index);
+		printf("    Subindex: 0x%02x\n", list->subindex);
+		printf("    String Index: %d (%s)\n", list->string_index, "*unavailable*");
+		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", list->data_type);
+		printf("    Bitlength: %d\n", list->bit_length);
+		printf("     Flags (for future use): 0x%04x\n", list->flags);
+
+		list = list->next;
+	}
+}
+
 
 static void cat_print_dc(struct _sii_cat *cat)
 {
