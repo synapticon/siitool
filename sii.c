@@ -374,7 +374,7 @@ static void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 
 static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t secsize)
 {
-	int fmmunbr = 0;
+	//int fmmunbr = 0;
 	//size_t count=0;
 	const unsigned char *b = buffer;
 
@@ -384,8 +384,9 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 
 	printf("FMMU Settings:\n");
 	while ((unsigned int)(b-buffer)<secsize) {
-		printf("  FMMU%d: ", fmmunbr++);
+		//printf("  FMMU%d: ", fmmunbr++);
 		fmmu_add_entry(fmmu, *b);
+		/*
 		switch (*b) {
 		case 0x00:
 		case 0xff:
@@ -404,6 +405,7 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 			printf("WARNING: undefined behavior\n");
 			break;
 		}
+		*/
 		b++;
 	}
 
@@ -1097,8 +1099,37 @@ static void cat_print_general(struct _sii_cat *cat)
 
 static void cat_print_fmmu(struct _sii_cat *cat)
 {
-	printf("printing categorie fmmu (0x%x size: %d) - not yet implemented\n",
+	printf("printing categorie fmmu (0x%x size: %d)\n",
 			cat->type, cat->size);
+
+	struct _sii_fmmu *fmmus = cat->data;
+	printf("Number of FMMUs: %d\n", fmmus->count);
+
+	struct _fmmu_entry *fmmu = fmmus->list;
+
+	while (fmmu != NULL) {
+		printf("  FMMU%d: ", fmmu->id);
+		switch (fmmu->usage) {
+		case 0x00:
+		case 0xff:
+			printf("not used\n");
+			break;
+		case 0x01:
+			printf("used for Outputs\n");
+			break;
+		case 0x02:
+			printf("used for Inputs\n");
+			break;
+		case 0x03:
+			printf("used for SyncM status\n");
+			break;
+		default:
+			printf("WARNING: undefined behavior\n");
+			break;
+		}
+
+		fmmu = fmmu->next;
+	}
 }
 
 static void cat_print_syncm_entries(struct _syncm_entry *sme)
