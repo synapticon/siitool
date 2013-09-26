@@ -139,13 +139,14 @@ struct _sii_syncm {
 	struct _syncm_entry *list;
 };
 
+
 #define SII_UNDEF_PDO  0
 #define SII_RX_PDO     1
 #define SII_TX_PDO     2
 
 enum ePdoType {
-	RxPDO,
-	TxPDO
+	RxPDO = SII_RX_PDO
+	,TxPDO = SII_TX_PDO
 };
 
 struct _pdo_entry {
@@ -171,15 +172,8 @@ struct _sii_pdo {
 	/* no content of sii entry */
 	int type; /* rx or tx pdo */
 	struct _pdo_entry *list;
-	struct _sii_pdo *next;
-	struct _sii_pdo *prev;
 };
 
-struct _sii_pdo_list {
-	int count;
-	struct _sii_pdo *head;
-	struct _sii_pdo *current;
-};
 
 struct _sii_dclock {
 	uint16_t reserved1:8; /* shall be zero */
@@ -218,20 +212,6 @@ struct _sii_dclock {
 	uint32_t latch1_neg_edge_value;
 	uint8_t reserved14[4];
 };
-
-#if 0 /* obsoleted by struct sii */
-typedef struct _sii_info {
-	struct _sii_preamble *preamble;
-	struct _sii_stdconfig *stdconfig;
-	char **strings; /* array of strings from string section */
-	/* struct _sii_datatypes; -- not yet available */
-	struct _sii_general *general;
-	struct _sii_fmmu *fmmu; /* contains linked list with each fmmu */
-	struct _sii_syncm *syncmanager; /* contains linked list with each syncmanager */
-	struct _sii_pdo_list *pdolist; /* contains list of pdoentries */
-	struct _sii_dclock *distributedclock;
-} SiiInfo;
-#endif
 
 /* a single category */
 struct _sii_cat {
