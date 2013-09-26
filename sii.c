@@ -414,6 +414,8 @@ static void syncm_add_entry(struct _sii_syncm *sm,
 {
 	struct _syncm_entry *entry = malloc(sizeof(struct _syncm_entry));
 	entry->id = -1;
+	entry->next = NULL;
+	entry->prev = NULL;
 	entry->phys_address = phys_address;
 	entry->length = length;
 	entry->control = control;
@@ -421,9 +423,10 @@ static void syncm_add_entry(struct _sii_syncm *sm,
 	entry->enable = enable;
 	entry->type = type;
 
-	if (sm->list == NULL) {
+	if (sm->list == NULL) { /* first element */
 		entry->id = 0;
 		sm->list = entry;
+		sm->count++;
 	} else {
 		struct _syncm_entry *list = sm->list;
 		while (list->next != NULL)
@@ -433,6 +436,7 @@ static void syncm_add_entry(struct _sii_syncm *sm,
 		entry->id = list->id+1;
 		entry->prev = list;
 		entry->next = NULL;
+		sm->count++;
 	}
 }
 
@@ -443,6 +447,8 @@ static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_
 	const unsigned char *b = buffer;
 
 	struct _sii_syncm *sm = malloc(sizeof(struct _sii_syncm));
+	sm->list = NULL;
+	sm->count = 0;
 
 	while (count<secsize) {
 		int physadr = BYTES_TO_WORD(*b, *(b+1));
@@ -460,6 +466,7 @@ static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_
 
 		syncm_add_entry(sm, physadr, length, control, status, enable, type);
 
+#if 0
 		printf("SyncManager SM%d\n", smnbr);
 		printf("  Physical Startaddress: 0x%04x\n", physadr);
 		printf("  Length: %d\n", length);
@@ -487,6 +494,7 @@ static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_
 			printf("undefined\n");
 			break;
 		}
+#endif
 		count=(size_t)(b-buffer);
 		smnbr++;
 	}
@@ -1078,10 +1086,54 @@ static void cat_print_fmmu(struct _sii_cat *cat)
 			cat->type, cat->size);
 }
 
+static void cat_print_syncm_entries(struct _syncm_entry *sme)
+{
+	struct _syncm_entry *e = sme;
+	int smnbr = 0;
+
+	while (e != NULL) {
+		printf("SyncManager SM%d\n", smnbr);
+		printf("  Physical Startaddress: 0x%04x\n", e->phys_address);
+		printf("  Length: %d\n", e->length);
+		printf("  Control Register: 0x%02x\n", e->control);
+		printf("  Status Register: 0x%02x\n", e->status);
+		printf("  Enable byte: 0x%02x\n", e->enable);
+		printf("  SM Type: ");
+		switch (e->type) {
+		case 0x00:
+			printf("not used or unknown\n");
+			break;
+		case 0x01:
+			printf("Mailbox Out\n");
+			break;
+		case 0x02:
+			printf("Mailbox In\n");
+			break;
+		case 0x03:
+			printf("Process Data Out\n");
+			break;
+		case 0x04:
+			printf("Process Data In\n");
+			break;
+		default:
+			printf("undefined\n");
+			break;
+		}
+
+		smnbr++;
+		e = e->next;
+	}
+}
+
 static void cat_print_syncm(struct _sii_cat *cat)
 {
-	printf("printing categorie syncm (0x%x size: %d) - not yet implemented\n",
+	printf("printing categorie syncm (0x%x size: %d)\n",
 			cat->type, cat->size);
+
+	struct _sii_syncm *sm = (struct _sii_syncm *)cat->data;
+
+	printf("Number of SyncManager: %d\n", sm->count);
+	cat_print_syncm_entries(sm->list);
 }
 
 static void cat_print_rxpdo(struct _sii_cat *cat)
