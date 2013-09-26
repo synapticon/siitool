@@ -1384,3 +1384,21 @@ int sii_check(SiiInfo *sii)
 	return sii->rawvalid;
 }
 
+int sii_write_bin(SiiInfo *sii, const char *outfile)
+{
+	if (sii->rawvalid)
+		return -1;
+
+	// FIXME check if file exists and ask for overwrite
+	// unless force is set.
+	//struct stat fs;
+	//if (!stat(outfile, &fs))
+	FILE *fh = fopen(outfile, "w");
+
+	for (size_t i=0; i<sii->rawsize; i++)
+		fputc(sii->rawbytes[i], fh);
+
+	fclose(fh);
+
+	return 0;
+}

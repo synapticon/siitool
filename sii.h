@@ -232,6 +232,7 @@ struct _sii {
 	char *outfile;
 	uint8_t *rawbytes;
 	int rawvalid;
+	size_t rawsize;
 };
 
 typedef struct _sii SiiInfo;
@@ -257,6 +258,9 @@ void sii_release(SiiInfo *sii);
 size_t sii_generate(SiiInfo *sii, const char *outfile);
 
 void sii_print(SiiInfo *sii);
+
+/* wirte binary to file */
+int sii_write_bin(SiiInfo *sii, const char *outfile);
 
 /**
  * \brief Sanity check of current config
