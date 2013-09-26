@@ -410,6 +410,22 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 	return fmmu;
 }
 
+static void syncm_rm_entry(struct _sii_syncm *sm)
+{
+	struct _syncm_entry *entry = sm->list;
+
+	if (entry == NULL)
+		return;
+
+	while (entry->next != NULL)
+		entry = entry->next;
+
+	if (entry->prev != NULL)
+		entry->prev->next = NULL;
+
+	free(entry);
+}
+
 static void syncm_add_entry(struct _sii_syncm *sm,
 		int phys_address, int length, int control, int status, int enable, int type)
 {
