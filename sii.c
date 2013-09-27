@@ -60,8 +60,8 @@ static void sii_cat_write_datatypes(struct _sii_cat *cat);
 static void sii_cat_write_general(struct _sii_cat *cat);
 static void sii_cat_write_fmmu(struct _sii_cat *cat);
 static void sii_cat_write_syncm(struct _sii_cat *cat);
-static void sii_cat_write_rxpdo(struct _sii_cat *cat);
-static void sii_cat_write_txpdo(struct _sii_cat *cat);
+//static void sii_cat_write_rxpdo(struct _sii_cat *cat);
+//static void sii_cat_write_txpdo(struct _sii_cat *cat);
 static void sii_cat_write_pdo(struct _sii_cat *cat);
 static void sii_cat_write_dc(struct _sii_cat *cat);
 static void sii_cat_write(struct _sii *sii);
@@ -1374,27 +1374,27 @@ static void cat_print_dc(struct _sii_cat *cat)
 /* write sii data */
 static void sii_cat_write_strings(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of string section\n");
+	printf("TODO: binary write of string section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write_datatypes(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of datatypes section\n");
+	printf("TODO: binary write of datatypes section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write_general(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of general section\n");
+	printf("TODO: binary write of general section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write_fmmu(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of fmmu section\n");
+	printf("TODO: binary write of fmmu section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write_syncm(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of syncm section\n");
+	printf("TODO: binary write of syncm section (0x%x)\n", cat->type);
 }
 
 /* usefull? * 
@@ -1411,12 +1411,12 @@ static void sii_cat_write_txpdo(struct _sii_cat *cat);
 
 static void sii_cat_write_pdo(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of pdo section\n");
+	printf("TODO: binary write of pdo section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write_dc(struct _sii_cat *cat)
 {
-	printf("TODO: binary write of dc section\n");
+	printf("TODO: binary write of dc section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write(struct _sii *sii)
@@ -1431,6 +1431,47 @@ static void sii_cat_write(struct _sii *sii)
 	sii_cat_write_pdo()
 	sii_cat_write_dc()
 	 */
+
+	struct _sii_cat *cat = sii->cat_head;
+	while (cat != NULL) {
+
+		switch (cat->type) {
+		case SII_CAT_STRINGS:
+			sii_cat_write_strings(cat);
+			break;
+
+		case SII_CAT_DATATYPES:
+			sii_cat_write_datatypes(cat);
+			break;
+
+		case SII_CAT_GENERAL:
+			sii_cat_write_general(cat);
+			break;
+
+		case SII_CAT_FMMU:
+			sii_cat_write_fmmu(cat);
+			break;
+
+		case SII_CAT_SYNCM:
+			sii_cat_write_syncm(cat);
+			break;
+
+		case SII_CAT_TXPDO:
+		case SII_CAT_RXPDO:
+			sii_cat_write_pdo(cat);
+			break;
+
+		case SII_CAT_DCLOCK:
+			sii_cat_write_dc(cat);
+			break;
+
+		default:
+			printf("Not yet available\n");
+			break;
+		}
+
+		cat = cat->next;
+	}
 }
 
 static void sii_write(SiiInfo *sii)
@@ -1575,6 +1616,7 @@ static void sii_write(SiiInfo *sii)
 
 	// - iterate through categories
 
+	sii_cat_write(sii);
 }
 
 
@@ -1660,7 +1702,7 @@ size_t sii_generate(SiiInfo *sii, const char *outfile)
 	sii->outfile = malloc(strlen(outfile+1));
 	strncpy(sii->outfile, outfile, strlen(outfile));
 
-	sii_cat_write(sii);
+	sii_write(sii);
 
 	return outsize;
 }
