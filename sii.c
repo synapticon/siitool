@@ -55,15 +55,15 @@ static void cat_print_txpdo(struct _sii_cat *cat);
 static void cat_print_pdo(struct _sii_cat *cat);
 static void cat_print_dc(struct _sii_cat *cat);
 
-static void sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf);
-static void sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf);
-static void sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf);
-static void sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf);
-static void sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
 //static void sii_cat_write_rxpdo(struct _sii_cat *cat);
 //static void sii_cat_write_txpdo(struct _sii_cat *cat);
-static void sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
-static void sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
 static void sii_cat_write(struct _sii *sii);
 static void sii_write(SiiInfo *sii);
 
@@ -1371,52 +1371,56 @@ static void cat_print_dc(struct _sii_cat *cat)
 	printf("  Latch1NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
 }
 
-/* write sii data */
-static void sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
+/* write sii binary data */
+
+static uint16_t sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
 {
+	unsigned char *b = buf;
 	printf("TODO: binary write of string section (0x%x)\n", cat->type);
+	// FIXME check what ist the string separator
+	return (uint16_t)(b-buf);
 }
 
-static void sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf)
+static uint16_t sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf)
 {
+	unsigned char *b = buf;
 	printf("TODO: binary write of datatypes section (0x%x)\n", cat->type);
+	return (uint16_t)(b-buf);
 }
 
-static void sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
+static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
+	unsigned char *b = buf;
 	printf("TODO: binary write of general section (0x%x)\n", cat->type);
+	return (uint16_t)(b-buf);
 }
 
-static void sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
+static uint16_t sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
 {
+	unsigned char *b = buf;
 	printf("TODO: binary write of fmmu section (0x%x)\n", cat->type);
+	return (uint16_t)(b-buf);
 }
 
-static void sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf)
+static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf)
 {
+	unsigned char *b = buf;
 	printf("TODO: binary write of syncm section (0x%x)\n", cat->type);
+	return (uint16_t)(b-buf);
 }
 
-/* usefull? * 
-static void sii_cat_write_rxpdo(struct _sii_cat *cat);
+static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
 {
-	printf("TODO: binary write of string section\n");
-}
-
-static void sii_cat_write_txpdo(struct _sii_cat *cat);
-{
-	printf("TODO: binary write of string section\n");
-}
- */
-
-static void sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
-{
+	unsigned char *b = buf;
 	printf("TODO: binary write of pdo section (0x%x)\n", cat->type);
+	return (uint16_t)(b-buf);
 }
 
-static void sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
+static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 {
+	unsigned char *b = buf;
 	printf("TODO: binary write of dc section (0x%x)\n", cat->type);
+	return (uint16_t)(b-buf);
 }
 
 static void sii_cat_write(struct _sii *sii)
@@ -1424,37 +1428,113 @@ static void sii_cat_write(struct _sii *sii)
 	unsigned char *buf = sii->rawbytes;
 	size_t *bufsize = &sii->rawsize;
 	struct _sii_cat *cat = sii->cat_head;
+	uint16_t catsize = 0;
+
+	// for each category:
+	// buf[0], buf[1] <- type
+	// buf[2], buf[3] <- size
+	// buf[N>3] category data
 
 	while (cat != NULL) {
 
 		switch (cat->type) {
 		case SII_CAT_STRINGS:
-			sii_cat_write_strings(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_strings(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		case SII_CAT_DATATYPES:
-			sii_cat_write_datatypes(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_datatypes(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		case SII_CAT_GENERAL:
-			sii_cat_write_general(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_general(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		case SII_CAT_FMMU:
-			sii_cat_write_fmmu(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_fmmu(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		case SII_CAT_SYNCM:
-			sii_cat_write_syncm(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_syncm(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		case SII_CAT_TXPDO:
 		case SII_CAT_RXPDO:
-			sii_cat_write_pdo(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_pdo(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		case SII_CAT_DCLOCK:
-			sii_cat_write_dc(cat, buf);
+			*buf = cat->type&0xff;
+			buf++;
+			*buf = (cat->type>>8)&0xff;
+			buf++;
+
+			catsize = sii_cat_write_dc(cat, buf);
+			buf += catsize;
+			*buf = catsize&0xff;
+			buf++;
+			*buf = (catsize>>8)&0xff;
+			catsize = 0;
 			break;
 
 		default:
