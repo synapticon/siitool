@@ -350,6 +350,19 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	return siig;
 }
 
+static void fmmu_rm_entry(struct _sii_fmmu *fmmu)
+{
+	struct _fmmu_entry *fe = fmmu->list;
+	while (fe->next != NULL)
+		fe = fe->next;
+
+	if (fe->prev != NULL) {
+		fe->prev->next = NULL;
+		fmmu->list = NULL;
+	}
+	free(fe);
+}
+
 static void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 {
 	struct _fmmu_entry *new = malloc(sizeof(struct _fmmu_entry));
@@ -923,6 +936,9 @@ static void cat_data_cleanup(void *data, uint16_t type)
 	case SII_CAT_DATATYPES:
 	case SII_CAT_GENERAL:
 	case SII_CAT_FMMU:
+		cat_data_cleanup_fmmu((struct _sii_fmmu *)data);
+		break;
+
 	case SII_CAT_SYNCM:
 	case SII_CAT_TXPDO:
 	case SII_CAT_RXPDO:
