@@ -55,6 +55,18 @@ static void cat_print_txpdo(struct _sii_cat *cat);
 static void cat_print_pdo(struct _sii_cat *cat);
 static void cat_print_dc(struct _sii_cat *cat);
 
+static void sii_cat_write_strings(struct _sii_cat *cat);
+static void sii_cat_write_datatypes(struct _sii_cat *cat);
+static void sii_cat_write_general(struct _sii_cat *cat);
+static void sii_cat_write_fmmu(struct _sii_cat *cat);
+static void sii_cat_write_syncm(struct _sii_cat *cat);
+static void sii_cat_write_rxpdo(struct _sii_cat *cat);
+static void sii_cat_write_txpdo(struct _sii_cat *cat);
+static void sii_cat_write_pdo(struct _sii_cat *cat);
+static void sii_cat_write_dc(struct _sii_cat *cat);
+static void sii_cat_write(struct _sii *sii);
+static void sii_write(SiiInfo *sii);
+
 static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 {
 	size_t count = 0;
@@ -1359,6 +1371,212 @@ static void cat_print_dc(struct _sii_cat *cat)
 	printf("  Latch1NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
 }
 
+/* write sii data */
+static void sii_cat_write_strings(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of string section\n");
+}
+
+static void sii_cat_write_datatypes(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of datatypes section\n");
+}
+
+static void sii_cat_write_general(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of general section\n");
+}
+
+static void sii_cat_write_fmmu(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of fmmu section\n");
+}
+
+static void sii_cat_write_syncm(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of syncm section\n");
+}
+
+/* usefull? * 
+static void sii_cat_write_rxpdo(struct _sii_cat *cat);
+{
+	printf("TODO: binary write of string section\n");
+}
+
+static void sii_cat_write_txpdo(struct _sii_cat *cat);
+{
+	printf("TODO: binary write of string section\n");
+}
+ */
+
+static void sii_cat_write_pdo(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of pdo section\n");
+}
+
+static void sii_cat_write_dc(struct _sii_cat *cat)
+{
+	printf("TODO: binary write of dc section\n");
+}
+
+static void sii_cat_write(struct _sii *sii)
+{
+	// iterate through categories and append to binary out.
+	/* using:
+	sii_cat_write_strings(struct _sii_cat *cat);
+	sii_cat_write_datatypes(struct _sii_cat *cat);
+	sii_cat_write_general(struct _sii_cat *cat);
+	sii_cat_write_fmmu(struct _sii_cat *cat);
+	sii_cat_write_syncm(struct _sii_cat *cat);
+	sii_cat_write_pdo()
+	sii_cat_write_dc()
+	 */
+}
+
+static void sii_write(SiiInfo *sii)
+{
+	unsigned char *outbuf = sii->rawbytes;
+
+	// - write preamble
+	struct _sii_preamble *pre = sii->preamble;
+	*outbuf = pre->pdi_ctrl&0xff;
+	outbuf++;
+	*outbuf = (pre->pdi_ctrl>>8)&0xff;
+	outbuf++;
+	*outbuf = pre->pdi_conf&0xff;
+	outbuf++;
+	*outbuf = (pre->pdi_conf>>8)&0xff;
+	outbuf++;
+	*outbuf = pre->sync_impulse&0xff;
+	outbuf++;
+	*outbuf = (pre->sync_impulse>>8)&0xff;
+	outbuf++;
+	*outbuf = pre->pdi_conf2&0xff;
+	outbuf++;
+	*outbuf = (pre->pdi_conf2>>8)&0xff;
+	outbuf++;
+	*outbuf = pre->alias&0xff;
+	outbuf++;
+	*outbuf = (pre->alias>>8)&0xff;
+	outbuf++;
+
+	// reserved[4]; /* shall be zero */
+	*outbuf = 0;
+	outbuf++;
+	*outbuf = 0;
+	outbuf++;
+	*outbuf = 0;
+	outbuf++;
+	*outbuf = 0;
+	outbuf++;
+
+	/* FIXME calculate checksum */
+	*outbuf = pre->checksum&0xff;
+	outbuf++;
+	*outbuf = (pre->checksum>>8)&0xff;
+	outbuf++;
+
+	// - write standard config
+	struct _sii_stdconfig *scfg = sii->config;
+
+	*outbuf = scfg->vendor_id&0xff;
+	outbuf++;
+	*outbuf = (scfg->vendor_id>>8)&0xff;
+	outbuf++;
+	*outbuf = (scfg->vendor_id>>16)&0xff;
+	outbuf++;
+	*outbuf = (scfg->vendor_id>>24)&0xff;
+	outbuf++;
+
+	*outbuf = scfg->product_id&0xff;
+	outbuf++;
+	*outbuf = (scfg->product_id>>8)&0xff;
+	outbuf++;
+	*outbuf = (scfg->product_id>>16)&0xff;
+	outbuf++;
+	*outbuf = (scfg->product_id>>24)&0xff;
+	outbuf++;
+
+	*outbuf = scfg->revision_id&0xff;
+	outbuf++;
+	*outbuf = (scfg->revision_id>>8)&0xff;
+	outbuf++;
+	*outbuf = (scfg->revision_id>>16)&0xff;
+	outbuf++;
+	*outbuf = (scfg->revision_id>>24)&0xff;
+	outbuf++;
+
+	*outbuf = scfg->serial&0xff;
+	outbuf++;
+	*outbuf = (scfg->serial>>8)&0xff;
+	outbuf++;
+	*outbuf = (scfg->serial>>16)&0xff;
+	outbuf++;
+	*outbuf = (scfg->serial>>24)&0xff;
+	outbuf++;
+
+	//reserveda[8]; /* shall be zero */
+	for (int i=0; i<8; i++)
+		*outbuf++ = 0;
+
+	/* bootstrap mailbox settings */
+	*outbuf = scfg->bs_rec_mbox_offset&0xff;
+	outbuf++;
+	*outbuf = (scfg->bs_rec_mbox_offset>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->bs_rec_mbox_size&0xff;
+	outbuf++;
+	*outbuf = (scfg->bs_rec_mbox_size>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->bs_snd_mbox_offset&0xff;
+	outbuf++;
+	*outbuf = (scfg->bs_snd_mbox_offset>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->bs_snd_mbox_size&0xff;
+	outbuf++;
+	*outbuf = (scfg->bs_snd_mbox_size>>8)&0xff;
+	outbuf++;
+
+	/* standard mailbox settings */
+	*outbuf = scfg->std_rec_mbox_offset&0xff;
+	outbuf++;
+	*outbuf = (scfg->std_rec_mbox_offset>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->std_rec_mbox_size&0xff;
+	outbuf++;
+	*outbuf = (scfg->std_rec_mbox_size>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->std_snd_mbox_offset&0xff;
+	outbuf++;
+	*outbuf = (scfg->std_snd_mbox_offset>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->std_snd_mbox_size&0xff;
+	outbuf++;
+	*outbuf = (scfg->std_snd_mbox_size>>8)&0xff;
+	outbuf++;
+
+	*outbuf = scfg->mailbox_protocol.word&0xff;
+	outbuf++;
+	*outbuf = (scfg->mailbox_protocol.word>>8)&0xff;
+	outbuf++;
+
+	//reservedb[66]; /* shall be zero */
+	for (int i=0; i<66; i++)
+		*outbuf++ = 0x00;
+
+	*outbuf = scfg->eeprom_size&0xff;
+	outbuf++;
+	*outbuf = (scfg->eeprom_size>>8)&0xff;
+	outbuf++;
+	*outbuf = scfg->version&0xff;
+	outbuf++;
+	*outbuf = (scfg->version>>8)&0xff;
+	outbuf++;
+
+	// - iterate through categories
+
+}
+
 
 /*****************/
 /* API functions */
@@ -1428,8 +1646,11 @@ size_t sii_generate(SiiInfo *sii, const char *outfile)
 
 	sii->rawbytes = out;
 	sii->rawvalid = outsize>0 ? 1 : 0;
+
 	sii->outfile = malloc(strlen(outfile+1));
 	strncpy(sii->outfile, outfile, strlen(outfile));
+
+	sii_cat_write(sii);
 
 	return outsize;
 }
