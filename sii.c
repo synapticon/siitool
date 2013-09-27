@@ -1604,6 +1604,11 @@ SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size)
 		return NULL;
 	}
 
+	sii->cat_head = NULL;
+	sii->cat_current = NULL;
+	sii->rawbytes = NULL;
+	sii->rawvalid = 0;
+
 	parse_content(sii, eeprom, size);
 
 	return sii;
@@ -1621,6 +1626,11 @@ SiiInfo *sii_init_file(const char *filename)
 		free(sii);
 		return NULL;
 	}
+
+	sii->cat_head = NULL;
+	sii->cat_current = NULL;
+	sii->rawbytes = NULL;
+	sii->rawvalid = 0;
 
 	parse_content(sii, eeprom, 1024);
 
