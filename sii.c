@@ -1616,6 +1616,8 @@ static void sii_write(SiiInfo *sii)
 
 	// - iterate through categories
 
+	sii->rawsize = (size_t)(outbuf-sii->rawbytes);
+	printf("DEBUG sii_write() wrote %d bytes for preamble and std config\n", sii->rawsize);
 	sii_cat_write(sii);
 }
 
