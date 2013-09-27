@@ -928,15 +928,58 @@ finish:
 
 /*** categroy list handling ***/
 
+static void cat_data_cleanup_fmmu(struct _sii_fmmu *fmmu)
+{
+	printf("FIXME: implement fmmu cleanup\n");
+
+	while (fmmu->list != NULL)
+		fmmu_rm_entry(fmmu);
+
+	free(fmmu);
+}
+
+static void cat_data_cleanup_syncm(struct _sii_syncm *syncm)
+{
+	while (syncm->list != NULL)
+		syncm_rm_entry(syncm);
+	free(syncm);
+}
+
+static void cat_data_cleanup_pdo(struct _sii_pdo *pdo)
+{
+	while (pdo->list != NULL)
+		pdo_rm_entry(pdo);
+
+	free(pdo);
+}
+
+static void free_strings(char **strings)
+{
+	int i = 0;
+	while (strings[i] == NULL) {
+		free(strings[i]);
+		i++;
+	}
+
+	free(strings);
+}
+
 static void cat_data_cleanup(void *data, uint16_t type)
 {
 	/* clean up type specific data */
 	switch (type) {
-	case SII_PREAMBLE:
-	case SII_STD_CONFIG:
 	case SII_CAT_STRINGS:
+		free_strings((char **) data);
+		break;
+
 	case SII_CAT_DATATYPES:
+		fprintf(stderr, "The Datatype categroie isn't implemented.\n");
+		break;
+
 	case SII_CAT_GENERAL:
+		free(data); /* section general is simple */
+		break;
+
 	case SII_CAT_FMMU:
 		cat_data_cleanup_fmmu((struct _sii_fmmu *)data);
 		break;
@@ -948,11 +991,13 @@ static void cat_data_cleanup(void *data, uint16_t type)
 	case SII_CAT_TXPDO:
 	case SII_CAT_RXPDO:
 	case SII_CAT_DCLOCK:
+		free(data); /* section dc is simple */
+		break;
+
 	default:
-		printf("Warning: category clean up not implemented\n");
+		printf("Warning: cleanup received unknown category\n");
 		break;
 	}
-	free(data); /* FIXME IMO this is not enough since some cats are complex */
 }
 
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size)
