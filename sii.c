@@ -55,15 +55,15 @@ static void cat_print_txpdo(struct _sii_cat *cat);
 static void cat_print_pdo(struct _sii_cat *cat);
 static void cat_print_dc(struct _sii_cat *cat);
 
-static void sii_cat_write_strings(struct _sii_cat *cat);
-static void sii_cat_write_datatypes(struct _sii_cat *cat);
-static void sii_cat_write_general(struct _sii_cat *cat);
-static void sii_cat_write_fmmu(struct _sii_cat *cat);
-static void sii_cat_write_syncm(struct _sii_cat *cat);
+static void sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf);
+static void sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf);
+static void sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf);
+static void sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf);
+static void sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
 //static void sii_cat_write_rxpdo(struct _sii_cat *cat);
 //static void sii_cat_write_txpdo(struct _sii_cat *cat);
-static void sii_cat_write_pdo(struct _sii_cat *cat);
-static void sii_cat_write_dc(struct _sii_cat *cat);
+static void sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
+static void sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
 static void sii_cat_write(struct _sii *sii);
 static void sii_write(SiiInfo *sii);
 
@@ -1372,27 +1372,27 @@ static void cat_print_dc(struct _sii_cat *cat)
 }
 
 /* write sii data */
-static void sii_cat_write_strings(struct _sii_cat *cat)
+static void sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of string section (0x%x)\n", cat->type);
 }
 
-static void sii_cat_write_datatypes(struct _sii_cat *cat)
+static void sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of datatypes section (0x%x)\n", cat->type);
 }
 
-static void sii_cat_write_general(struct _sii_cat *cat)
+static void sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of general section (0x%x)\n", cat->type);
 }
 
-static void sii_cat_write_fmmu(struct _sii_cat *cat)
+static void sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of fmmu section (0x%x)\n", cat->type);
 }
 
-static void sii_cat_write_syncm(struct _sii_cat *cat)
+static void sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of syncm section (0x%x)\n", cat->type);
 }
@@ -1409,60 +1409,52 @@ static void sii_cat_write_txpdo(struct _sii_cat *cat);
 }
  */
 
-static void sii_cat_write_pdo(struct _sii_cat *cat)
+static void sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of pdo section (0x%x)\n", cat->type);
 }
 
-static void sii_cat_write_dc(struct _sii_cat *cat)
+static void sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 {
 	printf("TODO: binary write of dc section (0x%x)\n", cat->type);
 }
 
 static void sii_cat_write(struct _sii *sii)
 {
-	// iterate through categories and append to binary out.
-	/* using:
-	sii_cat_write_strings(struct _sii_cat *cat);
-	sii_cat_write_datatypes(struct _sii_cat *cat);
-	sii_cat_write_general(struct _sii_cat *cat);
-	sii_cat_write_fmmu(struct _sii_cat *cat);
-	sii_cat_write_syncm(struct _sii_cat *cat);
-	sii_cat_write_pdo()
-	sii_cat_write_dc()
-	 */
-
+	unsigned char *buf = sii->rawbytes;
+	size_t *bufsize = &sii->rawsize;
 	struct _sii_cat *cat = sii->cat_head;
+
 	while (cat != NULL) {
 
 		switch (cat->type) {
 		case SII_CAT_STRINGS:
-			sii_cat_write_strings(cat);
+			sii_cat_write_strings(cat, buf);
 			break;
 
 		case SII_CAT_DATATYPES:
-			sii_cat_write_datatypes(cat);
+			sii_cat_write_datatypes(cat, buf);
 			break;
 
 		case SII_CAT_GENERAL:
-			sii_cat_write_general(cat);
+			sii_cat_write_general(cat, buf);
 			break;
 
 		case SII_CAT_FMMU:
-			sii_cat_write_fmmu(cat);
+			sii_cat_write_fmmu(cat, buf);
 			break;
 
 		case SII_CAT_SYNCM:
-			sii_cat_write_syncm(cat);
+			sii_cat_write_syncm(cat, buf);
 			break;
 
 		case SII_CAT_TXPDO:
 		case SII_CAT_RXPDO:
-			sii_cat_write_pdo(cat);
+			sii_cat_write_pdo(cat, buf);
 			break;
 
 		case SII_CAT_DCLOCK:
-			sii_cat_write_dc(cat);
+			sii_cat_write_dc(cat, buf);
 			break;
 
 		default:
