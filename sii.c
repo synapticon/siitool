@@ -435,8 +435,10 @@ static void syncm_rm_entry(struct _sii_syncm *sm)
 	while (entry->next != NULL)
 		entry = entry->next;
 
-	if (entry->prev != NULL)
+	if (entry->prev != NULL) {
 		entry->prev->next = NULL;
+		sm->list = NULL;
+	}
 
 	free(entry);
 }
@@ -940,6 +942,9 @@ static void cat_data_cleanup(void *data, uint16_t type)
 		break;
 
 	case SII_CAT_SYNCM:
+		cat_data_cleanup_syncm((struct _sii_syncm *)data);
+		break;
+
 	case SII_CAT_TXPDO:
 	case SII_CAT_RXPDO:
 	case SII_CAT_DCLOCK:
