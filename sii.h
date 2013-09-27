@@ -157,7 +157,7 @@ struct _pdo_entry {
 	uint8_t bit_length;
 	uint32_t flags; /* for future use - set to 0 */
 	/* no content of sii entry */
-	int count;
+	int id;
 	struct _pdo_entry *next;
 	struct _pdo_entry *prev;
 };

@@ -536,13 +536,31 @@ static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_
 	return sm;
 }
 
+static void pdo_rm_entry(struct _sii_pdo *pdo)
+{
+	struct _pdo_entry *pe = pdo->list;
+
+	if (pe == NULL)
+		return;
+
+	while (pe->next != NULL)
+		pe = pe->next;
+
+	if (pe->prev != NULL)
+		pe->prev->next = NULL;
+
+	if (pe->id == 0)
+		pdo->list = NULL;
+	free(pe);
+}
+
 static void pdo_add_entry(struct _sii_pdo *pdo,
 		int index, int subindex, int string_index, int data_type,
 		int bit_length, int flags)
 {
 	struct _pdo_entry *entry = malloc(sizeof(struct _pdo_entry));
 
-	entry->count = -1;
+	entry->id = -1;
 	entry->index = index;
 	entry->subindex = subindex;
 	entry->string_index = string_index;
@@ -553,7 +571,7 @@ static void pdo_add_entry(struct _sii_pdo *pdo,
 	entry->prev = NULL;
 
 	if (pdo->list == NULL) {
-		entry->count = 0;
+		entry->id = 0;
 		pdo->list = entry;
 	} else {
 		struct _pdo_entry *list = pdo->list;
@@ -561,7 +579,7 @@ static void pdo_add_entry(struct _sii_pdo *pdo,
 			list = list->next;
 
 		list->next = entry;
-		entry->count = list->count+1;
+		entry->id = list->id+1;
 		entry->prev = list;
 		entry->next = NULL;
 	}
@@ -990,6 +1008,9 @@ static void cat_data_cleanup(void *data, uint16_t type)
 
 	case SII_CAT_TXPDO:
 	case SII_CAT_RXPDO:
+		cat_data_cleanup_pdo((struct _sii_pdo *)data);
+		break;
+
 	case SII_CAT_DCLOCK:
 		free(data); /* section dc is simple */
 		break;
@@ -1260,7 +1281,7 @@ static void cat_print_txpdo(struct _sii_cat *cat)
 
 static void cat_print_pdo(struct _sii_cat *cat)
 {
-	printf("printing categorie rx-/txpdo (0x%x size: %d) - not yet implemented\n",
+	printf("printing categorie rx-/txpdo (0x%x size: %d)\n",
 			cat->type, cat->size);
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
@@ -1287,7 +1308,7 @@ static void cat_print_pdo(struct _sii_cat *cat)
 
 	struct _pdo_entry *list = pdo->list;
 	while (list != NULL) {
-		printf("\n    Entry %d:\n", list->count);
+		printf("\n    Entry %d:\n", list->id);
 		printf("    Entry Index: 0x%04x\n", list->index);
 		printf("    Subindex: 0x%02x\n", list->subindex);
 		printf("    String Index: %d (%s)\n", list->string_index, "*unavailable*");
