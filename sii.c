@@ -1392,6 +1392,14 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *b = buf;
 	printf("TODO: binary write of general section (0x%x)\n", cat->type);
+
+	size_t size = sizeof(struct _sii_general)/sizeof(unsigned char);
+	printf("DEBUG Categorie general is %d bytes\n", size);
+
+	unsigned char *bcat = (unsigned char *)cat->data;
+	for (size_t i=0; i<size; i++)
+		*b++ = *bcat++;
+
 	return (uint16_t)(b-buf);
 }
 
@@ -1423,10 +1431,66 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 	return (uint16_t)(b-buf);
 }
 
+
+static size_t cat_size(struct _sii_cat *cat)
+{
+	size_t sz = 0;
+
+	switch (cat->type) {
+	case SII_CAT_STRINGS:
+		//number of strings bytes for each string...
+		fprintf(stderr, "Error, category 0x%.x not implemented\n", cat->type);
+		break;
+
+	case SII_CAT_DATATYPES:
+		// unimplemented
+		fprintf(stderr, "Error, category 0x%.x not implemented\n", cat->type);
+		break;
+
+	case SII_CAT_GENERAL:
+		sz = sizeof(struct _sii_general)/sizeof(unsigned char);
+		break;
+
+	case SII_CAT_FMMU:
+		sz = sizeof(struct _sii_fmmu)/sizeof(unsigned char);
+		break;
+
+	case SII_CAT_SYNCM:
+		sz = sizeof(struct _sii_syncm)/sizeof(unsigned char);
+		break;
+
+	case SII_CAT_TXPDO:
+	case SII_CAT_RXPDO:
+		sz = sizeof(struct _sii_pdo)/sizeof(unsigned char);
+		break;
+
+	case SII_CAT_DCLOCK:
+		sz = sizeof(struct _sii_dclock)/sizeof(unsigned char);
+		break;
+
+	default:
+		fprintf(stderr, "Error, unknown category 0x%.x\n", cat->type);
+		return 0;
+	}
+
+	return sz;
+}
+
+static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
+{
+	unsigned char *b = buf;
+	size_t catbsz = cat_size(cat);
+
+	if (catbsz == 0) /* nothing to write */
+		return 0;
+
+	return (uint16_t)(b-buf);
+}
+
 static void sii_cat_write(struct _sii *sii)
 {
 	unsigned char *buf = sii->rawbytes;
-	size_t *bufsize = &sii->rawsize;
+	//size_t *bufsize = &sii->rawsize;
 	struct _sii_cat *cat = sii->cat_head;
 	uint16_t catsize = 0;
 
@@ -1472,7 +1536,9 @@ static void sii_cat_write(struct _sii *sii)
 			*buf = (cat->type>>8)&0xff;
 			buf++;
 
-			catsize = sii_cat_write_general(cat, buf);
+			//catsize = sii_cat_write_general(cat, buf);
+			catsize = sii_cat_write_cat(cat, buf);
+
 			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
