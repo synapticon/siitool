@@ -259,6 +259,8 @@ size_t sii_generate(SiiInfo *sii);
 
 void sii_print(SiiInfo *sii);
 
+//void sii_print_bin(SiiInfo *sii); - ???
+
 /* wirte binary to file */
 int sii_write_bin(SiiInfo *sii, const char *outfile);
 
