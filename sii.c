@@ -1759,11 +1759,13 @@ void sii_release(SiiInfo *sii)
 	while (cat_rm(sii) != 1)
 		;
 
-	free(sii->rawbytes);
+	if (sii->rawbytes != NULL)
+		free(sii->rawbytes);
+
 	free(sii);
 }
 
-size_t sii_generate(SiiInfo *sii, const char *outfile)
+size_t sii_generate(SiiInfo *sii)
 {
 	fprintf(stderr, "Not yet implemented\n");
 	uint8_t *out = (uint8_t*) malloc(sii->config->eeprom_size);
