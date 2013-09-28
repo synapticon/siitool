@@ -38,7 +38,7 @@ static int g_print_offsets = 0;
 
 /* category functions */
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size);
-static void cat_data_cleanup(void *data, uint16_t type);
+static void cat_data_cleanup(struct _sii_cat *cat);
 static int cat_add(SiiInfo *sii, struct _sii_cat *new);
 static int cat_rm(SiiInfo *sii);
 static struct _sii_cat * cat_next(SiiInfo *sii);
@@ -994,12 +994,12 @@ static void free_strings(char **strings)
 	free(strings);
 }
 
-static void cat_data_cleanup(void *data, uint16_t type)
+static void cat_data_cleanup(struct _sii_cat *cat)
 {
 	/* clean up type specific data */
-	switch (type) {
+	switch (cat->type) {
 	case SII_CAT_STRINGS:
-		free_strings((char **) data);
+		free_strings((char **) cat->data);
 		break;
 
 	case SII_CAT_DATATYPES:
@@ -1007,24 +1007,24 @@ static void cat_data_cleanup(void *data, uint16_t type)
 		break;
 
 	case SII_CAT_GENERAL:
-		free(data); /* section general is simple */
+		free(cat->data); /* section general is simple */
 		break;
 
 	case SII_CAT_FMMU:
-		cat_data_cleanup_fmmu((struct _sii_fmmu *)data);
+		cat_data_cleanup_fmmu((struct _sii_fmmu *)cat->data);
 		break;
 
 	case SII_CAT_SYNCM:
-		cat_data_cleanup_syncm((struct _sii_syncm *)data);
+		cat_data_cleanup_syncm((struct _sii_syncm *)cat->data);
 		break;
 
 	case SII_CAT_TXPDO:
 	case SII_CAT_RXPDO:
-		cat_data_cleanup_pdo((struct _sii_pdo *)data);
+		cat_data_cleanup_pdo((struct _sii_pdo *)cat->data);
 		break;
 
 	case SII_CAT_DCLOCK:
-		free(data); /* section dc is simple */
+		free(cat->data); /* section dc is simple */
 		break;
 
 	default:
@@ -1084,8 +1084,9 @@ static int cat_rm(SiiInfo *sii)
 		curr->prev = NULL;
 	}
 
-	cat_data_cleanup(curr->data, curr->type);
-	curr->data = NULL; /* FIXME lost pointer */
+	cat_data_cleanup(curr);
+	curr->data = NULL;
+	curr->type = 0;
 	if (curr == sii->cat_head)
 		sii->cat_head = NULL;
 
