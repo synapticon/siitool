@@ -148,6 +148,7 @@ int main(int argc, char *argv[])
 	//alternative: SiiInfo *sii = sii_init_file(filename) */
 
 	sii_print(sii);
+	sii_generate(sii);
 	sii_release(sii);
 
 	return 0;
