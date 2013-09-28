@@ -1767,20 +1767,14 @@ void sii_release(SiiInfo *sii)
 
 size_t sii_generate(SiiInfo *sii)
 {
-	fprintf(stderr, "Not yet implemented\n");
-	uint8_t *out = (uint8_t*) malloc(sii->config->eeprom_size);
-	memset(out, 0, sii->config->eeprom_size);
-	size_t outsize = 0;
-
-	sii->rawbytes = out;
-	sii->rawvalid = outsize>0 ? 1 : 0;
-
-	sii->outfile = malloc(strlen(outfile+1));
-	strncpy(sii->outfile, outfile, strlen(outfile));
+	size_t maxsize = sii->config->eeprom_size * 1024;
+	sii->rawbytes = (uint8_t*) malloc(maxsize);
+	memset(sii->rawbytes, 0, maxsize);
 
 	sii_write(sii);
+	sii->rawvalid = 1; /* FIXME valid should be set in sii_write */
 
-	return outsize;
+	return sii->rawsize;
 }
 
 void sii_print(SiiInfo *sii)
