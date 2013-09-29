@@ -149,6 +149,10 @@ int main(int argc, char *argv[])
 
 	sii_print(sii);
 	sii_generate(sii);
+	int ret = sii_write_bin(sii, "siiout.bin");
+	if (ret < 0)
+		fprintf(stderr, "Error, couldn't write output file\n");
+
 	sii_release(sii);
 
 	return 0;

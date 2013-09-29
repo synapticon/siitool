@@ -1942,14 +1942,20 @@ int sii_check(SiiInfo *sii)
 
 int sii_write_bin(SiiInfo *sii, const char *outfile)
 {
-	if (sii->rawvalid)
+	if (!sii->rawvalid) {
+		fprintf(stderr, "Error, raw string is invalid\n");
 		return -1;
+	}
 
 	// FIXME check if file exists and ask for overwrite
 	// unless force is set.
 	//struct stat fs;
 	//if (!stat(outfile, &fs))
 	FILE *fh = fopen(outfile, "w");
+	if (fh == NULL) {
+		fprintf(stderr, "Error open file '%s' for writing\n", outfile);
+		return -2;
+	}
 
 	for (size_t i=0; i<sii->rawsize; i++)
 		fputc(sii->rawbytes[i], fh);
