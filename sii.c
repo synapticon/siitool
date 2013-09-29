@@ -1712,7 +1712,7 @@ static void sii_write(SiiInfo *sii)
 	*outbuf = (scfg->serial>>24)&0xff;
 	outbuf++;
 
-	//reserveda[8]; /* shall be zero */
+	//reserveda[8];
 	for (int i=0; i<8; i++)
 		*outbuf++ = 0;
 
@@ -1777,7 +1777,6 @@ static void sii_write(SiiInfo *sii)
 
 #if 1
 	size_t sz = sii_cat_write(sii);
-	printf("DEBUG wrote %d bytes of categories\n", sz);
 	outbuf += sz;
 	sii->rawsize += sz;
 #endif
