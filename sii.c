@@ -64,7 +64,7 @@ static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
 //static void sii_cat_write_txpdo(struct _sii_cat *cat);
 static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
 static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
-static void sii_cat_write(struct _sii *sii);
+static size_t sii_cat_write(struct _sii *sii);
 static void sii_write(SiiInfo *sii);
 
 static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
@@ -1488,11 +1488,12 @@ static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 	return (uint16_t)(b-buf);
 }
 
-static void sii_cat_write(struct _sii *sii)
+static size_t sii_cat_write(struct _sii *sii)
 {
-	unsigned char *buf = sii->rawbytes;
+	unsigned char *buf = sii->rawbytes+sii->rawsize;
 	//size_t *bufsize = &sii->rawsize;
 	struct _sii_cat *cat = sii->cat_head;
+	size_t written = 0;
 	uint16_t catsize = 0;
 
 	// for each category:
@@ -1510,10 +1511,12 @@ static void sii_cat_write(struct _sii *sii)
 			buf++;
 
 			catsize = sii_cat_write_strings(cat, buf);
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1524,10 +1527,12 @@ static void sii_cat_write(struct _sii *sii)
 			buf++;
 
 			catsize = sii_cat_write_datatypes(cat, buf);
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1540,10 +1545,12 @@ static void sii_cat_write(struct _sii *sii)
 			//catsize = sii_cat_write_general(cat, buf);
 			catsize = sii_cat_write_cat(cat, buf);
 
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1554,10 +1561,12 @@ static void sii_cat_write(struct _sii *sii)
 			buf++;
 
 			catsize = sii_cat_write_fmmu(cat, buf);
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1568,10 +1577,12 @@ static void sii_cat_write(struct _sii *sii)
 			buf++;
 
 			catsize = sii_cat_write_syncm(cat, buf);
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1583,10 +1594,12 @@ static void sii_cat_write(struct _sii *sii)
 			buf++;
 
 			catsize = sii_cat_write_pdo(cat, buf);
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1597,10 +1610,12 @@ static void sii_cat_write(struct _sii *sii)
 			buf++;
 
 			catsize = sii_cat_write_dc(cat, buf);
-			buf += catsize;
 			*buf = catsize&0xff;
 			buf++;
 			*buf = (catsize>>8)&0xff;
+			buf++;
+			buf += catsize;
+			written += catsize;
 			catsize = 0;
 			break;
 
@@ -1611,6 +1626,8 @@ static void sii_cat_write(struct _sii *sii)
 
 		cat = cat->next;
 	}
+
+	return written;
 }
 
 static void sii_write(SiiInfo *sii)
@@ -1757,7 +1774,18 @@ static void sii_write(SiiInfo *sii)
 
 	sii->rawsize = (size_t)(outbuf-sii->rawbytes);
 	printf("DEBUG sii_write() wrote %d bytes for preamble and std config\n", sii->rawsize);
-	sii_cat_write(sii);
+
+#if 1
+	size_t sz = sii_cat_write(sii);
+	printf("DEBUG wrote %d bytes of categories\n", sz);
+	outbuf += sz;
+	sii->rawsize += sz;
+#endif
+	/* add end indicator */
+	*outbuf = 0xff;
+	outbuf++;
+	*outbuf = 0xff;
+	sii->rawsize += 2;
 }
 
 
