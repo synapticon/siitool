@@ -1555,19 +1555,27 @@ static size_t sii_cat_write(struct _sii *sii)
 		default:
 			fprintf(stderr, "Warning Unknown category - skipping!\n");
 			buf -= 4;
-			continue;
+			goto nextcat;
 			break;
 		}
 
-		printf("DEBUG string section type 0x%.4x size: 0x%.4x\n", cat->type, catsize);
+		printf("DEBUG section type 0x%.4x size: 0x%.4x\n", cat->type, catsize);
+
+		if (catsize == 0) {
+			fprintf(stderr, "Warning, existing category (0x%.x) unexpected empty\n",
+					cat->type);
+			buf -= 4;
+			goto nextcat;
+		}
 
 		written += catsize;
 		buf += catsize;
 		catsize = catsize/2; /* byte -> word count */
 		*cs = catsize&0xff;
-		cs++;
-		*cs = (catsize>>8)&0xff;
+		*(cs+1) = (catsize>>8)&0xff;
 		catsize = 0;
+
+nextcat:
 		cat = cat->next;
 	}
 
