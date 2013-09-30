@@ -1376,9 +1376,22 @@ static void cat_print_dc(struct _sii_cat *cat)
 
 static uint16_t sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
 {
-	unsigned char *b = buf;
-	printf("TODO: binary write of string section (0x%x)\n", cat->type);
-	// FIXME check what ist the string separator
+	unsigned char *strc = buf;
+	unsigned char *b = buf+1;
+	size_t strcount = 0;
+	char **strings = (char **)cat->data;
+
+	while (*strings != NULL) {
+		char *str = *strings;
+		*b = (unsigned char) strlen(str);
+		b++;
+		memmove(b, str, strlen(str));
+		b+= strlen(str);
+		strings++;
+		strcount++;
+	}
+	*strc = (unsigned char)strcount;
+
 	return (uint16_t)(b-buf);
 }
 
