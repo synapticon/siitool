@@ -64,6 +64,7 @@ static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
 //static void sii_cat_write_txpdo(struct _sii_cat *cat);
 static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
 static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
+static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf);
 static size_t sii_cat_write(struct _sii *sii);
 static void sii_write(SiiInfo *sii);
 
@@ -1497,6 +1498,10 @@ static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 
 	if (catbsz == 0) /* nothing to write */
 		return 0;
+
+	unsigned char *catb = (unsigned char *)cat->data;
+	for (size_t i=0; i<catbsz; i++)
+		*b++ = *catb++;
 
 	return (uint16_t)(b-buf);
 }
