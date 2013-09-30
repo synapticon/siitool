@@ -1440,7 +1440,22 @@ static uint16_t sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
 static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *b = buf;
-	printf("TODO: binary write of syncm section (0x%x)\n", cat->type);
+	struct _sii_syncm *sm = cat->data;
+	struct _syncm_entry *entry = sm->list;
+
+	while (entry != NULL) {
+		*b++ = entry->phys_address&0xff;
+		*b++ = (entry->phys_address>>8)&0xff;
+		*b++ = entry->length&0xff;
+		*b++ = (entry->length>>8)&0xff;
+		*b++ = entry->control;
+		*b++ = entry->status;
+		*b++ = entry->enable;
+		*b++ = entry->type;
+
+		entry = entry->next;
+	}
+
 	return (uint16_t)(b-buf);
 }
 
