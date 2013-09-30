@@ -1502,128 +1502,59 @@ static size_t sii_cat_write(struct _sii *sii)
 	// buf[N>3] category data
 
 	while (cat != NULL) {
+		unsigned char *ct = buf;
+		unsigned char *cs = buf+2;
+		buf += 4;
+
+		*ct = cat->type&0xff;
+		*(ct+1) = (cat->type>>8)&0xff;
 
 		switch (cat->type) {
 		case SII_CAT_STRINGS:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
 			catsize = sii_cat_write_strings(cat, buf);
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
 			break;
 
 		case SII_CAT_DATATYPES:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
 			catsize = sii_cat_write_datatypes(cat, buf);
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
 			break;
 
 		case SII_CAT_GENERAL:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
-			//catsize = sii_cat_write_general(cat, buf);
-			catsize = sii_cat_write_cat(cat, buf);
-
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
+			catsize = sii_cat_write_general(cat, buf);
 			break;
 
 		case SII_CAT_FMMU:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
 			catsize = sii_cat_write_fmmu(cat, buf);
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
 			break;
 
 		case SII_CAT_SYNCM:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
 			catsize = sii_cat_write_syncm(cat, buf);
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
 			break;
 
 		case SII_CAT_TXPDO:
 		case SII_CAT_RXPDO:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
 			catsize = sii_cat_write_pdo(cat, buf);
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
 			break;
 
 		case SII_CAT_DCLOCK:
-			*buf = cat->type&0xff;
-			buf++;
-			*buf = (cat->type>>8)&0xff;
-			buf++;
-
 			catsize = sii_cat_write_dc(cat, buf);
-			*buf = catsize&0xff;
-			buf++;
-			*buf = (catsize>>8)&0xff;
-			buf++;
-			buf += catsize;
-			written += catsize;
-			catsize = 0;
 			break;
 
 		default:
-			printf("Not yet available\n");
+			fprintf(stderr, "Warning Unknown category - skipping!\n");
+			buf -= 4;
+			continue;
 			break;
 		}
 
+		printf("DEBUG string section type 0x%.4x size: 0x%.4x\n", cat->type, catsize);
+
+		written += catsize;
+		buf += catsize;
+		catsize = catsize/2; /* byte -> word count */
+		*cs = catsize&0xff;
+		cs++;
+		*cs = (catsize>>8)&0xff;
+		catsize = 0;
 		cat = cat->next;
 	}
 
