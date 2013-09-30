@@ -1462,7 +1462,31 @@ static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf)
 static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *b = buf;
-	printf("TODO: binary write of pdo section (0x%x)\n", cat->type);
+	struct _sii_pdo *pdo = cat->data;
+
+	*b++ = pdo->index&0xff;
+	*b++ = (pdo->index>>8)&0xff;
+	*b++ = pdo->entries;
+	*b++ = pdo->syncmanager;
+	*b++ = pdo->dcsync;
+	*b++ = pdo->name_index;
+	*b++ = pdo->flags;
+
+	struct _pdo_entry *entry = pdo->list;
+
+	while (entry != NULL) {
+		*b++ = entry->index&0xff;
+		*b++ = (entry->index>>8)&0xff;
+		*b++ = entry->subindex;
+		*b++ = entry->string_index;
+		*b++ = entry->data_type;
+		*b++ = entry->bit_length;
+		*b++ = entry->flags&0xff;
+		*b++ = (entry->flags>>8)&0xff;
+
+		entry = entry->next;
+	}
+
 	return (uint16_t)(b-buf);
 }
 
