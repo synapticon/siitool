@@ -1405,6 +1405,7 @@ static uint16_t sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf
 
 static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
+#if 0 /* FIXME which one is better? */
 	unsigned char *b = buf;
 	printf("TODO: binary write of general section (0x%x)\n", cat->type);
 
@@ -1415,7 +1416,11 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 	for (size_t i=0; i<size; i++)
 		*b++ = *bcat++;
 
+
 	return (uint16_t)(b-buf);
+#else
+	return sii_cat_write_cat(cat, buf);
+#endif
 }
 
 static uint16_t sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
@@ -1441,9 +1446,12 @@ static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
 
 static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 {
+#if 0
 	unsigned char *b = buf;
 	printf("TODO: binary write of dc section (0x%x)\n", cat->type);
 	return (uint16_t)(b-buf);
+#endif
+	return sii_cat_write_cat(cat, buf);
 }
 
 
