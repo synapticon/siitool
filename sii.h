@@ -155,7 +155,7 @@ struct _pdo_entry {
 	uint8_t string_index;
 	uint8_t data_type;
 	uint8_t bit_length;
-	uint32_t flags; /* for future use - set to 0 */
+	uint16_t flags; /* for future use - set to 0 */
 	/* no content of sii entry */
 	int id;
 	struct _pdo_entry *next;
