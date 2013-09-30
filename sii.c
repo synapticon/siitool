@@ -1426,7 +1426,14 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 static uint16_t sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *b = buf;
-	printf("TODO: binary write of fmmu section (0x%x)\n", cat->type);
+	struct _sii_fmmu *data = cat->data;
+	struct _fmmu_entry *entry = data->list;
+
+	while (entry != NULL) {
+		*b++ = entry->usage;
+		entry = entry->next;
+	}
+
 	return (uint16_t)(b-buf);
 }
 
