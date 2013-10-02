@@ -82,19 +82,25 @@ struct _sii_general {
 	uint8_t imageindex;
 	uint8_t orderindex;
 	uint8_t nameindex;
+	uint8_t reserved1;
 	/* CoE Details: each 0 - not enabled, 1 enabled */
-	uint8_t coe_enable_sdo;
-	uint8_t coe_enable_sdo_info;
-	uint8_t coe_enable_pdo_assign;
-	uint8_t coe_enable_pdo_conf;
-	uint8_t coe_enable_upload_start;
-	uint8_t coe_enable_sdo_complete;
+	uint8_t coe_enable_sdo:1;
+	uint8_t coe_enable_sdo_info:1;
+	uint8_t coe_enable_pdo_assign:1;
+	uint8_t coe_enable_pdo_conf:1;
+	uint8_t coe_enable_upload_start:1;
+	uint8_t coe_enable_sdo_complete:1;
+	uint8_t coe_detail_reserved1:2;
 	uint8_t foe_enabled;
 	uint8_t eoe_enabled;
+	uint8_t soe_channels; /* reserved */
+	uint8_t ds402_channels; /* reserved */
+	uint8_t sysman_class; /* reserved */
 	uint8_t flag_safe_op:1;
 	uint8_t flag_notLRW:1;
-	uint8_t reserved:6;
+	uint8_t flagreseved:6;
 	int16_t current_ebus;
+	uint8_t reserved2[2];
 	/* physical ports
 	 * values: 0x00  not used
 	 *         0x01  MII

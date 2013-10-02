@@ -317,11 +317,12 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	b+=2;
 	b+=2;
 
-	siig->phys_port_0 = *b&0x07;
-	siig->phys_port_1 = (*b>>4)&0x7;
+	siig->phys_port_0 = *b&0x0f;
+	siig->phys_port_1 = (*b>>4)&0xf;
 	b++;
-	siig->phys_port_2 = *b&0x7;
-	siig->phys_port_3 = (*b>>4)&0x7;
+	siig->phys_port_2 = *b&0xf;
+	siig->phys_port_3 = (*b>>4)&0xf;
+	b++;
 	b+=14;
 
 #if 0
@@ -1408,17 +1409,42 @@ static uint16_t sii_cat_write_datatypes(struct _sii_cat *cat, unsigned char *buf
 
 static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
-#if 0 /* FIXME which one is better? */
+#if 1
 	unsigned char *b = buf;
 	printf("TODO: binary write of general section (0x%x)\n", cat->type);
 
 	size_t size = sizeof(struct _sii_general)/sizeof(unsigned char);
 	printf("DEBUG Categorie general is %d bytes\n", size);
 
-	unsigned char *bcat = (unsigned char *)cat->data;
-	for (size_t i=0; i<size; i++)
-		*b++ = *bcat++;
+	struct _sii_general *bcat = (struct _sii_general *)cat->data;
 
+	*b++ = bcat->groupindex;
+	*b++ = bcat->imageindex;
+	*b++ = bcat->orderindex;
+	*b++ = bcat->nameindex;
+	*b++ = 0x00; /* reserved */
+	*b++ = (bcat->coe_enable_sdo&0x01) |
+		((bcat->coe_enable_sdo_info<<1)&0x02) |
+		((bcat->coe_enable_pdo_assign<<2)&0x04) |
+		((bcat->coe_enable_pdo_conf<<3)&0x08) |
+		((bcat->coe_enable_upload_start<<4)&0x10) |
+		((bcat->coe_enable_sdo_complete<<5)&0x20);
+	*b++ = bcat->foe_enabled&0x01;
+	*b++ = bcat->eoe_enabled&0x01;
+	*b++ = 0x00; /* soe_channels */
+	*b++ = 0x00; /* ds402_channels */
+	*b++ = 0x00; /* sysman class */
+	*b++ = (bcat->flag_safe_op&0x01) |
+		((bcat->flag_notLRW>>1)&0x01);
+	*b++ = bcat->current_ebus&0xff;
+	*b++ = (bcat->current_ebus>>8)&0xff;
+	*b++ = 0x00;
+	*b++ = 0x00;
+	*b++ = (bcat->phys_port_0&0x0f) | ((bcat->phys_port_1<<4)&0xf0);
+	*b++ = (bcat->phys_port_2&0x0f) | ((bcat->phys_port_3<<4)&0xf0);
+
+	for (int i=0; i<14; i++)
+		*b++ = 0x00;
 
 	return (uint16_t)(b-buf);
 #else
