@@ -1473,7 +1473,8 @@ static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
 	*b++ = pdo->syncmanager;
 	*b++ = pdo->dcsync;
 	*b++ = pdo->name_index;
-	*b++ = pdo->flags;
+	*b++ = pdo->flags&0xff;
+	*b++ = (pdo->flags>>8)&0xff;
 
 	struct _pdo_entry *entry = pdo->list;
 
