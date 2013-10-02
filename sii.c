@@ -275,6 +275,8 @@ static char *physport_type(uint8_t b)
 		return "reserved";
 	case 0x03:
 		return "EBUS";
+	default:
+		return "unknown";
 	}
 
 	return NULL;
