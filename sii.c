@@ -694,8 +694,10 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	const unsigned char *b = buffer+1; /* first byte is reserved */
 
 	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
+	memset(dc, 0, sizeof(struct _sii_dclock));
 
 	//printf("DC Sync Parameter\n");
+	b++; /* first byte is reserved */
 
 	dc->cyclic_op_enabled = (*b & 0x01) == 0 ? 0 : 1;
 	dc->sync0_active = (*b & 0x02) == 0 ? 0 : 1;
@@ -711,10 +713,11 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	b++;
 	dc->int1_status = (*b & 0x01) == 0 ? 0 : 1;
 	b++;
-	b+=12; /* skipped reserved */
 
 	dc->cyclic_op_starttime = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
+	b+=12; /* skipped reserved */
+
 	dc->sync0_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
 	dc->sync1_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
@@ -731,27 +734,27 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 
 	dc->latch0_pos_event = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch0_neg_event = (*b & 0x02) == 0 ? 0 : 1;
-	b+=1; /* the follwing 14 bits are reserved */
+	b+=2; /* the follwing 14 bits are reserved */
 
 	dc->latch1_pos_event = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch1_neg_event = (*b & 0x02) == 0 ? 0 : 1;
-	b+=1; /* the follwing 14 bits are reserved */
+	b+=2; /* the follwing 14 bits are reserved */
 
 	dc->latch0_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4;
+	b+=4; /* reserved */
 
 	dc->latch0_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4;
+	b+=4; /* reserved */
 
 	dc->latch1_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4;
+	b+=4; /* reserved */
 
 	dc->latch1_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4;
+	b+=4; /* reserved */
 
 #if 0
 	/* DEBUG printout */
@@ -1492,12 +1495,76 @@ static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf)
 
 static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 {
-#if 0
+#if 1
 	unsigned char *b = buf;
-	printf("TODO: binary write of dc section (0x%x)\n", cat->type);
+	struct _sii_dclock *dc = cat->data;
+
+	*b++ = 0; /* reserved */
+	*b++ = (dc->cyclic_op_enabled&0x01) |
+		((dc->sync0_active<<1)&0x02) |
+		((dc->sync1_active<<2)&0x04);
+	*b++ = dc->sync_pulse&0xff;
+	*b++ = (dc->sync_pulse>>8)&0xff;
+	b+=10; /* reserved */
+	*b++ = (dc->int0_status&0x01);
+	*b++ = (dc->int1_status&0x01);
+
+	*b++ = dc->cyclic_op_starttime&0xff;
+	*b++ = (dc->cyclic_op_starttime>>8)&0xff;
+	*b++ = (dc->cyclic_op_starttime>>16)&0xff;
+	*b++ = (dc->cyclic_op_starttime>>24)&0xff;
+
+	b+=12; /* reserved */
+
+	*b++ = dc->sync0_cycle_time&0xff;
+	*b++ = (dc->sync0_cycle_time>>8)&0xff;
+	*b++ = (dc->sync0_cycle_time>>16)&0xff;
+	*b++ = (dc->sync0_cycle_time>>24)&0xff;
+
+	*b++ = dc->sync1_cycle_time&0xff;
+	*b++ = (dc->sync1_cycle_time>>8)&0xff;
+	*b++ = (dc->sync1_cycle_time>>16)&0xff;
+	*b++ = (dc->sync1_cycle_time>>24)&0xff;
+
+	*b++ = (dc->latch0_pos_edge&0x01) | ((dc->latch0_neg_edge<<1)&0x02);
+	b++; /* reserved */
+
+	*b++ = (dc->latch1_pos_edge&0x01) | ((dc->latch1_neg_edge<<1)&0x02);
+	b++; /* reserved */
+
+	*b++ = (dc->latch0_pos_event&0x01) | ((dc->latch0_neg_event<<1)&0x02);
+	*b++ = (dc->latch1_pos_event&0x01) | ((dc->latch1_neg_event<<1)&0x02);
+
+	*b++ = dc->latch0_pos_edge_value&0xff;
+	*b++ = (dc->latch0_pos_edge_value>>8)&0xff;
+	*b++ = (dc->latch0_pos_edge_value>>16)&0xff;
+	*b++ = (dc->latch0_pos_edge_value>>24)&0xff;
+	b+=4; /* reserved */
+
+	*b++ = dc->latch0_neg_edge_value&0xff;
+	*b++ = (dc->latch0_neg_edge_value>>8)&0xff;
+	*b++ = (dc->latch0_neg_edge_value>>16)&0xff;
+	*b++ = (dc->latch0_neg_edge_value>>24)&0xff;
+	b+=4; /* reserved */
+
+	*b++ = dc->latch1_pos_edge_value&0xff;
+	*b++ = (dc->latch1_pos_edge_value>>8)&0xff;
+	*b++ = (dc->latch1_pos_edge_value>>16)&0xff;
+	*b++ = (dc->latch1_pos_edge_value>>24)&0xff;
+	b+=4; /* reserved */
+
+	*b++ = dc->latch1_neg_edge_value&0xff;
+	*b++ = (dc->latch1_neg_edge_value>>8)&0xff;
+	*b++ = (dc->latch1_neg_edge_value>>16)&0xff;
+	*b++ = (dc->latch1_neg_edge_value>>24)&0xff;
+	b+=4; /* reserved */
+
 	return (uint16_t)(b-buf);
-#endif
+#else
+	/* NOTE: dclock has 82 bytes, but the struct is 84 bytes. */
+	printf("DEBUG: size of struct _sii_dclock: %d\n", sizeof(struct _sii_dclock));
 	return sii_cat_write_cat(cat, buf);
+#endif
 }
 
 

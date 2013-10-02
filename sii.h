@@ -174,13 +174,13 @@ struct _sii_pdo {
 	struct _pdo_entry *list;
 };
 
-
+/* sizeof(struct _sii_dclock): 82 Bytes */
 struct _sii_dclock {
-	uint16_t reserved1:8; /* shall be zero */
-	uint16_t cyclic_op_enabled:1;
-	uint16_t sync0_active:1;
-	uint16_t sync1_active:1;
-	uint16_t reserved2:5;
+	uint8_t reserved1; /* shall be zero */
+	uint8_t cyclic_op_enabled:1;
+	uint8_t sync0_active:1;
+	uint8_t sync1_active:1;
+	uint8_t reserved2:5;
 	uint16_t sync_pulse;
 	uint8_t reserved3[10];
 	uint8_t int0_status:1;
@@ -188,6 +188,7 @@ struct _sii_dclock {
 	uint8_t int1_status:1;
 	uint8_t reserved5:7;
 	uint32_t cyclic_op_starttime;
+	uint8_t reserved51[12];
 	uint32_t sync0_cycle_time;
 	uint32_t sync1_cycle_time;
 	uint16_t latch0_pos_edge:1;
