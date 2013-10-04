@@ -1,6 +1,9 @@
 Example XML files for use with siitool.
 
 Files:
+sii_example.bin
+	example binary (base of the current used sii file)
+
 Somanet_CtrlProto.xml
 	simple ESI for use with controlproto.
 	Features:
