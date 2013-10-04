@@ -1040,6 +1040,20 @@ static void cat_data_cleanup(struct _sii_cat *cat)
 	}
 }
 
+static struct _sii_cat *cat_new_data(uint16_t type, uint16_t size, void *data)
+{
+	struct _sii_cat *new = malloc(sizeof(struct _sii_cat));
+
+	new->type   = type&0x7fff;
+	new->vendor = (type>>16)&0x1;
+	new->size   = size;
+	new->data   = data;
+	new->next   = NULL;
+	new->prev   = NULL;
+
+	return new;
+}
+
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size)
 {
 	struct _sii_cat *new = malloc(sizeof(struct _sii_cat));
