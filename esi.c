@@ -30,6 +30,22 @@ static void print_all_nodes(xmlNode *root)
 	}
 }
 
+/* parse xml functions */
+static struct _sii_preamble *parse_preamble(xmlNode *root, char **strings)
+{
+	struct _sii_preamble *pa = malloc(sizeof(struct _sii_preamble));
+
+	return pa;
+}
+
+static struct _sii_stdconfig *parse_config(xmlNode *root, char **strings)
+{
+	struct _sii_stdconfig *sc = malloc(sizeof(struct _sii_stdconfig));
+
+	return sc;
+}
+
+
 /* API function */
 
 struct _esi_data *esi_init(const char *file)
@@ -131,6 +147,18 @@ void esi_release(struct _esi_data *esi)
 	sii_release(esi->sii);
 	xmlFreeDoc(esi->doc);
 	free(esi);
+}
+
+int esi_parse(EsiData *esi)
+{
+	xmlNode *root = xmlDocGetRootElement(esi->doc);
+	char **strings = NULL;
+
+	struct _sii_preamble *preamble = parse_preamble(root, strings);
+	struct _sii_stdconfig *stdconfig = parse_config(root, strings);
+
+
+	return -1;
 }
 
 void esi_print_xml(EsiData *esi)

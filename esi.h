@@ -18,4 +18,6 @@ void esi_release(EsiData *esi);
 
 void esi_print_xml(EsiData *esi);
 
+int esi_parse(EsiData *esi);
+
 #endif /* ESI_H */

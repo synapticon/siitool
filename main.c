@@ -152,6 +152,9 @@ int main(int argc, char *argv[])
 
 	EsiData *esi = esi_init_string(eeprom, MAX_BUFFER_SIZE);
 	esi_print_xml(esi);
+	if (esi_parse(esi))
+		fprintf(stderr, "Error something went wrong in XML parsing\n");
+
 	esi_release(esi);
 
 	return 0;
