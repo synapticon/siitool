@@ -843,7 +843,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			break;
 
 		case SII_STD_CONFIG:
-			printf("Print std config:\n");
 			sii->config = parse_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
 			secstart = buffer;
@@ -981,8 +980,6 @@ finish:
 
 static void cat_data_cleanup_fmmu(struct _sii_fmmu *fmmu)
 {
-	printf("FIXME: implement fmmu cleanup\n");
-
 	while (fmmu->list != NULL)
 		fmmu_rm_entry(fmmu);
 
@@ -2022,7 +2019,7 @@ void sii_print(SiiInfo *sii)
 	printf("First print preamble and config\n");
 	struct _sii_preamble *preamble = sii->preamble;
 
-	/* DEBUG print out */
+	/* preamble */
 	printf("Preamble:\n");
 	printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
 	printf("PDI config: %.4x\n", preamble->pdi_conf);
@@ -2033,7 +2030,7 @@ void sii_print(SiiInfo *sii)
 
 	struct _sii_stdconfig *stdc = sii->config;
 
-	/* DEBUG print */
+	/* general information */
 	printf("General Information:\n");
 	printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
 	printf("Product ID: ...... 0x%08x\n", stdc->product_id);
