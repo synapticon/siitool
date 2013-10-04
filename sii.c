@@ -2106,3 +2106,27 @@ int sii_write_bin(SiiInfo *sii, const char *outfile)
 
 	return 0;
 }
+
+
+int sii_add_info(SiiInfo *sii, struct _sii_preamble *pre, struct _sii_stdconfig *cfg)
+{
+	if (sii->preamble != NULL) {
+		fprintf(stderr, "Warning, sii->preamble not empty.\n");
+		return -1;
+	}
+
+	if (sii->config != NULL) {
+		fprintf(stderr, "Warning, sii->config not empty.\n");
+		return -1;
+	}
+
+	sii->preamble = pre;
+	sii->config = cfg;
+
+	return 0;
+}
+
+int sii_add_cat(SiiInfo *sii, struct _sii_cat *cat)
+{
+	return cat_add(sii, cat);
+}
