@@ -1,6 +1,7 @@
 /* ESI - EtherCAT Slave Information
  */
 #include "esi.h"
+#include "esifile.h"
 #include "sii.h"
 
 #include <stdio.h>
@@ -8,12 +9,6 @@
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-
-enum eFileType {
-	UNKNOWN =0
-	,SIIBIN
-	,XML
-};
 
 struct _esi_data {
 	SiiInfo *sii;
@@ -23,49 +18,16 @@ struct _esi_data {
 	char *xmlfile;
 };
 
-const char *get_filesuffix(const char *file)
+static void print_all_nodes(xmlNode *root)
 {
-	const char *suffix = file;
-	const char *f = file;
+	//xmlNode *node = root;
 
-	while (*f != '\0') {
-		if (*f == '.')
-			suffix = f+1;
-		f++;
+	for (xmlNode *current = root; current; current = current->next) {
+		if (current->type == XML_ELEMENT_NODE)
+			printf("node type: element, name = %s\n", current->name);
+
+		print_all_nodes(current->children);
 	}
-
-	return suffix;
-}
-
-enum eFileType get_filetype(const char *file)
-{
-	enum eFileType type = UNKNOWN;
-
-	// - file ending (.bin or .xml)
-	// - first 4 bytes (?) -> "<?xml" or binary bits
-	const char *suffix = get_filesuffix(file);
-	if (suffix == NULL) {
-		printf("Warning no suffix\n");
-		type = UNKNOWN;
-	} else if (strncmp(suffix, "xml", 3) == 0) {
-		type = XML;
-	} else if (strncmp(suffix, "bin", 3) == 0) {
-		type = SIIBIN;
-	} else {
-		type = UNKNOWN;
-	}
-
-	FILE *fh = fopen(file, "r");
-	char foo[7];
-	fgets(foo, 5, fh);
-	fclose(fh);
-
-	if (strncmp(foo, "<?xml", 5) == 0) {
-		if (type != XML)
-			type = UNKNOWN;
-	}
-
-	return type;
 }
 
 /* API function */

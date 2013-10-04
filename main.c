@@ -38,6 +38,8 @@
  */
 
 #include "sii.h"
+#include "esi.h"
+#include "esifile.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -47,6 +49,8 @@
 
 #define VERSION_MAJOR    0
 #define VERSION_MINNOR   1
+
+#define MAX_BUFFER_SIZE   (1000*1024)
 
 #define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
 #define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \
@@ -81,6 +85,7 @@ static void printhelp(const char *prog)
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
 }
 
+/* FIXME the read_eeprom is misleading since the data are read from a every input stream */
 static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 {
 	size_t count = 0;
@@ -99,7 +104,7 @@ static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 int main(int argc, char *argv[])
 {
 	FILE *f;
-	unsigned char eeprom[1024];
+	unsigned char eeprom[MAX_BUFFER_SIZE];
 	const char *filename = NULL;
 	//int input = 0;
 	int i;
@@ -128,8 +133,10 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	/* test compatibility between compiled and used library version */
+
 	if (filename == NULL)
-		read_eeprom(stdin, eeprom, 1024);
+		read_eeprom(stdin, eeprom, MAX_BUFFER_SIZE);
 	else {
 		f = fopen(filename, "r");
 		if (f == NULL) {
@@ -139,9 +146,15 @@ int main(int argc, char *argv[])
 
 		printf("Start reading contents of file\n");
 
-		read_eeprom(f, eeprom, 1024);
+		read_eeprom(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
 	}
+
+	EsiData *esi = esi_init_string(eeprom, MAX_BUFFER_SIZE);
+	esi_print_xml(esi);
+	esi_release(esi);
+
+	return 0;
 
 	//return parse_and_print_content(eeprom, 1024);
 	SiiInfo *sii = sii_init_string(eeprom, 1024);

@@ -15,7 +15,7 @@ CFLAGS += `xml2-config --cflags`
 LDFLAGS += `xml2-config --libs`
 
 TARGET = siitool
-OBJECTS = main.o sii.o esi.o
+OBJECTS = main.o sii.o esi.o esifile.o
 
 PREFIX = /usr/local/bin
 
