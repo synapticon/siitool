@@ -3,6 +3,7 @@
 #include "esi.h"
 #include "esifile.h"
 #include "sii.h"
+#include "stringlist.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -16,6 +17,7 @@ struct _esi_data {
 	xmlDocPtr doc; /* do I need both? */
 	xmlNode *xmlroot;
 	char *xmlfile;
+	StringList *strings;
 };
 
 static void print_all_nodes(xmlNode *root)
@@ -31,14 +33,14 @@ static void print_all_nodes(xmlNode *root)
 }
 
 /* parse xml functions */
-static struct _sii_preamble *parse_preamble(xmlNode *root, char **strings)
+static struct _sii_preamble *parse_preamble(xmlNode *root, StringList *strings)
 {
 	struct _sii_preamble *pa = malloc(sizeof(struct _sii_preamble));
 
 	return pa;
 }
 
-static struct _sii_stdconfig *parse_config(xmlNode *root, char **strings)
+static struct _sii_stdconfig *parse_config(xmlNode *root, StringList *strings)
 {
 	struct _sii_stdconfig *sc = malloc(sizeof(struct _sii_stdconfig));
 
@@ -152,10 +154,9 @@ void esi_release(struct _esi_data *esi)
 int esi_parse(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
-	char **strings = NULL;
 
-	struct _sii_preamble *preamble = parse_preamble(root, strings);
-	struct _sii_stdconfig *stdconfig = parse_config(root, strings);
+	struct _sii_preamble *preamble = parse_preamble(root, esi->strings);
+	struct _sii_stdconfig *stdconfig = parse_config(root, esi->strings);
 
 
 	return -1;
