@@ -856,7 +856,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			strings = parse_stringsection(buffer, secsize);
 			newcat->data = (void *)strings;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added string section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -877,7 +879,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			general = parse_general_section(buffer, secsize);
 			newcat->data = (void *)general;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added general section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -890,7 +894,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			fmmu = parse_fmmu_section(buffer, secsize);
 			newcat->data = (void *)fmmu;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added fmmu section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -903,7 +909,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			syncmanager = parse_syncm_section(buffer, secsize);
 			newcat->data = (void *)syncmanager;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added syncm section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -916,7 +924,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			txpdo = parse_pdo_section(buffer, secsize, TxPDO);
 			newcat->data = (void *)txpdo;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added txpdo section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -929,7 +939,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
 			newcat->data = (void *)rxpdo;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added rxpdo section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -942,7 +954,9 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			distributedclock = parse_dclock_section(buffer, secsize);
 			newcat->data = (void *)distributedclock;
 			cat_add(sii, newcat);
+#ifdef DEBUG
 			printf("DEBUG Added dclock section\n");
+#endif
 
 			buffer+=secsize;
 			secstart = buffer;
@@ -1427,10 +1441,10 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
 #if 1
 	unsigned char *b = buf;
-	printf("TODO: binary write of general section (0x%x)\n", cat->type);
-
+#ifdef DEBUG
 	size_t size = sizeof(struct _sii_general)/sizeof(unsigned char);
 	printf("DEBUG Categorie general is %d bytes\n", size);
+#endif
 
 	struct _sii_general *bcat = (struct _sii_general *)cat->data;
 
@@ -1605,7 +1619,9 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 	return (uint16_t)(b-buf);
 #else
 	/* NOTE: dclock has 82 bytes, but the struct is 84 bytes. */
+#ifdef DEBUG
 	printf("DEBUG: size of struct _sii_dclock: %d\n", sizeof(struct _sii_dclock));
+#endif
 	return sii_cat_write_cat(cat, buf);
 #endif
 }
@@ -1666,6 +1682,11 @@ static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 	unsigned char *catb = (unsigned char *)cat->data;
 	for (size_t i=0; i<catbsz; i++)
 		*b++ = *catb++;
+
+#ifdef DEBUG
+	printf("DEBUG: print cat: 0x%x; expected write: %d, written: %d\n",
+			cat->type, catbsz, (b-buf));
+#endif
 
 	return (uint16_t)(b-buf);
 }
@@ -1728,7 +1749,9 @@ static size_t sii_cat_write(struct _sii *sii)
 			break;
 		}
 
-		printf("DEBUG section type 0x%.4x size: 0x%.4x\n", cat->type, catsize);
+#ifdef DEBUG
+		printf("DEBUG section type 0x%.4x size: 0x%.4x\n", cat->type, catsize/2);
+#endif
 
 		if (catsize == 0) {
 			fprintf(stderr, "Warning, existing category (0x%.x) unexpected empty\n",
@@ -1894,7 +1917,9 @@ static void sii_write(SiiInfo *sii)
 	// - iterate through categories
 
 	sii->rawsize = (size_t)(outbuf-sii->rawbytes);
+#ifdef DEBUG
 	printf("DEBUG sii_write() wrote %d bytes for preamble and std config\n", sii->rawsize);
+#endif
 
 #if 1
 	size_t sz = sii_cat_write(sii);

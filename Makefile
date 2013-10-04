@@ -5,8 +5,9 @@ LD = gcc
 
 WARNINGS = -Wall -Wextra
 OPTIMIZATION = -O2
+DEBUG = 
 
-CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99
+CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99 $(DEBUG)
 LDFLAGS = -g  $(WARNINGS)
 
 TARGET = siitool
