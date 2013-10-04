@@ -10,8 +10,12 @@ DEBUG =
 CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99 $(DEBUG)
 LDFLAGS = -g  $(WARNINGS)
 
+# add libxml specific flags
+CFLAGS += `xml2-config --cflags`
+LDFLAGS += `xml2-config --libs`
+
 TARGET = siitool
-OBJECTS = main.o sii.o
+OBJECTS = main.o sii.o esi.o
 
 PREFIX = /usr/local/bin
 
