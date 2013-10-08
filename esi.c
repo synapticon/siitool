@@ -102,8 +102,23 @@ static void print_all_nodes(xmlNode *root)
 	//xmlNode *node = root;
 
 	for (xmlNode *current = root; current; current = current->next) {
+		if (strncmp((const char *)current->name, "Profile", 7) == 0) /* skip profile sektion */
+			continue;
+#if 0
+		printf("%d: note type: %s name: %s\n", current->line, type2str(current->type), current->name);
+
+#else 
 		if (current->type == XML_ELEMENT_NODE)
-			printf("node type: element, name = %s\n", current->name);
+			printf("%d: type: %s name = %s, content = '%s'\n",
+				       	current->line, type2str(current->type), current->name, current->content);
+
+		if (current->type == XML_TEXT_NODE)
+			printf("%d: type: %s name: %s content: %s\n",
+					current->line, type2str(current->type), current->name, current->content);
+
+		if (current->type == XML_COMMENT_NODE)
+			continue;
+#endif
 
 		print_all_nodes(current->children);
 	}
