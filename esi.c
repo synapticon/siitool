@@ -20,6 +20,83 @@ struct _esi_data {
 	StringList *strings;
 };
 
+static char *type2str(int type)
+{
+	switch (type) {
+	case XML_ELEMENT_NODE:
+		return "XML_ELEMENT_NODE";
+
+	case XML_ATTRIBUTE_NODE:
+		return "XML_ATTRIBUTE_NODE";
+
+	case XML_TEXT_NODE:
+		return "XML_TEXT_NODE";
+
+	case XML_CDATA_SECTION_NODE:
+		return "XML_CDATA_SECTION_NODE";
+
+	case XML_ENTITY_REF_NODE:
+		return "XML_ENTITY_REF_NODE";
+
+	case XML_ENTITY_NODE:
+		return "XML_ENTITY_NODE";
+
+	case XML_PI_NODE:
+		return "XML_PI_NODE";
+
+	case XML_COMMENT_NODE:
+		return "XML_COMMENT_NODE";
+
+	case XML_DOCUMENT_NODE:
+		return "XML_DOCUMENT_NODE";
+
+	case XML_DOCUMENT_TYPE_NODE:
+		return "XML_DOCUMENT_TYPE_NODE";
+
+	case XML_DOCUMENT_FRAG_NODE:
+		return "XML_DOCUMENT_FRAG_NODE";
+
+	case XML_NOTATION_NODE:
+		return "XML_NOTATION_NODE";
+
+	case XML_HTML_DOCUMENT_NODE:
+		return "XML_HTML_DOCUMENT_NODE";
+
+	case XML_DTD_NODE:
+		return "XML_DTD_NODE";
+
+	case XML_ELEMENT_DECL:
+		return "XML_ELEMENT_DECL";
+
+	case XML_ATTRIBUTE_DECL:
+		return "XML_ATTRIBUTE_DECL";
+
+	case XML_ENTITY_DECL:
+		return "XML_ENTITY_DECL";
+
+	case XML_NAMESPACE_DECL:
+		return "XML_NAMESPACE_DECL";
+
+	case XML_XINCLUDE_START:
+		return "XML_XINCLUDE_START";
+
+	case XML_XINCLUDE_END:
+		return "XML_XINCLUDE_END";
+
+	case XML_DOCB_DOCUMENT_NODE:
+		return "XML_DOCB_DOCUMENT_NODE";
+
+	}
+
+	return "empty";
+}
+
+static void print_node(xmlNode *node)
+{
+	printf("%d: type: %s name = %s, content = '%s'\n",
+		node->line, type2str(node->type), node->name, node->content);
+}
+
 static void print_all_nodes(xmlNode *root)
 {
 	//xmlNode *node = root;
@@ -30,6 +107,54 @@ static void print_all_nodes(xmlNode *root)
 
 		print_all_nodes(current->children);
 	}
+}
+
+static void parse_example(xmlNode *root, StringList *strings)
+{
+	if (strings != NULL)
+		strings = NULL;
+
+	for (xmlNode *current = root; current; current = current->next) {
+		/*
+		printf("%d: note type: %s name: %s content: '%s'\n",
+			       	current->line, type2str(current->type), current->name, current->content);
+		 */
+		if (current->type == XML_ELEMENT_NODE && strncmp((const char *)current->name, "Device", 6) == 0) {
+			printf("Device found, now printing\n");
+			print_all_nodes(current);
+			printf("Finished\n");
+			return;
+		}
+
+		parse_example(current->children, NULL);
+	}
+}
+
+static uint16_t preamble_crc8(struct _sii_preamble *pa)
+{
+	if (pa == NULL)
+		return 0;
+
+	/* FIXME add crc calculation! */
+	return 0x2f;
+}
+
+static xmlNode *searchNode(xmlNode *root, const char *name)
+{
+	xmlNode *tmp = NULL;
+
+	for (xmlNode *curr = root; curr; curr = curr->next) {
+		if (curr->type == XML_ELEMENT_NODE &&
+			strncmp((const char *)curr->name, name, strlen(name)) == 0)
+			return curr;
+
+
+		tmp = searchNode(curr->children, name);
+		if (tmp != NULL)
+			return tmp;
+	}
+
+	return NULL;
 }
 
 /* parse xml functions */
@@ -155,8 +280,9 @@ int esi_parse(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
 
-	struct _sii_preamble *preamble = parse_preamble(root, esi->strings);
-	struct _sii_stdconfig *stdconfig = parse_config(root, esi->strings);
+	xmlNode *n = searchNode(root, "ConfigData");
+	struct _sii_preamble *preamble = parse_preamble(n);
+	//struct _sii_stdconfig *stdconfig = parse_config(root, esi->strings);
 
 
 	return -1;
