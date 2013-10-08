@@ -173,9 +173,30 @@ static xmlNode *searchNode(xmlNode *root, const char *name)
 }
 
 /* parse xml functions */
-static struct _sii_preamble *parse_preamble(xmlNode *root, StringList *strings)
+static struct _sii_preamble *parse_preamble(xmlNode *root)
 {
 	struct _sii_preamble *pa = malloc(sizeof(struct _sii_preamble));
+
+	char string[1024];
+	strncpy(string, (char *)root->content, 1024);
+
+	char *b = string;
+	pa->pdi_ctrl = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+	pa->pdi_conf = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+	pa->sync_impulse = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+	pa->pdi_conf2 = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+	pa->alias = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+
+	for (int i=0; i<4; i++)
+		pa->reserved[i] = 0x00;
+
+	pa->checksum = 0xff;
+	pa->checksum = preamble_crc8(pa);
 
 	return pa;
 }
