@@ -18,6 +18,12 @@
 #define MBOX_SOE    0x0010
 #define MBOX_VOE    0x0020
 
+#define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
+#define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \
+	                            ((unsigned int)(c&0xff)<<16) | \
+				    ((unsigned int)(b&0xff)<<8)  | \
+				     (unsigned int)(a&0xff)
+
 enum eSection {
 	SII_CAT_NOP
 	,SII_PREAMBLE
