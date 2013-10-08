@@ -291,6 +291,9 @@ int esi_parse(EsiData *esi)
 void esi_print_xml(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
-	print_all_nodes(root);
-	xmlDocDump(stdout, esi->doc);
+	//parse_example(root, NULL);
+	xmlNode *node = searchNode(root, "Device");
+	printf("\n+++ Printing all nodes +++\n");
+	print_all_nodes(node);
+	//xmlDocDump(stdout, esi->doc);
 }
