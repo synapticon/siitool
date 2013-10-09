@@ -155,6 +155,7 @@ int main(int argc, char *argv[])
 	if (esi_parse(esi))
 		fprintf(stderr, "Error something went wrong in XML parsing\n");
 
+	esi_print_sii(esi);
 	esi_release(esi);
 
 	return 0;

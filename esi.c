@@ -343,3 +343,9 @@ void esi_print_xml(EsiData *esi)
 	print_all_nodes(node);
 	//xmlDocDump(stdout, esi->doc);
 }
+
+void esi_print_sii(EsiData *esi)
+{
+	SiiInfo *sii = esi->sii;
+	sii_print(sii);
+}
