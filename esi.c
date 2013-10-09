@@ -172,7 +172,7 @@ static xmlNode *searchNode(xmlNode *root, const char *name)
 	return NULL;
 }
 
-/* parse xml functions */
+/* functions to parse xml */
 static struct _sii_preamble *parse_preamble(xmlNode *root)
 {
 	struct _sii_preamble *pa = malloc(sizeof(struct _sii_preamble));
