@@ -173,29 +173,39 @@ static xmlNode *searchNode(xmlNode *root, const char *name)
 }
 
 /* functions to parse xml */
-static struct _sii_preamble *parse_preamble(xmlNode *root)
+static struct _sii_preamble *parse_preamble(xmlNode *node)
 {
 	struct _sii_preamble *pa = malloc(sizeof(struct _sii_preamble));
 
 	char string[1024];
-	strncpy(string, (char *)root->content, 1024);
+	strncpy(string, (char *)node->children->content, 1024);
 
+	unsigned int lowbyte=0, highbyte=0;
 	char *b = string;
-	pa->pdi_ctrl = BYTES_TO_WORD(*b, *(b+1));
-	b+=2;
-	pa->pdi_conf = BYTES_TO_WORD(*b, *(b+1));
-	b+=2;
-	pa->sync_impulse = BYTES_TO_WORD(*b, *(b+1));
-	b+=2;
-	pa->pdi_conf2 = BYTES_TO_WORD(*b, *(b+1));
-	b+=2;
-	pa->alias = BYTES_TO_WORD(*b, *(b+1));
-	b+=2;
+	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
+	pa->pdi_ctrl = BYTES_TO_WORD(highbyte, lowbyte);
+	b+=4;
+
+	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
+	pa->pdi_conf = BYTES_TO_WORD(highbyte, lowbyte);
+	b+=4;
+
+	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
+	pa->sync_impulse = BYTES_TO_WORD(highbyte, lowbyte);
+	b+=4;
+
+	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
+	pa->pdi_conf2 = BYTES_TO_WORD(highbyte, lowbyte);
+	b+=4;
+
+	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
+	pa->alias = BYTES_TO_WORD(highbyte, lowbyte);
+	b+=4;
 
 	for (int i=0; i<4; i++)
 		pa->reserved[i] = 0x00;
 
-	pa->checksum = 0xff;
+	pa->checksum = 0xff; /* set initial checksum */
 	pa->checksum = preamble_crc8(pa);
 
 	return pa;
@@ -317,7 +327,7 @@ int esi_parse(EsiData *esi)
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
 
 	xmlNode *n = searchNode(root, "ConfigData");
-	struct _sii_preamble *preamble = parse_preamble(n);
+	esi->sii->preamble = parse_preamble(n);
 	//struct _sii_stdconfig *stdconfig = parse_config(root, esi->strings);
 
 
