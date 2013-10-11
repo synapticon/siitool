@@ -111,7 +111,7 @@ int sl_pop(StringList *sl)
 char *sl_get_elem_key(StringList *sl, char *key)
 {
 	struct _str_elem *e = sl->head;
-	while (e->next->type != TAIL) {
+	while (e->type != TAIL) {
 		if (e->type == HEAD)
 			continue;
 
