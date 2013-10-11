@@ -11,6 +11,7 @@ int sl_push(StringList *sl, char *key, char *elem);
 int sl_pop(StringList *sl);
 
 char *sl_get_elem_key(StringList *sl, char *key);
+char *sl_get_elem_idx(StringList *sl, int idx);
 
 /* iterate through elements */
 char *sl_get_next_string(StringList *sl);

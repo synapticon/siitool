@@ -124,6 +124,23 @@ char *sl_get_elem_key(StringList *sl, char *key)
 	return NULL;
 }
 
+char *sl_get_elem_idx(StringList *sl, int idx)
+{
+	struct _str_elem *e = sl->head;
+
+	while (e->type != TAIL) {
+		if (e->type == HEAD)
+			continue;
+
+		if (e->id == idx)
+			return e->value;
+
+		e = e->next;
+	}
+
+	return NULL;
+}
+
 /* iterate through elements */
 char *sl_get_next_string(StringList *sl)
 {
