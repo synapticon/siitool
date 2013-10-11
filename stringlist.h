@@ -13,7 +13,7 @@ int sl_pop(StringList *sl);
 char *sl_get_elem_key(StringList *sl, char *key);
 
 /* iterate through elements */
-char *sl_get_next(StringList *sl);
+char *sl_get_next_string(StringList *sl);
 void sl_rewind(StringList *sl);
 
 #endif /* STRINGLIST_H */

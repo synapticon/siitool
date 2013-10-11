@@ -125,7 +125,7 @@ char *sl_get_elem_key(StringList *sl, char *key)
 }
 
 /* iterate through elements */
-char *sl_get_next(StringList *sl)
+char *sl_get_next_string(StringList *sl)
 {
 	if (sl->current->type == TAIL)
 		return NULL;
