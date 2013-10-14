@@ -213,9 +213,132 @@ static struct _sii_preamble *parse_preamble(xmlNode *node)
 	return pa;
 }
 
-static struct _sii_stdconfig *parse_config(xmlNode *root, StringList *strings)
+static struct _sii_stdconfig *parse_config(xmlNode *root)
 {
+	xmlNode *n, *tmp;
+
 	struct _sii_stdconfig *sc = malloc(sizeof(struct _sii_stdconfig));
+
+	//xmlNode *n = searchNode(root, "Vendor");
+	n = searchNode(root, "Vendor");
+	if (n==NULL)
+		return NULL;
+
+	tmp = searchNode(n, "Id");
+	//char *vendoridstr = tmp->children->content;
+
+	/* get id */
+	// FIXME add some error and validty checking, esp. if node is set correctly and has the type
+	sscanf((const char *)tmp->children->content, "#x%x", &(sc->vendor_id));
+
+	n = searchNode(searchNode(root, "Devices"), "Device");
+	print_node(n);
+
+	tmp = searchNode(n, "Type");
+	xmlAttr *prop = tmp->properties;
+
+	while (prop != NULL) {
+		if (xmlStrncmp(prop->name, xmlCharStrdup("ProductCode"), xmlStrlen(prop->name))) {
+			sscanf((const char *)prop->children->content, "#x%x", &(sc->product_id));
+		}
+
+		if (xmlStrncmp(prop->name, xmlCharStrdup("RevisionNo"), xmlStrlen(prop->name))) {
+			sscanf((const char *)prop->children->content, "#x%x", &(sc->revision_id));
+		}
+
+		prop = prop->next;
+	}
+
+	sc->serial = 0; /* FIXME the serial number is not in the esi? */
+
+	/* FIXME where are the bootstrap settings? */
+	sc->bs_rec_mbox_offset = 0x1000;
+	sc->bs_rec_mbox_size = 532;
+	sc->bs_snd_mbox_offset = 0x1800;
+	sc->bs_snd_mbox_size = 532;
+
+	sc->std_rec_mbox_offset = 0x000a;
+	sc->std_rec_mbox_size = 0xf;
+	sc->std_snd_mbox_offset = 0x000b;
+	sc->std_snd_mbox_size = 0xf;
+
+	/* filter the std mailbox configuration; from <Sm> description */
+
+	tmp = n->children;
+	printf("Children:\n");
+	while (tmp != NULL) {
+		if (xmlStrncmp(tmp->name, xmlCharStrdup("Sm"), xmlStrlen(tmp->name)) == 0) {
+			xmlNode *smchild = tmp->children;
+			while (smchild != NULL) {
+				if (xmlStrncmp(smchild->content, xmlCharStrdup("MBoxOut"), xmlStrlen(smchild->content))== 0) {
+					xmlAttr *p = tmp->properties;
+					while (p!=NULL) {
+						if (xmlStrncmp(p->name, xmlCharStrdup("DefaultSize"), xmlStrlen(p->name)) == 0) {
+							sc->std_rec_mbox_size = (uint16_t)atoi((const char *)p->children->content);
+						}
+
+						if (xmlStrncmp(p->name, xmlCharStrdup("StartAddress"), xmlStrlen(p->name)) == 0) {
+							unsigned int atmp = 0;
+							sscanf((const char *)p->children->content, "#x%x", &atmp);
+							sc->std_rec_mbox_offset = atmp;
+						}
+
+						p = p->next;
+					}
+
+				}
+
+				if (xmlStrncmp(smchild->content, xmlCharStrdup("MBoxIn"), xmlStrlen(smchild->content))== 0) {
+					xmlAttr *p = tmp->properties;
+					while (p!=NULL) {
+						if (xmlStrncmp(p->name, xmlCharStrdup("DefaultSize"), xmlStrlen(p->name)) == 0) {
+							sc->std_snd_mbox_size = (uint16_t)atoi((const char *)p->children->content);
+						}
+
+						if (xmlStrncmp(p->name, xmlCharStrdup("StartAddress"), xmlStrlen(p->name)) == 0) {
+							unsigned int atmp = 0;
+							sscanf((const char *)p->children->content, "#x%x", &atmp);
+							sc->std_snd_mbox_offset = atmp;
+						}
+
+						p = p->next;
+					}
+
+				}
+
+				smchild = smchild->next;
+			}
+		}
+
+		tmp = tmp->next;
+	}
+
+	/* get the supported mailboxes - these also occure again in the general section */
+
+	tmp = searchNode(n, "Mailbox");
+	xmlNode *mbox;
+
+	mbox = searchNode(tmp, "CoE");
+	if (mbox != NULL)
+		sc->mailbox_protocol.bit.coe = 1;
+
+	mbox = searchNode(tmp, "EoE");
+	if (mbox != NULL)
+		sc->mailbox_protocol.bit.eoe = 1;
+
+	mbox = searchNode(tmp, "FoE");
+	if (mbox != NULL)
+		sc->mailbox_protocol.bit.foe = 1;
+
+	mbox = searchNode(tmp, "VoE");
+	if (mbox != NULL)
+		sc->mailbox_protocol.bit.voe = 1;
+
+	/* fetch eeprom size */
+	tmp = searchNode(n, "ByteSize");
+	/* convert byte -> kbyte */
+	sc->eeprom_size = atoi((char *)tmp->children->content)/1024;
+	sc->version = 1; /* also not in Esi */
 
 	return sc;
 }
@@ -330,7 +453,7 @@ int esi_parse(EsiData *esi)
 
 	xmlNode *n = searchNode(root, "ConfigData");
 	esi->sii->preamble = parse_preamble(n);
-	//struct _sii_stdconfig *stdconfig = parse_config(root, esi->strings);
+	esi->sii->config = parse_config(root);
 
 
 	return -1;
