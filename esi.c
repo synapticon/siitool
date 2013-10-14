@@ -157,17 +157,18 @@ static uint16_t preamble_crc8(struct _sii_preamble *pa)
 	return 0x2f;
 }
 
-static xmlNode *searchNode(xmlNode *root, const char *name)
+/* Searches the first occurence of node named 'name' */
+static xmlNode *search_node(xmlNode *root, const char *name)
 {
 	xmlNode *tmp = NULL;
 
 	for (xmlNode *curr = root; curr; curr = curr->next) {
 		if (curr->type == XML_ELEMENT_NODE &&
-			strncmp((const char *)curr->name, name, strlen(name)) == 0)
+			strncmp((const char *)curr->name, name, strlen((const char *)curr->name)) == 0)
 			return curr;
 
 
-		tmp = searchNode(curr->children, name);
+		tmp = search_node(curr->children, name);
 		if (tmp != NULL)
 			return tmp;
 	}
@@ -222,22 +223,22 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	struct _sii_stdconfig *sc = malloc(sizeof(struct _sii_stdconfig));
 
-	//xmlNode *n = searchNode(root, "Vendor");
-	n = searchNode(root, "Vendor");
+	//xmlNode *n = search_node(root, "Vendor");
+	n = search_node(root, "Vendor");
 	if (n==NULL)
 		return NULL;
 
-	tmp = searchNode(n, "Id");
+	tmp = search_node(n, "Id");
 	//char *vendoridstr = tmp->children->content;
 
 	/* get id */
 	// FIXME add some error and validty checking, esp. if node is set correctly and has the type
 	sscanf((const char *)tmp->children->content, "#x%x", &(sc->vendor_id));
 
-	n = searchNode(searchNode(root, "Devices"), "Device");
+	n = search_node(search_node(root, "Devices"), "Device");
 	print_node(n);
 
-	tmp = searchNode(n, "Type");
+	tmp = search_node(n, "Type");
 	xmlAttr *prop = tmp->properties;
 
 	while (prop != NULL) {
@@ -318,27 +319,27 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	/* get the supported mailboxes - these also occure again in the general section */
 
-	tmp = searchNode(n, "Mailbox");
+	tmp = search_node(n, "Mailbox");
 	xmlNode *mbox;
 
-	mbox = searchNode(tmp, "CoE");
+	mbox = search_node(tmp, "CoE");
 	if (mbox != NULL)
 		sc->mailbox_protocol.bit.coe = 1;
 
-	mbox = searchNode(tmp, "EoE");
+	mbox = search_node(tmp, "EoE");
 	if (mbox != NULL)
 		sc->mailbox_protocol.bit.eoe = 1;
 
-	mbox = searchNode(tmp, "FoE");
+	mbox = search_node(tmp, "FoE");
 	if (mbox != NULL)
 		sc->mailbox_protocol.bit.foe = 1;
 
-	mbox = searchNode(tmp, "VoE");
+	mbox = search_node(tmp, "VoE");
 	if (mbox != NULL)
 		sc->mailbox_protocol.bit.voe = 1;
 
 	/* fetch eeprom size */
-	tmp = searchNode(n, "ByteSize");
+	tmp = search_node(n, "ByteSize");
 	/* convert byte -> kbyte */
 	sc->eeprom_size = atoi((char *)tmp->children->content)/1024;
 	sc->version = 1; /* also not in Esi */
@@ -454,7 +455,7 @@ int esi_parse(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
 
-	xmlNode *n = searchNode(root, "ConfigData");
+	xmlNode *n = search_node(root, "ConfigData");
 	esi->sii->preamble = parse_preamble(n);
 	esi->sii->config = parse_config(root);
 
@@ -466,7 +467,7 @@ void esi_print_xml(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
 	//parse_example(root, NULL);
-	xmlNode *node = searchNode(root, "Device");
+	xmlNode *node = search_node(root, "Device");
 	printf("\n+++ Printing all nodes +++\n");
 	print_all_nodes(node);
 	//xmlDocDump(stdout, esi->doc);
