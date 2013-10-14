@@ -2463,7 +2463,7 @@
 					</OpMode>
 				</Dc>
 				<Eeprom>
-					<ByteSize>1920</ByteSize>
+					<ByteSize>15360</ByteSize>
 					<!-- org: <ConfigData>0800020800000000000000000000</ConfigData> -->
 					<ConfigData>080e028800000000000000000000</ConfigData>
 					<!-- the crc8 checksum of the above: 2f00 -->
