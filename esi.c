@@ -172,6 +172,8 @@ static xmlNode *searchNode(xmlNode *root, const char *name)
 	return NULL;
 }
 
+/* TODO: Add function to search for all nodes named by 'name' (e.g. multiple <Sm>-Tags */
+
 /* functions to parse xml */
 static struct _sii_preamble *parse_preamble(xmlNode *node)
 {
