@@ -93,6 +93,9 @@ static char *type2str(int type)
 
 static void print_node(xmlNode *node)
 {
+	if ((node->type == XML_TEXT_NODE) && (0x0a == *(node->content)))
+		return; // skip line feed node
+
 	printf("%d: type: %s name = %s, content = '%s'\n",
 		node->line, type2str(node->type), node->name, node->content);
 }
