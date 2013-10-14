@@ -2021,52 +2021,56 @@ void sii_print(SiiInfo *sii)
 	printf("First print preamble and config\n");
 	struct _sii_preamble *preamble = sii->preamble;
 
-	/* preamble */
-	printf("Preamble:\n");
-	printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
-	printf("PDI config: %.4x\n", preamble->pdi_conf);
-	printf("Sync Impulse length = %d ns (raw: %.4x)\n", preamble->sync_impulse*10, preamble->sync_impulse);
-	printf("PDI config 2: %.4x\n", preamble->pdi_conf2);
-	printf("Configured station alias: %.4x\n", preamble->alias);
-	printf("Checksum of preamble: %.4x\n", preamble->checksum);
+	if (preamble != NULL) {
+		/* preamble */
+		printf("Preamble:\n");
+		printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
+		printf("PDI config: %.4x\n", preamble->pdi_conf);
+		printf("Sync Impulse length = %d ns (raw: %.4x)\n", preamble->sync_impulse*10, preamble->sync_impulse);
+		printf("PDI config 2: %.4x\n", preamble->pdi_conf2);
+		printf("Configured station alias: %.4x\n", preamble->alias);
+		printf("Checksum of preamble: %.4x\n", preamble->checksum);
+	}
 
 	struct _sii_stdconfig *stdc = sii->config;
 
-	/* general information */
-	printf("General Information:\n");
-	printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
-	printf("Product ID: ...... 0x%08x\n", stdc->product_id);
-	printf("Revision ID: ..... 0x%08x\n", stdc->revision_id);
-	printf("Serial Number: ... 0x%08x\n", stdc->serial);
+	if (stdc != NULL) {
+		/* general information */
+		printf("General Information:\n");
+		printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
+		printf("Product ID: ...... 0x%08x\n", stdc->product_id);
+		printf("Revision ID: ..... 0x%08x\n", stdc->revision_id);
+		printf("Serial Number: ... 0x%08x\n", stdc->serial);
 
-	/* mailbox settings */
-	printf("\nDefault mailbox settings:\n");
-	printf("Bootstrap received mailbox offset: 0x%04x\n", stdc->bs_rec_mbox_offset);
-	printf("Bootstrap received mailbox size:   %d\n", stdc->bs_rec_mbox_size);
-	printf("Bootstrap send mailbox offset:     0x%04x\n", stdc->bs_snd_mbox_offset);
-	printf("Bootstrap send mailbox size:       %d\n", stdc->bs_snd_mbox_size);
+		/* mailbox settings */
+		printf("\nDefault mailbox settings:\n");
+		printf("Bootstrap received mailbox offset: 0x%04x\n", stdc->bs_rec_mbox_offset);
+		printf("Bootstrap received mailbox size:   %d\n", stdc->bs_rec_mbox_size);
+		printf("Bootstrap send mailbox offset:     0x%04x\n", stdc->bs_snd_mbox_offset);
+		printf("Bootstrap send mailbox size:       %d\n", stdc->bs_snd_mbox_size);
 
-	printf("Standard received mailbox offset:  0x%04x\n", stdc->std_rec_mbox_offset);
-	printf("Standard received mailbox size:    %d\n", stdc->std_rec_mbox_size);
-	printf("Standard send mailbox offset:      0x%04x\n", stdc->std_snd_mbox_offset);
-	printf("Standard send mailbox size:        %d\n", stdc->std_snd_mbox_size);
+		printf("Standard received mailbox offset:  0x%04x\n", stdc->std_rec_mbox_offset);
+		printf("Standard received mailbox size:    %d\n", stdc->std_rec_mbox_size);
+		printf("Standard send mailbox offset:      0x%04x\n", stdc->std_snd_mbox_offset);
+		printf("Standard send mailbox size:        %d\n", stdc->std_snd_mbox_size);
 
-	printf("\nSupported Mailboxes: ");
-	if (stdc->mailbox_protocol.word&MBOX_EOE)
-		printf("EoE, ");
-	if (stdc->mailbox_protocol.word&MBOX_COE)
-		printf("CoE, ");
-	if (stdc->mailbox_protocol.word&MBOX_FOE)
-		printf("FoE, ");
-	if (stdc->mailbox_protocol.word&MBOX_SOE)
-		printf("SoE, ");
-	if (stdc->mailbox_protocol.word&MBOX_VOE)
-		printf("VoE, ");
-	printf("\n");
+		printf("\nSupported Mailboxes: ");
+		if (stdc->mailbox_protocol.word&MBOX_EOE)
+			printf("EoE, ");
+		if (stdc->mailbox_protocol.word&MBOX_COE)
+			printf("CoE, ");
+		if (stdc->mailbox_protocol.word&MBOX_FOE)
+			printf("FoE, ");
+		if (stdc->mailbox_protocol.word&MBOX_SOE)
+			printf("SoE, ");
+		if (stdc->mailbox_protocol.word&MBOX_VOE)
+			printf("VoE, ");
+		printf("\n");
 
-	printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
-	printf("Version: %d\n", stdc->version);
-	printf("\n");
+		printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
+		printf("Version: %d\n", stdc->version);
+		printf("\n");
+	}
 
 	/* now print the categories */
 	cat_rewind(sii);
