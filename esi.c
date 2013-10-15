@@ -358,6 +358,56 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	return sc;
 }
 
+static struct _sii_general *parse_general(xmlNode *root)
+{
+	xmlNode *parent;
+	xmlNode *node;
+	xmlNode *tmp;
+	struct _sii_general *general = malloc(sizeof(struct _sii_general));
+
+	/* FIXME handle string indexes */
+
+	/* fetch CoE details */
+	printf("[DEBUG %s] get CoE details\n", __func__);
+	parent = search_node(root, "Device");
+
+	node = search_children(parent, "Mailbox");
+	tmp = search_node(node, "CoE");
+	if (tmp != NULL) {
+		general->coe_enable_sdo = 1;
+		/* parse the attributes */
+		for (xmlAttr *attr = tmp->properties; attr; attr = attr->next) {
+			if (xmlStrcmp(attr->name, xmlCharStrdup("SdoInfo")) == 0)
+				general->coe_enable_sdo_info = atoi((char *)attr->children->content);
+
+			if (xmlStrcmp(attr->name, xmlCharStrdup("PdoAssign")) == 0)
+				general->coe_enable_pdo_assign = atoi((char *)attr->children->content);
+
+			if (xmlStrcmp(attr->name, xmlCharStrdup("PdoConfig")) == 0)
+				general->coe_enable_pdo_conf = atoi((char *)attr->children->content);
+
+			if (xmlStrcmp(attr->name, xmlCharStrdup("PdoUpload")) == 0)
+				general->coe_enable_upload_start = atoi((char *)attr->children->content);
+
+			if (xmlStrcmp(attr->name, xmlCharStrdup("??sdoComplete")) == 0)
+				general->coe_enable_sdo_complete = atoi((char *)attr->children->content);
+
+			//attr = attr->next;
+		}
+	}
+
+	tmp = search_node(node, "EoE");
+	if (tmp != NULL)
+		general->eoe_enabled = 1;
+
+	tmp = search_node(node, "FoE");
+	if (tmp != NULL)
+		general->foe_enabled = 1;
+
+	/* FIXME where are the physical port settings? */
+
+	return general;
+}
 
 /* API function */
 
@@ -469,6 +519,8 @@ int esi_parse(EsiData *esi)
 	xmlNode *n = search_node(root, "ConfigData");
 	esi->sii->preamble = parse_preamble(n);
 	esi->sii->config = parse_config(root);
+
+	struct _sii_general *general = parse_general(root);
 
 
 	return -1;
