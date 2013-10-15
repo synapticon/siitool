@@ -307,5 +307,6 @@ struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category);
 /* functions for specific substructures */
 void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage);
 void syncm_entry_add(struct _sii_syncm *sm, struct _syncm_entry *entry);
+void pdo_entry_add(struct _sii_pdo *pdo, struct _pdo_entry *entry);
 
 #endif /* SII_H */

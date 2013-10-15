@@ -593,6 +593,23 @@ static void pdo_rm_entry(struct _sii_pdo *pdo)
 	free(pe);
 }
 
+void pdo_entry_add(struct _sii_pdo *pdo, struct _pdo_entry *entry)
+{
+	if (pdo->list == NULL) {
+		entry->id = 0;
+		pdo->list = entry;
+	} else {
+		struct _pdo_entry *list = pdo->list;
+		while (list->next != NULL)
+			list = list->next;
+
+		list->next = entry;
+		entry->id = list->id+1;
+		entry->prev = list;
+		entry->next = NULL;
+	}
+}
+
 static void pdo_add_entry(struct _sii_pdo *pdo,
 		int index, int subindex, int string_index, int data_type,
 		int bit_length, int flags)
@@ -609,6 +626,7 @@ static void pdo_add_entry(struct _sii_pdo *pdo,
 	entry->next = NULL;
 	entry->prev = NULL;
 
+	/* FIXME make use of pdo_entry_add() */
 	if (pdo->list == NULL) {
 		entry->id = 0;
 		pdo->list = entry;
