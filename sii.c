@@ -1249,13 +1249,13 @@ static void cat_print_fmmu(struct _sii_cat *cat)
 		case 0xff:
 			printf("not used\n");
 			break;
-		case 0x01:
+		case FMMU_OUTPUTS:
 			printf("used for Outputs\n");
 			break;
-		case 0x02:
+		case FMMU_INPUTS:
 			printf("used for Inputs\n");
 			break;
-		case 0x03:
+		case FMMU_SYNCMSTAT:
 			printf("used for SyncM status\n");
 			break;
 		default:

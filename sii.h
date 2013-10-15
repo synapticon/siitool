@@ -120,6 +120,13 @@ struct _sii_general {
 	uint8_t reservedb[14]; /* shall be zero */
 };
 
+enum eFmmuUsage {
+	FMMU_UNUSED     = 0
+	,FMMU_OUTPUTS   = 0x01
+	,FMMU_INPUTS    = 0x02
+	,FMMU_SYNCMSTAT = 0x03
+};
+
 struct _fmmu_entry {
 	uint8_t usage;
 	/* no content of sii entry */
