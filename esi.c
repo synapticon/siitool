@@ -608,6 +608,7 @@ int esi_parse(EsiData *esi)
 	gencat->prev = NULL;
 	gencat->type = SII_CAT_GENERAL;
 	gencat->size = sizeof(struct _sii_general); /* FIXME CHECK is this size valid? */
+	gencat->data = (void *)general;
 	sii_category_add(esi->sii, gencat);
 
 	/* get the first device */
