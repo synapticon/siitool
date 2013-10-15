@@ -176,6 +176,17 @@ static xmlNode *search_node(xmlNode *root, const char *name)
 	return NULL;
 }
 
+static xmlNode *search_children(xmlNode *root, const char *name)
+{
+	for (xmlNode *curr = root->children; curr; curr = curr->next) {
+		if (curr->type == XML_ELEMENT_NODE &&
+				xmlStrncmp(curr->name, (xmlChar *)name, xmlStrlen(curr->name)) == 0)
+			return curr;
+	}
+
+	return NULL;
+}
+
 /* TODO: Add function to search for all nodes named by 'name' (e.g. multiple <Sm>-Tags */
 
 /* functions to parse xml */
