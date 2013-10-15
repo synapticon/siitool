@@ -2132,7 +2132,7 @@ int sii_add_info(SiiInfo *sii, struct _sii_preamble *pre, struct _sii_stdconfig 
 	return 0;
 }
 
-int sii_add_cat(SiiInfo *sii, struct _sii_cat *cat)
+int sii_add_category(SiiInfo *sii, struct _sii_cat *cat)
 {
 	return cat_add(sii, cat);
 }

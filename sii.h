@@ -284,6 +284,6 @@ int sii_check(SiiInfo *sii);
 
 
 int sii_add_info(SiiInfo *sii, struct _sii_preamble *pre, struct _sii_stdconfig *cfg);
-int sii_add_cat(SiiInfo *sii, struct _sii_cat *cat);
+int sii_add_category(SiiInfo *sii, struct _sii_cat *cat);
 
 #endif /* SII_H */
