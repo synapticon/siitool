@@ -444,21 +444,62 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 
 static void parse_syncm(xmlNode *current, SiiInfo *sii)
 {
-	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
-	cat->next = NULL;
-	cat->prev = NULL;
-	cat->type = SII_CAT_SYNCM;
+	struct _sii_cat *cat = sii_category_find(sii, SII_CAT_SYNCM);
+	if (cat == NULL) {
+		cat = malloc(sizeof(struct _sii_cat));
+		cat->next = NULL;
+		cat->prev = NULL;
+		cat->type = SII_CAT_SYNCM;
+		sii_category_add(sii, cat);
+	}
+
+	if (cat->data == NULL) {
+		cat->data = (void *)malloc(sizeof(struct _sii_syncm));
+		((struct _sii_syncm *)cat->data)->count = 0;
+	}
 
 	/* now fetch the data */
 	size_t smsize = 0;
-	struct _sii_syncm *sm = malloc(sizeof(struct _sii_syncm));
+	struct _sii_syncm *sm = (struct _sii_syncm *)cat->data;
 	sm->count = 0;
 
-	/* FIXME add entries */
+	struct _syncm_entry *entry = malloc(sizeof(struct _syncm_entry));
 
-	cat->data = (void *)sm;
-	cat->size = smsize;
-	sii_category_add(sii, cat);
+	/* FIXME add entries */
+	xmlAttr *args = current->properties;
+	for (xmlAttr *a = args; a ; a = a->next) {
+		if (xmlStrncmp(a->name, xmlCharStrdup("DefaultSize"), xmlStrlen(a->name))) {
+			entry->length = atoi((char *)a->children->content);
+		} else if (xmlStrncmp(a->name, xmlCharStrdup("StartAddress"), xmlStrlen(a->name))) {
+			int tmp = 0;
+			sscanf((char *)a->children->content, "#x%x", &tmp);
+			entry->phys_address = tmp&0xffff;
+		} else if (xmlStrncmp(a->name, xmlCharStrdup("ControlByte"), xmlStrlen(a->name))) {
+			int tmp = 0;
+			sscanf((char *)a->children->content, "#x%x", &tmp);
+			entry->control = tmp&0xff;
+		} else if (xmlStrncmp(a->name, xmlCharStrdup("Enable"), xmlStrlen(a->name))) {
+			entry->enable = atoi((char *)a->children->content);
+		}
+	}
+
+	entry->status = 0; /* don't care */
+
+	/* type is encoded in the value of the node */
+	xmlChar *type = current->children->content;
+	if (xmlStrncmp(type, xmlCharStrdup("MBoxIn"), xmlStrlen(type)))
+		entry->type = SMT_MBOXIN;
+	else if (xmlStrncmp(type, xmlCharStrdup("MBoxOut"), xmlStrlen(type)))
+		entry->type = SMT_MBOXOUT;
+	else if (xmlStrncmp(type, xmlCharStrdup("Inputs"), xmlStrlen(type)))
+		entry->type = SMT_INPUTS;
+	else if (xmlStrncmp(type, xmlCharStrdup("Outputs"), xmlStrlen(type)))
+		entry->type = SMT_OUTPUTS;
+	else
+		entry->type = SMT_UNUSED;
+
+	syncm_entry_add(sm, entry);
+	cat->size += 8; /* a syncmanager entry is 8 bytes */
 }
 
 static void parse_dclock(xmlNode *current, SiiInfo *sii)
