@@ -444,7 +444,7 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 
 	cat->data = (void *)sm;
 	cat->size = smsize;
-	sii_add_category(sii, cat);
+	sii_category_add(sii, cat);
 }
 
 static void parse_dclock(xmlNode *current, SiiInfo *sii)
@@ -462,7 +462,7 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 
 	cat->data = (void *)dc;
 	cat->size = dcsize;
-	sii_add_category(sii, cat);
+	sii_category_add(sii, cat);
 }
 
 static void parse_pdo(xmlNode *current, SiiInfo *sii)
@@ -487,7 +487,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	cat->data = (void *)pdo;
 	cat->size = pdosize;
 
-	sii_add_category(sii, cat);
+	sii_category_add(sii, cat);
 }
 
 
@@ -608,7 +608,7 @@ int esi_parse(EsiData *esi)
 	gencat->prev = NULL;
 	gencat->type = SII_CAT_GENERAL;
 	gencat->size = sizeof(struct _sii_general); /* FIXME CHECK is this size valid? */
-	sii_add_category(esi->sii, gencat);
+	sii_category_add(esi->sii, gencat);
 
 	/* get the first device */
 	xmlNode *device = search_node(search_node(root, "Devices"), "Device");

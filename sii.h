@@ -291,8 +291,9 @@ int sii_check(SiiInfo *sii);
 
 
 int sii_add_info(SiiInfo *sii, struct _sii_preamble *pre, struct _sii_stdconfig *cfg);
-int sii_add_category(SiiInfo *sii, struct _sii_cat *cat);
 
+/* functions to handle categories */
+int sii_category_add(SiiInfo *sii, struct _sii_cat *cat);
 struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category);
 
 /* functions for specific substructures */
