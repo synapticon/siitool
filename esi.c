@@ -409,6 +409,88 @@ static struct _sii_general *parse_general(xmlNode *root)
 	return general;
 }
 
+static void parse_fmmu(xmlNode *current, SiiInfo *sii)
+{
+	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
+	cat->next = NULL;
+	cat->prev = NULL;
+	cat->type = SII_CAT_FMMU;
+
+	/* now fetch the data */
+	size_t fmmusize = 0;
+	struct _sii_fmmu *fmmu = malloc(sizeof(struct _sii_fmmu));
+	fmmu->count = 0;
+
+	/* FIXME add entries */
+
+	cat->data = (void *)fmmu;
+	cat->size = fmmusize;
+	sii_add_category(sii, cat);
+}
+
+static void parse_syncm(xmlNode *current, SiiInfo *sii)
+{
+	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
+	cat->next = NULL;
+	cat->prev = NULL;
+	cat->type = SII_CAT_SYNCM;
+
+	/* now fetch the data */
+	size_t smsize = 0;
+	struct _sii_syncm *sm = malloc(sizeof(struct _sii_syncm));
+	sm->count = 0;
+
+	/* FIXME add entries */
+
+	cat->data = (void *)sm;
+	cat->size = smsize;
+	sii_add_category(sii, cat);
+}
+
+static void parse_dclock(xmlNode *current, SiiInfo *sii)
+{
+	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
+	cat->next = NULL;
+	cat->prev = NULL;
+	cat->type = SII_CAT_DCLOCK;
+
+	/* now fetch the data */
+	size_t dcsize = 0;
+	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
+
+	/* FIXME add entries */
+
+	cat->data = (void *)dc;
+	cat->size = dcsize;
+	sii_add_category(sii, cat);
+}
+
+static void parse_pdo(xmlNode *current, SiiInfo *sii)
+{
+	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
+	cat->next = NULL;
+	cat->prev = NULL;
+
+	if (xmlStrcmp(current->name, xmlCharStrdup("RxPdo")) == 0)
+		cat->type = SII_CAT_RXPDO;
+	else
+		cat->type = SII_CAT_TXPDO;
+
+	/* now fetch the data */
+	size_t pdosize = 0;
+	struct _sii_pdo *pdo = malloc(sizeof(struct _sii_pdo));
+	pdo->index = 0;
+	pdo->type = cat->type;
+	pdo->flags = 0;
+	/* FIXME add other entries */
+
+	cat->data = (void *)pdo;
+	cat->size = pdosize;
+
+	sii_add_category(sii, cat);
+}
+
+
 /* API function */
 
 struct _esi_data *esi_init(const char *file)
@@ -521,6 +603,30 @@ int esi_parse(EsiData *esi)
 	esi->sii->config = parse_config(root);
 
 	struct _sii_general *general = parse_general(root);
+	struct _sii_cat *gencat = malloc(sizeof(struct _sii_cat));
+	gencat->next = NULL;
+	gencat->prev = NULL;
+	gencat->type = SII_CAT_GENERAL;
+	gencat->size = sizeof(struct _sii_general); /* FIXME CHECK is this size valid? */
+	sii_add_category(esi->sii, gencat);
+
+	/* get the first device */
+	xmlNode *device = search_node(search_node(root, "Devices"), "Device");
+
+	/* iterate through children of node 'Device' and get the necessary informations */
+	for (xmlNode *current = device->children; current; current = current->next) {
+		if (xmlStrncmp(current->name, xmlCharStrdup("Fmmu"), xmlStrlen(current->name))) {
+			parse_fmmu(current, esi->sii);
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("Sm"), xmlStrlen(current->name))) {
+			parse_syncm(current, esi->sii);
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("Dc"), xmlStrlen(current->name))) {
+			parse_dclock(current, esi->sii);
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("RxPdo"), xmlStrlen(current->name))) {
+			parse_pdo(current, esi->sii);
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("TxPdo"), xmlStrlen(current->name))) {
+			parse_pdo(current, esi->sii);
+		}
+	}
 
 
 	return -1;
