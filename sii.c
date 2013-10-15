@@ -462,6 +462,25 @@ static void syncm_rm_entry(struct _sii_syncm *sm)
 	free(entry);
 }
 
+void syncm_entry_add(struct _sii_syncm *sm, struct _syncm_entry *entry)
+{
+	if (sm->list == NULL) { /* first element */
+		entry->id = 0;
+		sm->list = entry;
+		sm->count++;
+	} else {
+		struct _syncm_entry *list = sm->list;
+		while (list->next != NULL)
+			list = list->next;
+
+		list->next = entry;
+		entry->id = list->id+1;
+		entry->prev = list;
+		entry->next = NULL;
+		sm->count++;
+	}
+}
+
 static void syncm_add_entry(struct _sii_syncm *sm,
 		int phys_address, int length, int control, int status, int enable, int type)
 {
@@ -476,6 +495,7 @@ static void syncm_add_entry(struct _sii_syncm *sm,
 	entry->enable = enable;
 	entry->type = type;
 
+	// FIXME substitude with syncm_entry_add()
 	if (sm->list == NULL) { /* first element */
 		entry->id = 0;
 		sm->list = entry;
