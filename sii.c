@@ -2137,3 +2137,13 @@ int sii_add_category(SiiInfo *sii, struct _sii_cat *cat)
 {
 	return cat_add(sii, cat);
 }
+
+struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category)
+{
+	for (struct _sii_cat *c = sii->cat_head; c; c = c->next) {
+		if (c->type == category)
+			return c;
+	}
+
+	return NULL;
+}
