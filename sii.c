@@ -1281,19 +1281,19 @@ static void cat_print_syncm_entries(struct _syncm_entry *sme)
 		printf("  Enable byte: 0x%02x\n", e->enable);
 		printf("  SM Type: ");
 		switch (e->type) {
-		case 0x00:
+		case SMT_UNUSED:
 			printf("not used or unknown\n");
 			break;
-		case 0x01:
+		case SMT_MBOXOUT:
 			printf("Mailbox Out\n");
 			break;
-		case 0x02:
+		case SMT_MBOXIN:
 			printf("Mailbox In\n");
 			break;
-		case 0x03:
+		case SMT_OUTPUTS:
 			printf("Process Data Out\n");
 			break;
-		case 0x04:
+		case SMT_INPUTS:
 			printf("Process Data In\n");
 			break;
 		default:

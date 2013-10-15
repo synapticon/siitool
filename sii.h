@@ -140,6 +140,14 @@ struct _sii_fmmu {
 	struct _fmmu_entry *list;
 };
 
+enum eSyncmType {
+	SMT_UNUSED = 0x0
+	,SMT_MBOXOUT
+	,SMT_MBOXIN
+	,SMT_OUTPUTS
+	,SMT_INPUTS
+};
+
 struct _syncm_entry {
 	uint16_t phys_address;
 	uint16_t length;
