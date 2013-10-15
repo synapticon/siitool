@@ -411,21 +411,35 @@ static struct _sii_general *parse_general(xmlNode *root)
 
 static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 {
-	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
-	cat->next = NULL;
-	cat->prev = NULL;
-	cat->type = SII_CAT_FMMU;
+	struct _sii_cat *cat = sii_category_find(sii, SII_CAT_FMMU);
+	if (cat == NULL) { /* create new category */
+		cat = malloc(sizeof(struct _sii_cat));
+		cat->next = NULL;
+		cat->prev = NULL;
+		cat->type = SII_CAT_FMMU;
+		sii_category_add(sii, cat);
+	}
+
+	if (cat->data == NULL) { /* if category exists but doesn't contain any data */
+		cat->data = (void *)malloc(sizeof(struct _sii_fmmu));
+		((struct _sii_fmmu *)cat->data)->count = 0;
+	}
+
+	struct _sii_fmmu *fmmu = (struct _sii_fmmu *)cat->data;
 
 	/* now fetch the data */
-	size_t fmmusize = 0;
-	struct _sii_fmmu *fmmu = malloc(sizeof(struct _sii_fmmu));
-	fmmu->count = 0;
+	xmlChar *content = current->children->content;
+	if (xmlStrncmp(content, xmlCharStrdup("Inputs"), xmlStrlen(content)))
+		fmmu_add_entry(fmmu, FMMU_INPUTS);
+	else if (xmlStrncmp(content, xmlCharStrdup("Outputs"), xmlStrlen(content)))
+		fmmu_add_entry(fmmu, FMMU_OUTPUTS);
+	else if (xmlStrncmp(content, xmlCharStrdup("SynmanagerStat"), xmlStrlen(content))) //FIXME what is the valid content?
+		fmmu_add_entry(fmmu, FMMU_SYNCMSTAT);
+	else
+		fmmu_add_entry(fmmu, FMMU_UNUSED);
 
-	/* FIXME add entries */
-
-	cat->data = (void *)fmmu;
-	cat->size = fmmusize;
-	sii_add_category(sii, cat);
+	/* add entry to fmmu struct */
+	cat->size += 8; /* add size of new fmmu entry */
 }
 
 static void parse_syncm(xmlNode *current, SiiInfo *sii)
