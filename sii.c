@@ -381,7 +381,7 @@ static void fmmu_rm_entry(struct _sii_fmmu *fmmu)
 	free(fe);
 }
 
-static void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
+void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 {
 	struct _fmmu_entry *new = malloc(sizeof(struct _fmmu_entry));
 	new->prev = NULL;
@@ -400,6 +400,7 @@ static void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 		f->next = new;
 		new->prev = f;
 		new->id = f->id+1;
+		fmmu->count += 1;
 	}
 }
 
