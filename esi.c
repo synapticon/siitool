@@ -416,13 +416,14 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 		cat = malloc(sizeof(struct _sii_cat));
 		cat->next = NULL;
 		cat->prev = NULL;
+		cat->data = NULL;
 		cat->type = SII_CAT_FMMU;
 		sii_category_add(sii, cat);
 	}
 
 	if (cat->data == NULL) { /* if category exists but doesn't contain any data */
 		cat->data = (void *)malloc(sizeof(struct _sii_fmmu));
-		((struct _sii_fmmu *)cat->data)->count = 0;
+		memset(cat->data, 0, sizeof(struct _sii_fmmu));
 	}
 
 	struct _sii_fmmu *fmmu = (struct _sii_fmmu *)cat->data;
