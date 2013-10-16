@@ -553,7 +553,9 @@ struct _coe_datatypes {
 
 static int parse_pdo_get_data_type(char *xmldatatype)
 {
-	/* FIXME make match of CoE datatypes and xml description of types */
+	/* FIXME make match of CoE datatypes and xml description of types
+	 * see table in document ETG 2000.S Page 18
+	 */
 	struct _coe_datatypes datatypes[] = {
 		{ 0, "UNDEF", "UNDEF" },
 		{ 0x0001, "BOOLEAN", "" },
