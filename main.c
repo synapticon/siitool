@@ -53,6 +53,11 @@
 #define MAX_BUFFER_SIZE    (1000*1024)
 #define MAX_FILENAME_SIZE  (256)
 
+enum eInputFileType {
+	UNDEFINED = 0
+	,ESIXML
+	,SIIEEPROM
+};
 
 //static int g_print_offsets = 0;
 
@@ -68,6 +73,76 @@ static const char *base(const char *prog)
 	}
 
 	return prog;
+}
+
+static char *get_suffix(const char *filename)
+{
+	char *suffix = (char *)(filename+strlen(filename));
+
+	while (suffix != filename) {
+		if (*suffix == '.')
+			return (suffix+1);
+
+		suffix--;
+	}
+
+	return NULL; /* file doesn't have a valid suffix */
+}
+
+static enum eInputFileType check_file_suffix(const char *filename)
+{
+	enum eInputFileType type = UNDEFINED;
+
+	char *suffix = get_suffix(filename);
+
+	if (suffix == NULL)
+		type = UNDEFINED;
+	else {
+		if (strncmp(suffix, "bin", strlen(suffix)) == 0)
+			type = SIIEEPROM;
+		else if (strncmp(suffix, "sii", strlen(suffix)) == 0)
+			type = SIIEEPROM;
+		else if (strncmp(suffix, "xml", strlen(suffix)) == 0)
+			type = SIIEEPROM;
+		else {
+			fprintf(stderr, "Warning, unrecognized suffix: '%s'\n", suffix);
+			type = UNDEFINED;
+		}
+	}
+
+	return type;
+}
+
+static enum eInputFileType check_first_bytes(unsigned char *buffer)
+{
+	enum eInputFileType type = UNDEFINED;
+
+	if (strncmp((char *)buffer, "<?xml", 5) == 0)
+		type = ESIXML;
+	else
+		type = SIIEEPROM; /* educated guess: if it's not XML it must be SII */
+
+	return type;
+}
+
+static enum eInputFileType file_type(const char *filename, unsigned char *buffer)
+{
+	enum eInputFileType inputtype1 = UNDEFINED;
+	if (filename != NULL)
+		inputtype1 = check_file_suffix(filename);
+
+	enum eInputFileType inputtype2 = UNDEFINED;
+	inputtype2 = check_first_bytes(buffer);
+
+	if (inputtype1 == UNDEFINED)
+		return inputtype2;
+
+	if (inputtype1 != inputtype2) {
+		fprintf(stderr, "Error, file suffix and content of file doesn't match!\n");
+		return UNDEFINED;
+	}
+
+	return inputtype1;
 }
 
 static void printhelp(const char *prog)
@@ -144,6 +219,23 @@ int main(int argc, char *argv[])
 		read_input(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
 	}
+
+	/* recognize input */
+	enum eInputFileType filetype = file_type(filename, eeprom);
+	switch (filetype) {
+	case ESIXML:
+		printf("Processing ESI/XML file\n");
+		break;
+	case SIIEEPROM:
+		printf("Processing SII/EEPROM file\n");
+		break;
+	case UNDEFINED:
+	default:
+		return -1;
+	}
+
+
+	return 0; /* DEBUG command line arguments */
 
 	EsiData *esi = esi_init_string(eeprom, MAX_BUFFER_SIZE);
 	//esi_print_xml(esi);
