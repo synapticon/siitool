@@ -450,20 +450,19 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 		cat = malloc(sizeof(struct _sii_cat));
 		cat->next = NULL;
 		cat->prev = NULL;
+		cat->data = NULL;
 		cat->type = SII_CAT_SYNCM;
 		sii_category_add(sii, cat);
 	}
 
 	if (cat->data == NULL) {
 		cat->data = (void *)malloc(sizeof(struct _sii_syncm));
-		((struct _sii_syncm *)cat->data)->count = 0;
+		memset(cat->data, 0, sizeof(struct _sii_syncm));
 	}
 
 	/* now fetch the data */
-	size_t smsize = 0;
+	//size_t smsize = 0;
 	struct _sii_syncm *sm = (struct _sii_syncm *)cat->data;
-	sm->count = 0;
-
 	struct _syncm_entry *entry = malloc(sizeof(struct _syncm_entry));
 
 	/* FIXME add entries */
