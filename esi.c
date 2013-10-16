@@ -512,9 +512,33 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 	/* now fetch the data */
 	size_t dcsize = 0;
 	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
+	memset(dc, 0, sizeof(struct _sii_dclock));
 
-	/* FIXME add entries */
+	/* FIXME add entries, only use the first (default) OpMode */
 	printf("[DEBUG %s] FIXME implementation of dclock parsing is incomplete!\n", __func__);
+
+	xmlNode *op = search_node(current, "OpMode");
+	for (xmlNode *vals = op->children; vals; vals = vals->next) {
+		if (xmlStrncmp(vals->name, xmlCharStrdup("Name"), xmlStrlen(vals->name))) {
+			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+		} else if (xmlStrncmp(vals->name, xmlCharStrdup("Desc"), xmlStrlen(vals->name))) {
+			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+		} else if (xmlStrncmp(vals->name, xmlCharStrdup("AssignActivate"), xmlStrlen(vals->name))) {
+			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+		} else if (xmlStrncmp(vals->name, xmlCharStrdup("CycleTimeSync0"), xmlStrlen(vals->name))) {
+			int tmp = atoi((char *)vals->children->content);
+			dc->sync0_cycle_time = (uint32_t)tmp;
+		} else if (xmlStrncmp(vals->name, xmlCharStrdup("ShiftTimeSync0"), xmlStrlen(vals->name))) {
+			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+		} else if (xmlStrncmp(vals->name, xmlCharStrdup("CycleTimeSync1"), xmlStrlen(vals->name))) {
+			int tmp = atoi((char *)vals->children->content);
+			dc->sync1_cycle_time = (uint32_t)tmp;
+		} else if (xmlStrncmp(vals->name, xmlCharStrdup("ShiftTimeSync1"), xmlStrlen(vals->name))) {
+			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+		} else {
+			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+		}
+	}
 
 	cat->data = (void *)dc;
 	cat->size = dcsize;
