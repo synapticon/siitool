@@ -809,15 +809,16 @@ int esi_parse(EsiData *esi)
 
 	/* iterate through children of node 'Device' and get the necessary informations */
 	for (xmlNode *current = device->children; current; current = current->next) {
-		if (xmlStrncmp(current->name, xmlCharStrdup("Fmmu"), xmlStrlen(current->name))) {
+		printf("[DEBUG %s] start parsing of %s\n", __func__, current->name);
+		if (xmlStrncmp(current->name, xmlCharStrdup("Fmmu"), xmlStrlen(current->name)) == 0) {
 			parse_fmmu(current, esi->sii);
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("Sm"), xmlStrlen(current->name))) {
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("Sm"), xmlStrlen(current->name)) == 0) {
 			parse_syncm(current, esi->sii);
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("Dc"), xmlStrlen(current->name))) {
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("Dc"), xmlStrlen(current->name)) == 0) {
 			parse_dclock(current, esi->sii);
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("RxPdo"), xmlStrlen(current->name))) {
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("RxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii);
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("TxPdo"), xmlStrlen(current->name))) {
+		} else if (xmlStrncmp(current->name, xmlCharStrdup("TxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii);
 		}
 	}
