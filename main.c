@@ -80,8 +80,7 @@ static void printhelp(const char *prog)
 	printf("\nRecognized file types: SII and ESI/XML.\n");
 }
 
-/* FIXME the read_eeprom is misleading since the data are read from a every input stream */
-static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
+static int read_input(FILE *f, unsigned char *buffer, size_t size)
 {
 	size_t count = 0;
 	int input;
@@ -135,7 +134,7 @@ int main(int argc, char *argv[])
 	/* test compatibility between compiled and used library version */
 
 	if (filename == NULL)
-		read_eeprom(stdin, eeprom, MAX_BUFFER_SIZE);
+		read_input(stdin, eeprom, MAX_BUFFER_SIZE);
 	else {
 		f = fopen(filename, "r");
 		if (f == NULL) {
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
 
 		printf("Start reading contents of file %s\n", filename);
 
-		read_eeprom(f, eeprom, MAX_BUFFER_SIZE);
+		read_input(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
 	}
 
