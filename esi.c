@@ -868,3 +868,8 @@ void esi_print_sii(EsiData *esi)
 	SiiInfo *sii = esi->sii;
 	sii_print(sii);
 }
+
+SiiInfo *esi_get_sii(EsiData *esi)
+{
+	return esi->sii;
+}

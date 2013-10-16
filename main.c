@@ -169,6 +169,48 @@ static int read_input(FILE *f, unsigned char *buffer, size_t size)
 	return count;
 }
 
+static int parse_xml_input(const unsigned char *buffer, const char *output)
+{
+	EsiData *esi = esi_init_string(buffer, MAX_BUFFER_SIZE);
+	//esi_print_xml(esi);
+
+	if (esi_parse(esi)) {
+		fprintf(stderr, "Error something went wrong in XML parsing\n");
+		return -1;
+	}
+
+	esi_print_sii(esi);
+
+	SiiInfo *sii = esi_get_sii(esi);
+	sii_generate(sii);
+	int ret = sii_write_bin(sii, output);
+	if (ret < 0) {
+		fprintf(stderr, "Error, couldn't write output file\n");
+		return -1;
+	}
+
+	esi_release(esi);
+
+	return 0;
+}
+
+static int parse_sii_input(const unsigned char *buffer, const char *output)
+{
+	SiiInfo *sii = sii_init_string(buffer, 1024);
+	//alternative: SiiInfo *sii = sii_init_file(filename) */
+
+	sii_print(sii);
+	sii_generate(sii);
+	int ret = sii_write_bin(sii, output);
+	if (ret < 0) {
+		fprintf(stderr, "Error, couldn't write output file\n");
+		return -1;
+	}
+
+	sii_release(sii);
+
+	return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -220,44 +262,26 @@ int main(int argc, char *argv[])
 		fclose(f);
 	}
 
+	int ret = -1;
+
 	/* recognize input */
 	enum eInputFileType filetype = file_type(filename, eeprom);
 	switch (filetype) {
 	case ESIXML:
 		printf("Processing ESI/XML file\n");
+		ret = parse_xml_input(eeprom, output);
 		break;
+
 	case SIIEEPROM:
 		printf("Processing SII/EEPROM file\n");
+		ret = parse_sii_input(eeprom, output);
 		break;
+
 	case UNDEFINED:
 	default:
 		return -1;
 	}
 
 
-	return 0; /* DEBUG command line arguments */
-
-	EsiData *esi = esi_init_string(eeprom, MAX_BUFFER_SIZE);
-	//esi_print_xml(esi);
-	if (esi_parse(esi))
-		fprintf(stderr, "Error something went wrong in XML parsing\n");
-
-	esi_print_sii(esi);
-	esi_release(esi);
-
-	return 0;
-
-	//return parse_and_print_content(eeprom, 1024);
-	SiiInfo *sii = sii_init_string(eeprom, 1024);
-	//alternative: SiiInfo *sii = sii_init_file(filename) */
-
-	sii_print(sii);
-	sii_generate(sii);
-	int ret = sii_write_bin(sii, "siiout.bin");
-	if (ret < 0)
-		fprintf(stderr, "Error, couldn't write output file\n");
-
-	sii_release(sii);
-
-	return 0;
+	return ret;
 }

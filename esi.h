@@ -6,6 +6,7 @@
 #ifndef ESI_H
 #define ESI_H
 
+#include "sii.h"
 #include <unistd.h>
 
 typedef struct _esi_data EsiData;
@@ -21,4 +22,5 @@ void esi_print_sii(EsiData *esi);
 
 int esi_parse(EsiData *esi);
 
+SiiInfo *esi_get_sii(EsiData *esi);
 #endif /* ESI_H */
