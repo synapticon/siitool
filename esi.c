@@ -779,6 +779,17 @@ int esi_parse(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
 
+	/* first, prepare category strings, since this is always needed */
+	struct _sii_cat *strings = sii_category_find(esi->sii, SII_CAT_STRINGS);
+	if (strings == NULL) {
+		strings = malloc(sizeof(struct _sii_cat));
+		strings->next = NULL;
+		strings->prev = NULL;
+		strings->size = 0;
+		strings->data = NULL;
+		sii_category_add(esi->sii, strings);
+	}
+
 	xmlNode *n = search_node(root, "ConfigData");
 	esi->sii->preamble = parse_preamble(n);
 	esi->sii->config = parse_config(root);
