@@ -50,16 +50,11 @@
 #define VERSION_MAJOR    0
 #define VERSION_MINNOR   1
 
-#define MAX_BUFFER_SIZE   (1000*1024)
+#define MAX_BUFFER_SIZE    (1000*1024)
+#define MAX_FILENAME_SIZE  (256)
 
-#define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
-#define BYTES_TO_DWORD(a,b,c,d)     ((unsigned int)(d&0xff)<<24)  | \
-	                            ((unsigned int)(c&0xff)<<16) | \
-				    ((unsigned int)(b&0xff)<<8)  | \
-				     (unsigned int)(a&0xff)
 
-//static char **strings; /* all strings */
-static int g_print_offsets = 0;
+//static int g_print_offsets = 0;
 
 static const char *base(const char *prog)
 {
@@ -77,12 +72,12 @@ static const char *base(const char *prog)
 
 static void printhelp(const char *prog)
 {
-	printf("Simple program to dump SII content in human readable form\n");
 	printf("Usage: %s [-h] [-v] [filename]\n", prog);
 	printf("  -h         print this help and exit\n");
 	printf("  -v         print version an exit\n");
-	printf("  -o         add offset information to section start\n");
+	printf("  -o <name>  write output to file <name>\n");
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
+	printf("\nRecognized file types: SII and ESI/XML.\n");
 }
 
 /* FIXME the read_eeprom is misleading since the data are read from a every input stream */
@@ -106,10 +101,9 @@ int main(int argc, char *argv[])
 	FILE *f;
 	unsigned char eeprom[MAX_BUFFER_SIZE];
 	const char *filename = NULL;
-	//int input = 0;
-	int i;
+	char output[MAX_FILENAME_SIZE];
 
-	for (i=1; i<argc; i++) {
+	for (int i=1; i<argc; i++) {
 		switch (argv[i][0]) {
 		case '-':
 			if (argv[i][1] == 'h') {
@@ -119,12 +113,17 @@ int main(int argc, char *argv[])
 				printf("Version %d.%d\n", VERSION_MAJOR, VERSION_MINNOR);
 				return 0;
 			} else if (argv[i][1] == 'o') {
-				g_print_offsets = 1;
+				i++;
+				strncpy(output, argv[i], strlen(argv[i]));
+				printf("[DEBUG output file is %s\n", output);
+			} else if (argv[i][1] == '-') {
+				filename = NULL;
 			} else {
 				fprintf(stderr, "Invalid argument\n");
 				printhelp(base(argv[0]));
 				return 0;
 			}
+			break;
 
 		default:
 			/* asuming file name */
@@ -144,7 +143,7 @@ int main(int argc, char *argv[])
 			return -1;
 		}
 
-		printf("Start reading contents of file\n");
+		printf("Start reading contents of file %s\n", filename);
 
 		read_eeprom(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
