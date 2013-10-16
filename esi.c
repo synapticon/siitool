@@ -514,35 +514,161 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
 
 	/* FIXME add entries */
+	printf("[DEBUG %s] FIXME implementation of dclock parsing is incomplete!\n", __func__);
 
 	cat->data = (void *)dc;
 	cat->size = dcsize;
 	sii_category_add(sii, cat);
 }
 
+struct _coe_datatypes {
+	int index;
+	char *coename;
+	char *esiname;
+};
+
+static int parse_pdo_get_data_type(char *xmldatatype)
+{
+	/* FIXME make match of CoE datatypes and xml description of types */
+	struct _coe_datatypes datatypes[] = {
+		{ 0, "UNDEF", "UNDEF" },
+		{ 0x0001, "BOOLEAN", "" },
+		{ 0x0002, "INTEGER8", "" },
+		{ 0x0003, "INTEGER16", "" },
+		{ 0x0004, "INTEGER32", "" },
+		{ 0x0005, "UNSIGNED8", "USINT" },
+		{ 0x0006, "UNSIGNED16", "UINT" },
+		{ 0x0007, "UNSIGNED32", "UDINT" },
+		{ 0x0008, "REAL32", "" },
+		{ 0x0009, "VISIBLE_STRING", "" },
+		{ 0x000A, "OCTET_STRING", "" },
+		{ 0x000B, "UNICODE_STRING", "" },
+		{ 0x000C, "TIME_OF_DAY", "" },
+		{ 0x000D, "TIME_DIFFERENCE", "" },
+		//{ 0x000E, "Reserved", "" },
+		{ 0x000F, "DOMAIN", "" },
+		{ 0x0010, "INTEGER24", "" },
+		{ 0x0011, "REAL64", "" },
+		{ 0x0012, "INTEGER40", "" },
+		{ 0x0013, "INTEGER48", "" },
+		{ 0x0014, "INTEGER56", "" },
+		{ 0x0015, "INTEGER64", "" },
+		{ 0x0016, "UNSIGNED24", "" },
+		//{ 0x0017, "Reserved", "" },
+		{ 0x0018, "UNSIGNED40", "" },
+		{ 0x0019, "UNSIGNED48", "" },
+		{ 0x001A, "UNSIGNED56", "" },
+		{ 0x001B, "UNSIGNED64", "" },
+		//{ 0x001C-0x001F, "reserved", "" },
+		{ 0, NULL, NULL }
+	};
+
+	for (struct _coe_datatypes *dt = datatypes; dt->esiname != NULL; dt++) {
+		if (strncmp(dt->esiname, xmldatatype, strlen(dt->esiname)) == 0)
+			return dt->index;
+	}
+
+	return -1; /* unrecognized */
+}
+
+static struct _pdo_entry *parse_pdo_entry(xmlNode *val, struct _sii_cat *strings)
+{
+	struct _pdo_entry *entry = malloc(sizeof(struct _pdo_entry));
+	int tmp = 0;
+
+	for (xmlNode *child = val->children; child; child = child->next) {
+		if (xmlStrncmp(child->name, xmlCharStrdup("Index"), xmlStrlen(child->name)) == 0) {
+			sscanf((char *)child->children->content, "#x%x", &tmp);
+			entry->index = tmp&0xffff;
+			tmp = 0;
+		} else if (xmlStrncmp(child->name, xmlCharStrdup("SubIndex"), xmlStrlen(child->name)) == 0) {
+			sscanf((char *)child->children->content, "#x%x", &tmp);
+			entry->subindex = tmp&0xff;
+			tmp = 0;
+		} else if (xmlStrncmp(child->name, xmlCharStrdup("BitLen"), xmlStrlen(child->name)) == 0) {
+			entry->bit_length = atoi((char *)child->children->content);
+		} else if (xmlStrncmp(child->name, xmlCharStrdup("Name"), xmlStrlen(child->name)) == 0) {
+			/* again, write this to the string category and store index to string here. */
+			strings_add(strings, (char *)child->name);
+		} else if (xmlStrncmp(child->name, xmlCharStrdup("DataType"), xmlStrlen(child->name)) == 0) {
+			int dt = parse_pdo_get_data_type((char *)child->children->content);
+			if (dt <= 0)
+				fprintf(stderr, "Warning unrecognized esi data type '%s'\n", (char *)child->children->content);
+			else
+				entry->data_type = (uint8_t)dt;
+		} else {
+			fprintf(stderr, "Warning, unrecognized pdo setting: '%s'\n",
+					(char *)child->name);
+		}
+	}
+
+	return entry;
+}
+
 static void parse_pdo(xmlNode *current, SiiInfo *sii)
 {
-	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
-	cat->next = NULL;
-	cat->prev = NULL;
-
+	enum ePdoType type;
 	if (xmlStrcmp(current->name, xmlCharStrdup("RxPdo")) == 0)
-		cat->type = SII_CAT_RXPDO;
-	else
-		cat->type = SII_CAT_TXPDO;
+		type = SII_CAT_RXPDO;
+	else if(xmlStrcmp(current->name, xmlCharStrdup("TxPdo")) == 0)
+		type = SII_CAT_TXPDO;
+	else {
+		fprintf(stderr, "[%s] Error, no PDO type\n", __func__);
+		return;
+	}
 
-	/* now fetch the data */
+	struct _sii_cat *cat = sii_category_find(sii, type);
+	if (cat == NULL) {
+		cat = malloc(sizeof(struct _sii_cat));
+		cat->next = NULL;
+		cat->prev = NULL;
+		cat->type = type;
+		sii_category_add(sii, cat);
+	}
+
+	if (cat->data == NULL) {
+		cat->data = (void *)malloc(sizeof(struct _sii_pdo));
+		((struct _sii_pdo *)cat->data)->type = type;
+	}
+
+	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
+
 	size_t pdosize = 0;
-	struct _sii_pdo *pdo = malloc(sizeof(struct _sii_pdo));
-	pdo->index = 0;
-	pdo->type = cat->type;
+
+	/* get Arguments for syncmanager */
+	for (xmlAttr *attr = current->properties; attr; attr = attr->next) {
+		if (xmlStrncmp(attr->name, xmlCharStrdup("Sm"), xmlStrlen(attr->name))) {
+			pdo->syncmanager = atoi((char *)attr->children->content);
+		}
+		/* currently fixed is unhandled - check where this setting should reside
+		else if (xmlStrncmp(attr->name, xmlCharStrdup("Fixed"), xmlStrlen(attr->name))) {
+		}
+		 */
+	}
+
+	/* set uncrecognized values to default */
+	pdo->dcsync = 0;
 	pdo->flags = 0;
-	/* FIXME add other entries */
 
-	cat->data = (void *)pdo;
+	struct _sii_cat *strings = sii_category_find(sii, SII_CAT_STRINGS);
+	/* get node Name and node Index */
+	/* then parse the pdo list - all <Entry> children */
+	for (xmlNode *val = current->children; val; val = val->next) {
+		if (xmlStrncmp(val->name, xmlCharStrdup("Name"), xmlStrlen(val->name))) {
+			/* add string to category strings and store index to pdo->name_index */
+		} else if (xmlStrncmp(val->name, xmlCharStrdup("Index"), xmlStrlen(val->name))) {
+			int tmp = 0;
+			sscanf((char *)val->children->content, "#x%x", &tmp);
+			pdo->index = tmp&0xffff;
+		} else if (xmlStrncmp(val->name, xmlCharStrdup("Entry"), xmlStrlen(val->name))) {
+			/* add new pdo entry */
+			pdo->entries += 1;
+			struct _pdo_entry *entry = parse_pdo_entry(val, strings);
+			pdo_entry_add(pdo, entry);
+		}
+	}
+
 	cat->size = pdosize;
-
-	sii_category_add(sii, cat);
 }
 
 
