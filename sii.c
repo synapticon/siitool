@@ -2138,10 +2138,16 @@ int sii_write_bin(SiiInfo *sii, const char *outfile)
 	// unless force is set.
 	//struct stat fs;
 	//if (!stat(outfile, &fs))
-	FILE *fh = fopen(outfile, "w");
-	if (fh == NULL) {
-		fprintf(stderr, "Error open file '%s' for writing\n", outfile);
-		return -2;
+	FILE *fh;
+
+	if (outfile == NULL)
+		fh = stdout;
+	else {
+		fh = fopen(outfile, "w");
+		if (fh == NULL) {
+			fprintf(stderr, "Error open file '%s' for writing\n", outfile);
+			return -2;
+		}
 	}
 
 	for (size_t i=0; i<sii->rawsize; i++)
