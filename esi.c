@@ -622,13 +622,14 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 		cat = malloc(sizeof(struct _sii_cat));
 		cat->next = NULL;
 		cat->prev = NULL;
+		cat->data = NULL;
 		cat->type = type;
 		sii_category_add(sii, cat);
 	}
 
 	if (cat->data == NULL) {
 		cat->data = (void *)malloc(sizeof(struct _sii_pdo));
-		((struct _sii_pdo *)cat->data)->type = type;
+		memset(cat->data, 0, sizeof(struct _sii_pdo));
 	}
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
