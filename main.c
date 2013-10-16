@@ -114,7 +114,6 @@ int main(int argc, char *argv[])
 			} else if (argv[i][1] == 'o') {
 				i++;
 				strncpy(output, argv[i], strlen(argv[i]));
-				printf("[DEBUG output file is %s\n", output);
 			} else if (argv[i][1] == '-') {
 				filename = NULL;
 			} else {
@@ -130,8 +129,6 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-
-	/* test compatibility between compiled and used library version */
 
 	if (filename == NULL)
 		read_input(stdin, eeprom, MAX_BUFFER_SIZE);
