@@ -2185,3 +2185,15 @@ struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category)
 
 	return NULL;
 }
+
+int strings_add(struct _sii_cat *strings, const char *entry)
+{
+#if 0
+	if (strings->data == NULL) {
+	}
+
+	char **values = (char **)strings->data;
+#endif
+	fprintf(stderr, "[%s] Developer Note: Refactoring of strings section in progress\n", __func__);
+	return -1;
+}

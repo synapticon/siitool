@@ -309,4 +309,8 @@ void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage);
 void syncm_entry_add(struct _sii_syncm *sm, struct _syncm_entry *entry);
 void pdo_entry_add(struct _sii_pdo *pdo, struct _pdo_entry *entry);
 
+/**
+ * @return the index of the newly added string
+ */
+int strings_add(struct _sii_cat *strings, const char *entry);
 #endif /* SII_H */
