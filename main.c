@@ -148,7 +148,7 @@ static enum eInputFileType file_type(const char *filename, unsigned char *buffer
 
 static void printhelp(const char *prog)
 {
-	printf("Usage: %s [-h] [-v] [filename]\n", prog);
+	printf("Usage: %s [-h] [-v] [-p] [-o outfile] [filename]\n", prog);
 	printf("  -h         print this help and exit\n");
 	printf("  -v         print version an exit\n");
 	printf("  -o <name>  write output to file <name>\n");
