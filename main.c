@@ -104,7 +104,7 @@ static enum eInputFileType check_file_suffix(const char *filename)
 		else if (strncmp(suffix, "sii", strlen(suffix)) == 0)
 			type = SIIEEPROM;
 		else if (strncmp(suffix, "xml", strlen(suffix)) == 0)
-			type = SIIEEPROM;
+			type = ESIXML;
 		else {
 			fprintf(stderr, "Warning, unrecognized suffix: '%s'\n", suffix);
 			type = UNDEFINED;
@@ -138,7 +138,7 @@ static enum eInputFileType file_type(const char *filename, unsigned char *buffer
 	if (inputtype1 == UNDEFINED)
 		return inputtype2;
 
-	if (inputtype1 != inputtype2) {
+	if ((inputtype1 == ESIXML) && (inputtype1 != inputtype2)) {
 		fprintf(stderr, "Error, file suffix and content of file doesn't match!\n");
 		return UNDEFINED;
 	}
@@ -274,20 +274,17 @@ int main(int argc, char *argv[])
 
 	int ret = -1;
 
+
 	/* recognize input */
 	enum eInputFileType filetype = file_type(filename, eeprom);
 	switch (filetype) {
 	case ESIXML:
 		printf("Processing ESI/XML file\n");
-		if (output == NULL)
-			output = "output.sii";
 		ret = parse_xml_input(eeprom, output);
 		break;
 
 	case SIIEEPROM:
 		printf("Processing SII/EEPROM file\n");
-		if (output == NULL)
-			output = "output.xml";
 		ret = parse_sii_input(eeprom, output);
 		break;
 
@@ -296,8 +293,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	free(output);
-	free(filename);
+	if (output)
+		free(output);
 
 	return ret;
 }
