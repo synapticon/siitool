@@ -247,7 +247,6 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	sscanf((const char *)tmp->children->content, "#x%x", &(sc->vendor_id));
 
 	n = search_node(search_node(root, "Devices"), "Device");
-	print_node(n);
 
 	tmp = search_node(n, "Type");
 	xmlAttr *prop = tmp->properties;
@@ -280,7 +279,6 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	/* filter the std mailbox configuration; from <Sm> description */
 
 	tmp = n->children;
-	printf("Children:\n");
 	while (tmp != NULL) {
 		if (xmlStrncmp(tmp->name, xmlCharStrdup("Sm"), xmlStrlen(tmp->name)) == 0) {
 			xmlNode *smchild = tmp->children;
@@ -536,7 +534,7 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 		} else if (xmlStrncmp(vals->name, xmlCharStrdup("ShiftTimeSync1"), xmlStrlen(vals->name))) {
 			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
 		} else {
-			fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
+			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
 		}
 	}
 
@@ -835,7 +833,7 @@ int esi_parse(EsiData *esi)
 
 	/* iterate through children of node 'Device' and get the necessary informations */
 	for (xmlNode *current = device->children; current; current = current->next) {
-		printf("[DEBUG %s] start parsing of %s\n", __func__, current->name);
+		//printf("[DEBUG %s] start parsing of %s\n", __func__, current->name);
 		if (xmlStrncmp(current->name, xmlCharStrdup("Fmmu"), xmlStrlen(current->name)) == 0) {
 			parse_fmmu(current, esi->sii);
 		} else if (xmlStrncmp(current->name, xmlCharStrdup("Sm"), xmlStrlen(current->name)) == 0) {
