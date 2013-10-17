@@ -849,8 +849,7 @@ int esi_parse(EsiData *esi)
 		}
 	}
 
-
-	return -1;
+	return 0;
 }
 
 void esi_print_xml(EsiData *esi)
