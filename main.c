@@ -223,8 +223,8 @@ int main(int argc, char *argv[])
 {
 	FILE *f;
 	unsigned char eeprom[MAX_BUFFER_SIZE];
-	const char *filename = NULL;
-	char output[MAX_FILENAME_SIZE];
+	char *filename = NULL;
+	char *output = NULL;
 
 	for (int i=1; i<argc; i++) {
 		switch (argv[i][0]) {
@@ -237,6 +237,7 @@ int main(int argc, char *argv[])
 				return 0;
 			} else if (argv[i][1] == 'o') {
 				i++;
+				output = malloc(strlen(argv[i]+1));
 				strncpy(output, argv[i], strlen(argv[i]));
 			} else if (argv[i][1] == 'p') {
 				g_print_content = 1;
@@ -278,11 +279,15 @@ int main(int argc, char *argv[])
 	switch (filetype) {
 	case ESIXML:
 		printf("Processing ESI/XML file\n");
+		if (output == NULL)
+			output = "output.sii";
 		ret = parse_xml_input(eeprom, output);
 		break;
 
 	case SIIEEPROM:
 		printf("Processing SII/EEPROM file\n");
+		if (output == NULL)
+			output = "output.xml";
 		ret = parse_sii_input(eeprom, output);
 		break;
 
@@ -291,6 +296,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	free(output);
+	free(filename);
 
 	return ret;
 }
