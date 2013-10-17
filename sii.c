@@ -9,6 +9,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #if 0
 #define BYTES_TO_WORD(x,y)          ((((int)y<<8)&0xff00) | (x&0xff))
@@ -2134,15 +2137,17 @@ int sii_write_bin(SiiInfo *sii, const char *outfile)
 		return -1;
 	}
 
-	// FIXME check if file exists and ask for overwrite
-	// unless force is set.
-	//struct stat fs;
-	//if (!stat(outfile, &fs))
 	FILE *fh;
 
 	if (outfile == NULL)
 		fh = stdout;
 	else {
+		// FIXME Currently existing files are silently overwritten, should ask to perform the action!
+		struct stat fs;
+		if (!stat(outfile, &fs)) {
+			fprintf(stderr, "Warning, existing file %s is overwritten\n", outfile);
+		}
+
 		fh = fopen(outfile, "w");
 		if (fh == NULL) {
 			fprintf(stderr, "Error open file '%s' for writing\n", outfile);
