@@ -1048,6 +1048,10 @@ static void cat_data_cleanup_pdo(struct _sii_pdo *pdo)
 static void free_strings(char **strings)
 {
 	int i = 0;
+
+	if (strings == NULL)
+		return;
+
 	while (strings[i] == NULL) {
 		free(strings[i]);
 		i++;
@@ -1223,6 +1227,9 @@ static void cat_print_strings(struct _sii_cat *cat)
 			cat->type, cat->size);
 
 	char **strings = (char **)cat->data;
+
+	if (strings == NULL)
+		return;
 
 	int i=0;
 	while (strings[i] != NULL) {

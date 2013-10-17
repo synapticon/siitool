@@ -811,6 +811,7 @@ int esi_parse(EsiData *esi)
 		strings->next = NULL;
 		strings->prev = NULL;
 		strings->size = 0;
+		strings->type = SII_CAT_STRINGS;
 		strings->data = NULL;
 		sii_category_add(esi->sii, strings);
 	}
