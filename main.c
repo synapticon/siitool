@@ -60,6 +60,7 @@ enum eInputFileType {
 };
 
 //static int g_print_offsets = 0;
+static int g_print_content = 0;
 
 static const char *base(const char *prog)
 {
@@ -151,6 +152,7 @@ static void printhelp(const char *prog)
 	printf("  -h         print this help and exit\n");
 	printf("  -v         print version an exit\n");
 	printf("  -o <name>  write output to file <name>\n");
+	printf("  -p         print content human readable\n");
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
 	printf("\nRecognized file types: SII and ESI/XML.\n");
 }
@@ -179,14 +181,16 @@ static int parse_xml_input(const unsigned char *buffer, const char *output)
 		return -1;
 	}
 
-	esi_print_sii(esi);
-
 	SiiInfo *sii = esi_get_sii(esi);
-	sii_generate(sii);
-	int ret = sii_write_bin(sii, output);
-	if (ret < 0) {
-		fprintf(stderr, "Error, couldn't write output file\n");
-		return -1;
+	if (g_print_content)
+		sii_print(sii);
+	else {
+		sii_generate(sii);
+		int ret = sii_write_bin(sii, output);
+		if (ret < 0) {
+			fprintf(stderr, "Error, couldn't write output file\n");
+			return -1;
+		}
 	}
 
 	esi_release(esi);
@@ -199,12 +203,15 @@ static int parse_sii_input(const unsigned char *buffer, const char *output)
 	SiiInfo *sii = sii_init_string(buffer, 1024);
 	//alternative: SiiInfo *sii = sii_init_file(filename) */
 
-	sii_print(sii);
-	sii_generate(sii);
-	int ret = sii_write_bin(sii, output);
-	if (ret < 0) {
-		fprintf(stderr, "Error, couldn't write output file\n");
-		return -1;
+	if (g_print_content)
+		sii_print(sii);
+	else {
+		sii_generate(sii);
+		int ret = sii_write_bin(sii, output);
+		if (ret < 0) {
+			fprintf(stderr, "Error, couldn't write output file\n");
+			return -1;
+		}
 	}
 
 	sii_release(sii);
@@ -231,7 +238,9 @@ int main(int argc, char *argv[])
 			} else if (argv[i][1] == 'o') {
 				i++;
 				strncpy(output, argv[i], strlen(argv[i]));
-			} else if (argv[i][1] == '-') {
+			} else if (argv[i][1] == 'p') {
+				g_print_content = 1;
+			} else if (argv[i][1] == '\0') { /* read from stdin (default) */
 				filename = NULL;
 			} else {
 				fprintf(stderr, "Invalid argument\n");
