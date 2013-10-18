@@ -3,7 +3,6 @@
 #include "esi.h"
 #include "esifile.h"
 #include "sii.h"
-#include "stringlist.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -17,7 +16,6 @@ struct _esi_data {
 	xmlDocPtr doc; /* do I need both? */
 	xmlNode *xmlroot;
 	char *xmlfile;
-	StringList *strings;
 };
 
 static char *type2str(int type)
@@ -127,11 +125,8 @@ static void print_all_nodes(xmlNode *root)
 	}
 }
 
-static void parse_example(xmlNode *root, StringList *strings)
+static void parse_example(xmlNode *root)
 {
-	if (strings != NULL)
-		strings = NULL;
-
 	for (xmlNode *current = root; current; current = current->next) {
 		/*
 		printf("%d: note type: %s name: %s content: '%s'\n",
@@ -144,7 +139,7 @@ static void parse_example(xmlNode *root, StringList *strings)
 			return;
 		}
 
-		parse_example(current->children, NULL);
+		parse_example(current->children);
 	}
 }
 
@@ -853,7 +848,7 @@ int esi_parse(EsiData *esi)
 void esi_print_xml(EsiData *esi)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
-	//parse_example(root, NULL);
+	//parse_example(root);
 	xmlNode *node = search_node(root, "Device");
 	printf("\n+++ Printing all nodes +++\n");
 	print_all_nodes(node);
