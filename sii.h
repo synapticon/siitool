@@ -321,12 +321,17 @@ int sii_add_info(SiiInfo *sii, struct _sii_preamble *pre, struct _sii_stdconfig 
 int sii_category_add(SiiInfo *sii, struct _sii_cat *cat);
 struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category);
 
+/* Add new string if only SiiInfo is available */
+int sii_strings_add(SiiInfo *sii, const char *entry);
+
 /* functions for specific substructures */
 void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage);
 void syncm_entry_add(struct _sii_syncm *sm, struct _syncm_entry *entry);
 void pdo_entry_add(struct _sii_pdo *pdo, struct _pdo_entry *entry);
 
 /**
+ * Add new string if category string is available.
+ *
  * @return the index of the newly added string
  */
 int strings_add(struct _sii_strings *strings, const char *entry);

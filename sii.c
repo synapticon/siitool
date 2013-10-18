@@ -2237,6 +2237,13 @@ struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category)
 	return NULL;
 }
 
+int sii_strings_add(SiiInfo *sii, const char *entry)
+{
+	struct _sii_cat *strings = sii_category_find(sii, SII_CAT_STRINGS);
+
+	return strings_add((struct _sii_strings *)strings->data, entry);
+}
+
 int strings_add(struct _sii_strings *strings, const char *entry)
 {
 	strings_entry_add(strings, string_new(entry, strlen(entry)));
