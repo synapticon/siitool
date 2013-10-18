@@ -601,7 +601,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 			entry->index = tmp&0xffff;
 			tmp = 0;
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("SubIndex"), xmlStrlen(child->name)) == 0) {
-			sscanf((char *)child->children->content, "#x%x", &tmp);
+			tmp = atoi((char *)child->children->content);
 			entry->subindex = tmp&0xff;
 			tmp = 0;
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("BitLen"), xmlStrlen(child->name)) == 0) {
