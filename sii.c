@@ -1078,6 +1078,9 @@ static void cat_data_cleanup_pdo(struct _sii_pdo *pdo)
 
 static void cat_data_cleanup_strings(struct _sii_strings *str)
 {
+	if (str == NULL)
+		return;
+
 	struct _string *current = str->head;
 	struct _string *tmp;
 
@@ -1261,6 +1264,9 @@ static void cat_print_strings(struct _sii_cat *cat)
 			cat->type, cat->size);
 
 	struct _sii_strings *str = (struct _sii_strings *)cat->data;
+	if (str == NULL)
+		return;
+
 	printf("  total %d strings (padding: %s)\n", str->count, (str->padbyte==1 ? "Yes" : "No"));
 
 	for (struct _string *s = str->head; s; s = s->next)
