@@ -595,7 +595,7 @@ static int parse_pdo_get_data_type(char *xmldatatype)
 	return -1; /* unrecognized */
 }
 
-static struct _pdo_entry *parse_pdo_entry(xmlNode *val, struct _sii_cat *strings)
+static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 {
 	struct _pdo_entry *entry = malloc(sizeof(struct _pdo_entry));
 	int tmp = 0;
@@ -613,7 +613,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, struct _sii_cat *strings
 			entry->bit_length = atoi((char *)child->children->content);
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("Name"), xmlStrlen(child->name)) == 0) {
 			/* again, write this to the string category and store index to string here. */
-			strings_add(strings, (char *)child->name);
+			sii_strings_add(sii, (char *)child->name);
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("DataType"), xmlStrlen(child->name)) == 0) {
 			int dt = parse_pdo_get_data_type((char *)child->children->content);
 			if (dt <= 0)
@@ -675,7 +675,6 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	pdo->dcsync = 0;
 	pdo->flags = 0;
 
-	struct _sii_cat *strings = sii_category_find(sii, SII_CAT_STRINGS);
 	/* get node Name and node Index */
 	/* then parse the pdo list - all <Entry> children */
 	for (xmlNode *val = current->children; val; val = val->next) {
@@ -688,7 +687,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 		} else if (xmlStrncmp(val->name, xmlCharStrdup("Entry"), xmlStrlen(val->name))) {
 			/* add new pdo entry */
 			pdo->entries += 1;
-			struct _pdo_entry *entry = parse_pdo_entry(val, strings);
+			struct _pdo_entry *entry = parse_pdo_entry(val, sii);
 			pdo_entry_add(pdo, entry);
 		}
 	}
