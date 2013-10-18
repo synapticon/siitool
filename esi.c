@@ -657,7 +657,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 
 	/* get Arguments for syncmanager */
 	for (xmlAttr *attr = current->properties; attr; attr = attr->next) {
-		if (xmlStrncmp(attr->name, xmlCharStrdup("Sm"), xmlStrlen(attr->name))) {
+		if (xmlStrncmp(attr->name, xmlCharStrdup("Sm"), xmlStrlen(attr->name)) == 0) {
 			pdo->syncmanager = atoi((char *)attr->children->content);
 		}
 		/* currently fixed is unhandled - check where this setting should reside
@@ -673,13 +673,13 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	/* get node Name and node Index */
 	/* then parse the pdo list - all <Entry> children */
 	for (xmlNode *val = current->children; val; val = val->next) {
-		if (xmlStrncmp(val->name, xmlCharStrdup("Name"), xmlStrlen(val->name))) {
+		if (xmlStrncmp(val->name, xmlCharStrdup("Name"), xmlStrlen(val->name)) == 0) {
 			/* add string to category strings and store index to pdo->name_index */
-		} else if (xmlStrncmp(val->name, xmlCharStrdup("Index"), xmlStrlen(val->name))) {
+		} else if (xmlStrncmp(val->name, xmlCharStrdup("Index"), xmlStrlen(val->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)val->children->content, "#x%x", &tmp);
 			pdo->index = tmp&0xffff;
-		} else if (xmlStrncmp(val->name, xmlCharStrdup("Entry"), xmlStrlen(val->name))) {
+		} else if (xmlStrncmp(val->name, xmlCharStrdup("Entry"), xmlStrlen(val->name)) == 0) {
 			/* add new pdo entry */
 			pdo->entries += 1;
 			struct _pdo_entry *entry = parse_pdo_entry(val, sii);

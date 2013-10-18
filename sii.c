@@ -632,6 +632,8 @@ void pdo_entry_add(struct _sii_pdo *pdo, struct _pdo_entry *entry)
 {
 	if (pdo->list == NULL) {
 		entry->id = 0;
+		entry->next = NULL;
+		entry->prev = NULL;
 		pdo->list = entry;
 	} else {
 		struct _pdo_entry *list = pdo->list;
@@ -2245,6 +2247,12 @@ struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category)
 int sii_strings_add(SiiInfo *sii, const char *entry)
 {
 	struct _sii_cat *strings = sii_category_find(sii, SII_CAT_STRINGS);
+
+	if (strings == NULL)
+		return -1;
+
+	if (strings->data == NULL)
+		return -1;
 
 	return strings_add((struct _sii_strings *)strings->data, entry);
 }
