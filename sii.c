@@ -38,7 +38,6 @@ enum eSection {
 };
 #endif
 
-static char **strings; /* all strings */
 static int g_print_offsets = 0;
 
 /* category functions */
@@ -230,35 +229,69 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	return stdc;
 }
 
-static char **parse_stringsection(const unsigned char *buffer, size_t size)
+static struct _string *string_new(const char *string, size_t size)
+{
+	struct _string *new = malloc(sizeof(struct _string));
+
+	new->data = malloc(size+1);
+	new->length = size;
+	memset(new->data, 0, size+1);
+	memmove(new->data, string, size);
+
+	return new;
+}
+
+static void strings_entry_add(struct _sii_strings *str, struct _string *new)
+{
+	if (str->head == NULL) { /* first entry */
+		str->head = new;
+		str->count = 1;
+		new->id = 0;
+		return;
+	}
+
+	struct _string *s = str->head;
+	while (s->next)
+		s = s->next;
+
+	s->next = new;
+	new->prev = s;
+	new->id = s->id+1;
+	str->count += 1;
+	str->size += new->length;
+	str->padbyte = (str->size % 2) ? 1 : 0;
+}
+
+static struct _sii_strings *parse_string_section(const unsigned char *buffer, size_t size)
 {
 	const unsigned char *pos = buffer;
 	unsigned index = 0;
-	unsigned strcount = 0;
 	char str[1024];
 	size_t len = 0;
 	memset(str, '\0', 1024);
 
-	//printf("String section:\n");
-	strcount = *pos++;
-	//printf("Number of Strings: %d\n", strcount+1);
+	struct _sii_strings *strings = (struct _sii_strings *)malloc(sizeof(struct _sii_strings));
+	strings->head = NULL;
+	strings->current = NULL;
+	strings->count = 0;
+	strings->padbyte = 0;
+	strings->count = 0;
+	int stringcount = *pos++;
+	int counter = 0;
 
-	strings = (char **)malloc((strcount+1) * sizeof(char *));
-
-	for (index=0; index<strcount; index++) {
+	for (index=0; counter < stringcount; index++) {
 		len = *pos++;
 		memmove(str, pos, len);
 		pos += len;
-		//printf("Index: %d, length: %u = '%s'\n", index, len, str);
-		strings[index] = malloc(len+1);
-		memmove(strings[index], str, len+1);
-		memset(str, '\0', 1024);
+
+		strings_entry_add(strings, string_new(str, len));
+		counter++;
+		printf("[DEBUG %s] Added string number %d: '%s'\n",
+				__func__, strings->count, str);
 	}
 
-	strings[index] = NULL;
-
-	if (size != strcount)
-		printf("Warning counter differs from size\n");
+	if ((size_t)(pos-buffer) > size)
+		printf("[%s] Warning counter differs from size\n", __func__);
 
 	return strings;
 }
@@ -865,7 +898,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 	//struct _sii_preamble *preamble;
 	//struct _sii_stdconfig *stdconfig;
-	char **strings;
+	struct _sii_strings *strings;
 	struct _sii_general *general;
 	struct _sii_fmmu *fmmu;
 	struct _sii_syncm *syncmanager;
@@ -896,7 +929,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_STRINGS:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			strings = parse_stringsection(buffer, secsize);
+			strings = parse_string_section(buffer, secsize);
 			newcat->data = (void *)strings;
 			cat_add(sii, newcat);
 #ifdef DEBUG
@@ -1045,19 +1078,22 @@ static void cat_data_cleanup_pdo(struct _sii_pdo *pdo)
 	free(pdo);
 }
 
-static void free_strings(char **strings)
+static void cat_data_cleanup_strings(struct _sii_strings *str)
 {
-	int i = 0;
+	struct _string *current = str->head;
+	struct _string *tmp;
 
-	if (strings == NULL)
-		return;
+	for (struct _string *s = current; s; ) {
+		free(s->data);
+		if (s->next)
+			s->next->prev = NULL;
 
-	while (strings[i] == NULL) {
-		free(strings[i]);
-		i++;
+		tmp = s;
+		s = s->next;
+		free(tmp);
 	}
 
-	free(strings);
+	free(str);
 }
 
 static void cat_data_cleanup(struct _sii_cat *cat)
@@ -1065,7 +1101,7 @@ static void cat_data_cleanup(struct _sii_cat *cat)
 	/* clean up type specific data */
 	switch (cat->type) {
 	case SII_CAT_STRINGS:
-		free_strings((char **) cat->data);
+		cat_data_cleanup_strings((struct _sii_strings *)cat->data);
 		break;
 
 	case SII_CAT_DATATYPES:
@@ -1226,16 +1262,11 @@ static void cat_print_strings(struct _sii_cat *cat)
 	printf("printing categorie strings (0x%x size: %d)\n",
 			cat->type, cat->size);
 
-	char **strings = (char **)cat->data;
+	struct _sii_strings *str = (struct _sii_strings *)cat->data;
+	printf("  total %d strings (padding: %s)\n", str->count, (str->padbyte==1 ? "Yes" : "No"));
 
-	if (strings == NULL)
-		return;
-
-	int i=0;
-	while (strings[i] != NULL) {
-		printf("%i: %s\n", i, strings[i]);
-		i++;
-	}
+	for (struct _string *s = str->head; s; s = s->next)
+		printf("%i: (%d bytes) '%s'\n", s->id, s->length, s->data);
 }
 
 static void cat_print_datatypes(struct _sii_cat *cat)
@@ -1461,19 +1492,21 @@ static uint16_t sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *strc = buf;
 	unsigned char *b = buf+1;
-	size_t strcount = 0;
-	char **strings = (char **)cat->data;
+	struct _sii_strings *strings = (struct _sii_strings *)cat->data;
 
-	while (*strings != NULL) {
-		char *str = *strings;
-		*b = (unsigned char) strlen(str);
+	for (struct _string *s = strings->head; s; s = s->next) {
+		char *str = s->data;
+		*b = s->length;
 		b++;
 		memmove(b, str, strlen(str));
 		b+= strlen(str);
-		strings++;
-		strcount++;
 	}
-	*strc = (unsigned char)strcount;
+	*strc = strings->count;
+
+	if (strings->padbyte) {
+		*b = 0x00;
+		b++;
+	}
 
 	return (uint16_t)(b-buf);
 }
@@ -2204,14 +2237,29 @@ struct _sii_cat *sii_category_find(SiiInfo *sii, enum eSection category)
 	return NULL;
 }
 
-int strings_add(struct _sii_cat *strings, const char *entry)
+int strings_add(struct _sii_strings *strings, const char *entry)
 {
-#if 0
-	if (strings->data == NULL) {
+	strings_entry_add(strings, string_new(entry, strlen(entry)));
+
+	return (strings->count-1);
+}
+
+const char *string_search_id(struct _sii_strings *strings, int id)
+{
+	for (struct _string *s = strings->head; s; s = s->next) {
+		if (s->id == id)
+			return s->data;
 	}
 
-	char **values = (char **)strings->data;
-#endif
-	fprintf(stderr, "[%s] Developer Note: Refactoring of strings section in progress\n", __func__);
+	return NULL;
+}
+
+int string_search_string(struct _sii_strings *strings, const char *str)
+{
+	for (struct _string *s = strings->head; s; s = s->next) {
+		if (strncmp(s->data, str, strlen(str)) == 0)
+			return s->id;
+	}
+
 	return -1;
 }

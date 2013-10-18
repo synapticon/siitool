@@ -83,6 +83,23 @@ struct _sii_stdconfig {
 	uint16_t version;
 };
 
+struct _string {
+	uint8_t length;
+	char *data;
+	/* misc information */
+	int id;
+	struct _string *next;
+	struct _string *prev;
+};
+
+struct _sii_strings {
+	uint8_t count; /* if odd the padbyte must be set */
+	uint8_t padbyte; /* ==0 no padding; ==1 include padbyte */
+	size_t size;
+	struct _string *head;
+	struct _string *current;
+};
+
 struct _sii_general {
 	uint8_t groupindex; /* index to string in string section */
 	uint8_t imageindex;
@@ -312,5 +329,8 @@ void pdo_entry_add(struct _sii_pdo *pdo, struct _pdo_entry *entry);
 /**
  * @return the index of the newly added string
  */
-int strings_add(struct _sii_cat *strings, const char *entry);
+int strings_add(struct _sii_strings *strings, const char *entry);
+
+const char *string_search_id(struct _sii_strings *strings, int id);
+int string_search_string(struct _sii_strings *strings, const char *str);
 #endif /* SII_H */
