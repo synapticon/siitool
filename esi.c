@@ -461,17 +461,17 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	/* FIXME add entries */
 	xmlAttr *args = current->properties;
 	for (xmlAttr *a = args; a ; a = a->next) {
-		if (xmlStrncmp(a->name, xmlCharStrdup("DefaultSize"), xmlStrlen(a->name))) {
+		if (xmlStrncmp(a->name, xmlCharStrdup("DefaultSize"), xmlStrlen(a->name)) == 0) {
 			entry->length = atoi((char *)a->children->content);
-		} else if (xmlStrncmp(a->name, xmlCharStrdup("StartAddress"), xmlStrlen(a->name))) {
+		} else if (xmlStrncmp(a->name, xmlCharStrdup("StartAddress"), xmlStrlen(a->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)a->children->content, "#x%x", &tmp);
 			entry->phys_address = tmp&0xffff;
-		} else if (xmlStrncmp(a->name, xmlCharStrdup("ControlByte"), xmlStrlen(a->name))) {
+		} else if (xmlStrncmp(a->name, xmlCharStrdup("ControlByte"), xmlStrlen(a->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)a->children->content, "#x%x", &tmp);
 			entry->control = tmp&0xff;
-		} else if (xmlStrncmp(a->name, xmlCharStrdup("Enable"), xmlStrlen(a->name))) {
+		} else if (xmlStrncmp(a->name, xmlCharStrdup("Enable"), xmlStrlen(a->name)) == 0) {
 			entry->enable = atoi((char *)a->children->content);
 		}
 	}
@@ -480,13 +480,13 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 
 	/* type is encoded in the value of the node */
 	xmlChar *type = current->children->content;
-	if (xmlStrncmp(type, xmlCharStrdup("MBoxIn"), xmlStrlen(type)))
+	if (xmlStrncmp(type, xmlCharStrdup("MBoxIn"), xmlStrlen(type)) == 0)
 		entry->type = SMT_MBOXIN;
-	else if (xmlStrncmp(type, xmlCharStrdup("MBoxOut"), xmlStrlen(type)))
+	else if (xmlStrncmp(type, xmlCharStrdup("MBoxOut"), xmlStrlen(type)) == 0)
 		entry->type = SMT_MBOXOUT;
-	else if (xmlStrncmp(type, xmlCharStrdup("Inputs"), xmlStrlen(type)))
+	else if (xmlStrncmp(type, xmlCharStrdup("Inputs"), xmlStrlen(type)) == 0)
 		entry->type = SMT_INPUTS;
-	else if (xmlStrncmp(type, xmlCharStrdup("Outputs"), xmlStrlen(type)))
+	else if (xmlStrncmp(type, xmlCharStrdup("Outputs"), xmlStrlen(type)) == 0)
 		entry->type = SMT_OUTPUTS;
 	else
 		entry->type = SMT_UNUSED;
