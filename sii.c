@@ -426,6 +426,7 @@ void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 	if (fmmu->list == NULL) {
 		new->id = 0;
 		fmmu->list = new;
+		fmmu->count = 1;
 	} else {
 		struct _fmmu_entry *f = fmmu->list;
 		while (f->next != NULL)
