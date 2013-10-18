@@ -286,8 +286,6 @@ static struct _sii_strings *parse_string_section(const unsigned char *buffer, si
 
 		strings_entry_add(strings, string_new(str, len));
 		counter++;
-		printf("[DEBUG %s] Added string number %d: '%s'\n",
-				__func__, strings->count, str);
 	}
 
 	if ((size_t)(pos-buffer) > size)
