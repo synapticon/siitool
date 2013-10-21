@@ -2287,3 +2287,32 @@ int string_search_string(struct _sii_strings *strings, const char *str)
 
 	return -1;
 }
+
+char *cat2string(enum eSection cat)
+{
+	switch (cat) {
+	case SII_PREAMBLE:
+		return "SII_PREAMBLE";
+	case SII_STD_CONFIG:
+		return "SII_STD_CONFIG";
+	case SII_CAT_STRINGS:
+		return "SII_CAT_STRINGS";
+	case SII_CAT_DATATYPES:
+		return "SII_CAT_DATATYPES";
+	case SII_CAT_GENERAL:
+		return "SII_CAT_GENERAL";
+	case SII_CAT_FMMU:
+		return "SII_CAT_FMMU";
+	case SII_CAT_SYNCM:
+		return "SII_CAT_SYNCM";
+	case SII_CAT_TXPDO:
+		return "SII_CAT_TXPDO";
+	case SII_CAT_RXPDO:
+		return "SII_CAT_RXPDO";
+	case SII_CAT_DCLOCK:
+		return "SII_CAT_DCLOCK";
+	case SII_CAT_NOP:
+	default:
+		return "undefined";
+	}
+}

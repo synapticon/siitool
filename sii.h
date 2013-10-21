@@ -338,4 +338,7 @@ int strings_add(struct _sii_strings *strings, const char *entry);
 
 const char *string_search_id(struct _sii_strings *strings, int id);
 int string_search_string(struct _sii_strings *strings, const char *str);
+
+/* misc debug functions */
+char *cat2string(enum eSection cat);
 #endif /* SII_H */
