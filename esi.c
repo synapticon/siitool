@@ -623,9 +623,11 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 				fprintf(stderr, "Warning unrecognized esi data type '%s'\n", (char *)child->children->content);
 			else
 				entry->data_type = (uint8_t)dt;
+#if 0 /* doesn't help much, except for debugging */
 		} else {
 			fprintf(stderr, "Warning, unrecognized pdo setting: '%s'\n",
 					(char *)child->name);
+#endif
 		}
 	}
 
