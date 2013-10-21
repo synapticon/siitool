@@ -1851,7 +1851,7 @@ static size_t sii_cat_write(struct _sii *sii)
 			goto nextcat;
 		}
 
-		written += catsize;
+		written += catsize+4;
 		buf += catsize;
 		catsize = catsize/2; /* byte -> word count */
 		*cs = catsize&0xff;
@@ -2101,6 +2101,7 @@ size_t sii_generate(SiiInfo *sii)
 	size_t maxsize = sii->config->eeprom_size * 1024;
 	sii->rawbytes = (uint8_t*) malloc(maxsize);
 	memset(sii->rawbytes, 0, maxsize);
+	sii->rawsize = 0;
 
 	sii_write(sii);
 	sii->rawvalid = 1; /* FIXME valid should be set in sii_write */
