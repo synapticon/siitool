@@ -595,6 +595,8 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 	struct _pdo_entry *entry = malloc(sizeof(struct _pdo_entry));
 	int tmp = 0;
 
+	memset(entry, 0, sizeof(struct _pdo_entry));
+
 	for (xmlNode *child = val->children; child; child = child->next) {
 		if (xmlStrncmp(child->name, xmlCharStrdup("Index"), xmlStrlen(child->name)) == 0) {
 			sscanf((char *)child->children->content, "#x%x", &tmp);
@@ -608,7 +610,13 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 			entry->bit_length = atoi((char *)child->children->content);
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("Name"), xmlStrlen(child->name)) == 0) {
 			/* again, write this to the string category and store index to string here. */
-			sii_strings_add(sii, (char *)child->name);
+			tmp = sii_strings_add(sii, (char *)child->name);
+			if (tmp < 0) {
+				fprintf(stderr, "Error creating input string!\n");
+				entry->string_index = 0;
+			} else {
+				entry->string_index = (uint8_t)tmp&0xff;
+			}
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("DataType"), xmlStrlen(child->name)) == 0) {
 			int dt = parse_pdo_get_data_type((char *)child->children->content);
 			if (dt <= 0)
@@ -653,7 +661,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
 
-	size_t pdosize = 0;
+	size_t pdosize = 8; /* base size of pdo */
 
 	/* get Arguments for syncmanager */
 	for (xmlAttr *attr = current->properties; attr; attr = attr->next) {
@@ -684,6 +692,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 			pdo->entries += 1;
 			struct _pdo_entry *entry = parse_pdo_entry(val, sii);
 			pdo_entry_add(pdo, entry);
+			pdosize += 8; /* size of every pdo entry */
 		}
 	}
 
