@@ -1501,6 +1501,9 @@ static uint16_t sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
 	unsigned char *b = buf+1;
 	struct _sii_strings *strings = (struct _sii_strings *)cat->data;
 
+	if (strings == NULL)
+		return 0;
+
 	for (struct _string *s = strings->head; s; s = s->next) {
 		char *str = s->data;
 		*b = s->length;
@@ -1799,6 +1802,9 @@ static size_t sii_cat_write(struct _sii *sii)
 
 		*ct = cat->type&0xff;
 		*(ct+1) = (cat->type>>8)&0xff;
+
+		if (cat->size == 0)
+			goto nextcat;
 
 		switch (cat->type) {
 		case SII_CAT_STRINGS:
