@@ -1841,7 +1841,7 @@ static size_t sii_cat_write(struct _sii *sii)
 		}
 
 #ifdef DEBUG
-		printf("DEBUG section type 0x%.4x size: 0x%.4x\n", cat->type, catsize/2);
+		printf("[DEBUG %s] section type 0x%.4x size: 0x%.4x\n", __func__, cat->type, catsize/2);
 #endif
 
 		if (catsize == 0) {
@@ -2005,18 +2005,18 @@ static void sii_write(SiiInfo *sii)
 	*outbuf = (scfg->version>>8)&0xff;
 	outbuf++;
 
-	// - iterate through categories
-
 	sii->rawsize = (size_t)(outbuf-sii->rawbytes);
+
 #ifdef DEBUG
 	printf("DEBUG sii_write() wrote %d bytes for preamble and std config\n", sii->rawsize);
 #endif
 
-#if 1
+	// - iterate through categories
+
 	size_t sz = sii_cat_write(sii);
 	outbuf += sz;
 	sii->rawsize += sz;
-#endif
+
 	/* add end indicator */
 	*outbuf = 0xff;
 	outbuf++;
