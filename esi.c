@@ -610,7 +610,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 			entry->bit_length = atoi((char *)child->children->content);
 		} else if (xmlStrncmp(child->name, xmlCharStrdup("Name"), xmlStrlen(child->name)) == 0) {
 			/* again, write this to the string category and store index to string here. */
-			tmp = sii_strings_add(sii, (char *)child->name);
+			tmp = sii_strings_add(sii, (char *)child->children->content);
 			if (tmp < 0) {
 				fprintf(stderr, "Error creating input string!\n");
 				entry->string_index = 0;
@@ -684,7 +684,13 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	/* then parse the pdo list - all <Entry> children */
 	for (xmlNode *val = current->children; val; val = val->next) {
 		if (xmlStrncmp(val->name, xmlCharStrdup("Name"), xmlStrlen(val->name)) == 0) {
-			/* add string to category strings and store index to pdo->name_index */
+			int tmp = sii_strings_add(sii, (char *)val->children->content);
+			if (tmp < 0) {
+				fprintf(stderr, "Error creating input string!\n");
+				pdo->name_index = 0;
+			} else {
+				pdo->name_index = (uint8_t)tmp&0xff;
+			}
 		} else if (xmlStrncmp(val->name, xmlCharStrdup("Index"), xmlStrlen(val->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)val->children->content, "#x%x", &tmp);
@@ -817,7 +823,9 @@ int esi_parse(EsiData *esi)
 		strings->prev = NULL;
 		strings->size = 0;
 		strings->type = SII_CAT_STRINGS;
-		strings->data = NULL;
+		struct _sii_strings *strdata = malloc(sizeof(struct _sii_strings));
+		memset(strdata, 0, sizeof(struct _sii_strings));
+		strings->data = strdata;
 		sii_category_add(esi->sii, strings);
 	}
 
