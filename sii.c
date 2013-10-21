@@ -1803,9 +1803,6 @@ static size_t sii_cat_write(struct _sii *sii)
 		*ct = cat->type&0xff;
 		*(ct+1) = (cat->type>>8)&0xff;
 
-		if (cat->size == 0)
-			goto nextcat;
-
 		switch (cat->type) {
 		case SII_CAT_STRINGS:
 			catsize = sii_cat_write_strings(cat, buf);
@@ -1848,9 +1845,9 @@ static size_t sii_cat_write(struct _sii *sii)
 #endif
 
 		if (catsize == 0) {
-			fprintf(stderr, "Warning, existing category (0x%.x) unexpected empty\n",
-					cat->type);
-			buf -= 4;
+			fprintf(stderr, "Warning, existing category %s (0x%.x) unexpected empty\n",
+					cat2string(cat->type), cat->type);
+			buf -= 4; /* rewind */
 			goto nextcat;
 		}
 
