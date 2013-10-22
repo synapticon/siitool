@@ -246,7 +246,7 @@ static void strings_entry_add(struct _sii_strings *str, struct _string *new)
 	if (str->head == NULL) { /* first entry */
 		str->head = new;
 		str->count = 1;
-		new->id = 0;
+		new->id = 1;
 		return;
 	}
 
@@ -259,7 +259,7 @@ static void strings_entry_add(struct _sii_strings *str, struct _string *new)
 	new->id = s->id+1;
 	str->count += 1;
 	str->size += new->length;
-	str->padbyte = (str->size % 2) ? 1 : 0;
+	str->padbyte = (str->size % 2) ? 0 : 1;
 }
 
 static struct _sii_strings *parse_string_section(const unsigned char *buffer, size_t size)
