@@ -2265,7 +2265,7 @@ int strings_add(struct _sii_strings *strings, const char *entry)
 {
 	strings_entry_add(strings, string_new(entry, strlen(entry)));
 
-	return (strings->count-1);
+	return strings->count;
 }
 
 const char *string_search_id(struct _sii_strings *strings, int id)
