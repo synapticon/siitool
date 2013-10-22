@@ -772,7 +772,7 @@ static enum eSection get_next_section(const unsigned char *b, size_t *secsize)
 
 static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, size_t size)
 {
-	const unsigned char *b = buffer+1; /* first byte is reserved */
+	const unsigned char *b = buffer;
 
 	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
 	memset(dc, 0, sizeof(struct _sii_dclock));
@@ -788,8 +788,6 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	dc->sync_pulse = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
 
-	b+=10; /* skipped reserved */
-
 	dc->int0_status = (*b & 0x01) == 0 ? 0 : 1;
 	b++;
 	dc->int1_status = (*b & 0x01) == 0 ? 0 : 1;
@@ -797,7 +795,6 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 
 	dc->cyclic_op_starttime = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=12; /* skipped reserved */
 
 	dc->sync0_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
@@ -806,36 +803,32 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 
 	dc->latch0_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch0_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
-	b+=2;
+	b+=1;
 
 	dc->latch1_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch1_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
-	b+=2;
-	b+=4; /* another reserved block */
+	b+=1;
 
 	dc->latch0_pos_event = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch0_neg_event = (*b & 0x02) == 0 ? 0 : 1;
-	b+=2; /* the follwing 14 bits are reserved */
+	b+=1;
 
 	dc->latch1_pos_event = (*b & 0x01) == 0 ? 0 : 1;
 	dc->latch1_neg_event = (*b & 0x02) == 0 ? 0 : 1;
-	b+=2; /* the follwing 14 bits are reserved */
+	b+=1;
 
+	b+=10; /* reserved */
 	dc->latch0_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4; /* reserved */
 
 	dc->latch0_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4; /* reserved */
 
 	dc->latch1_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4; /* reserved */
 
 	dc->latch1_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
 	b+=4;
-	b+=4; /* reserved */
 
 #if 0
 	/* DEBUG printout */
@@ -1653,7 +1646,6 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 		((dc->sync1_active<<2)&0x04);
 	*b++ = dc->sync_pulse&0xff;
 	*b++ = (dc->sync_pulse>>8)&0xff;
-	b+=10; /* reserved */
 	*b++ = (dc->int0_status&0x01);
 	*b++ = (dc->int1_status&0x01);
 
@@ -1661,8 +1653,6 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 	*b++ = (dc->cyclic_op_starttime>>8)&0xff;
 	*b++ = (dc->cyclic_op_starttime>>16)&0xff;
 	*b++ = (dc->cyclic_op_starttime>>24)&0xff;
-
-	b+=12; /* reserved */
 
 	*b++ = dc->sync0_cycle_time&0xff;
 	*b++ = (dc->sync0_cycle_time>>8)&0xff;
@@ -1675,37 +1665,33 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 	*b++ = (dc->sync1_cycle_time>>24)&0xff;
 
 	*b++ = (dc->latch0_pos_edge&0x01) | ((dc->latch0_neg_edge<<1)&0x02);
-	b++; /* reserved */
 
 	*b++ = (dc->latch1_pos_edge&0x01) | ((dc->latch1_neg_edge<<1)&0x02);
-	b++; /* reserved */
 
 	*b++ = (dc->latch0_pos_event&0x01) | ((dc->latch0_neg_event<<1)&0x02);
 	*b++ = (dc->latch1_pos_event&0x01) | ((dc->latch1_neg_event<<1)&0x02);
+
+	b+=10; /* reserved */
 
 	*b++ = dc->latch0_pos_edge_value&0xff;
 	*b++ = (dc->latch0_pos_edge_value>>8)&0xff;
 	*b++ = (dc->latch0_pos_edge_value>>16)&0xff;
 	*b++ = (dc->latch0_pos_edge_value>>24)&0xff;
-	b+=4; /* reserved */
 
 	*b++ = dc->latch0_neg_edge_value&0xff;
 	*b++ = (dc->latch0_neg_edge_value>>8)&0xff;
 	*b++ = (dc->latch0_neg_edge_value>>16)&0xff;
 	*b++ = (dc->latch0_neg_edge_value>>24)&0xff;
-	b+=4; /* reserved */
 
 	*b++ = dc->latch1_pos_edge_value&0xff;
 	*b++ = (dc->latch1_pos_edge_value>>8)&0xff;
 	*b++ = (dc->latch1_pos_edge_value>>16)&0xff;
 	*b++ = (dc->latch1_pos_edge_value>>24)&0xff;
-	b+=4; /* reserved */
 
 	*b++ = dc->latch1_neg_edge_value&0xff;
 	*b++ = (dc->latch1_neg_edge_value>>8)&0xff;
 	*b++ = (dc->latch1_neg_edge_value>>16)&0xff;
 	*b++ = (dc->latch1_neg_edge_value>>24)&0xff;
-	b+=4; /* reserved */
 
 	return (uint16_t)(b-buf);
 #else
@@ -2315,4 +2301,44 @@ char *cat2string(enum eSection cat)
 	default:
 		return "undefined";
 	}
+}
+
+struct _sii_dclock *dclock_get_default(void)
+{
+	static struct _sii_dclock dcproto = {
+		.reserved1 = 0, /* shall be zero */
+		.cyclic_op_enabled = 0,
+		.sync0_active = 0,
+		.sync1_active = 0,
+		.reserved2 = 0,
+		.sync_pulse = 0,
+		.int0_status = 0,
+		.reserved4 = 0,
+		.int1_status = 0,
+		.reserved5 = 0,
+		.cyclic_op_starttime = 0,
+		.sync0_cycle_time = 0,
+		.sync1_cycle_time = 0x10000,
+		.latch0_pos_edge = 1,
+		.latch0_neg_edge = 0,
+		.reserved6 = 0,
+		.latch1_pos_edge = 0,
+		.latch1_neg_edge = 0,
+		.reserved7 = 0,
+		.latch0_pos_event = 0,
+		.latch0_neg_event = 0,
+		.reserved9 = 0,
+		.latch1_pos_event = 0,
+		.latch1_neg_event = 0,
+		.reserved10 = 0,
+		.latch0_pos_edge_value = 0,
+		.latch0_neg_edge_value = 0x01000000,
+		.latch1_pos_edge_value = 0x00060001,
+		.latch1_neg_edge_value = 0,
+	};
+
+	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
+	memmove(dc, &dcproto, sizeof(struct _sii_dclock));
+
+	return dc;
 }

@@ -218,7 +218,10 @@ struct _sii_pdo {
 	struct _pdo_entry *list;
 };
 
-/* sizeof(struct _sii_dclock): 82 Bytes */
+/* FIXME currently this struct is a assumption how the
+ * distributed clock could look like.
+ * Further versions of the ETG specs should clearify
+ * this issue. */
 struct _sii_dclock {
 	uint8_t reserved1; /* shall be zero */
 	uint8_t cyclic_op_enabled:1;
@@ -226,36 +229,30 @@ struct _sii_dclock {
 	uint8_t sync1_active:1;
 	uint8_t reserved2:5;
 	uint16_t sync_pulse;
-	uint8_t reserved3[10];
 	uint8_t int0_status:1;
 	uint8_t reserved4:7;
 	uint8_t int1_status:1;
 	uint8_t reserved5:7;
 	uint32_t cyclic_op_starttime;
-	uint8_t reserved51[12];
 	uint32_t sync0_cycle_time;
 	uint32_t sync1_cycle_time;
 	uint16_t latch0_pos_edge:1;
 	uint16_t latch0_neg_edge:1;
-	uint16_t reserved6:14;
+	uint16_t reserved6:6;
 	uint16_t latch1_pos_edge:1;
 	uint16_t latch1_neg_edge:1;
-	uint16_t reserved7:14;
-	uint8_t reserved8[4];
+	uint16_t reserved7:6;
 	uint8_t latch0_pos_event:1;
 	uint8_t latch0_neg_event:1;
 	uint8_t reserved9:6;
 	uint8_t latch1_pos_event:1;
 	uint8_t latch1_neg_event:1;
 	uint8_t reserved10:6;
+	uint8_t reservedc[10];
 	uint32_t latch0_pos_edge_value;
-	uint8_t reserved11[4];
 	uint32_t latch0_neg_edge_value;
-	uint8_t reserved12[4];
 	uint32_t latch1_pos_edge_value;
-	uint8_t reserved13[4];
 	uint32_t latch1_neg_edge_value;
-	uint8_t reserved14[4];
 };
 
 /* a single category */
@@ -339,6 +336,14 @@ int strings_add(struct _sii_strings *strings, const char *entry);
 const char *string_search_id(struct _sii_strings *strings, int id);
 int string_search_string(struct _sii_strings *strings, const char *str);
 
-/* misc debug functions */
+/* misc functions */
 char *cat2string(enum eSection cat);
+
+/* Attention: Since the documentation of the distributed clock is not very
+ * clear and marked as "for future use" (as to date 2013-10-22) the category
+ * is fixed with a default value found on the EEPROM file of one of our
+ * evaluation boards. As soon as the descirption is fixed and the future use
+ * note disappeared the need for the default setting will become obsolete.
+ */
+struct _sii_dclock *dclock_get_default(void);
 #endif /* SII_H */

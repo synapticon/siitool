@@ -519,6 +519,21 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	cat->size += 8; /* a syncmanager entry is 8 bytes */
 }
 
+static void get_dc_proto(SiiInfo *sii)
+{
+	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
+	cat->next = NULL;
+	cat->prev = NULL;
+	cat->type = SII_CAT_DCLOCK;
+
+	/* now fetch the data */
+	struct _sii_dclock *dc = dclock_get_default();
+
+	cat->data = (void *)dc;
+	cat->size = 48;
+	sii_category_add(sii, cat);
+}
+
 static void parse_dclock(xmlNode *current, SiiInfo *sii)
 {
 	struct _sii_cat *cat = malloc(sizeof(struct _sii_cat));
@@ -876,14 +891,19 @@ int esi_parse(EsiData *esi)
 			parse_fmmu(current, esi->sii);
 		} else if (xmlStrncmp(current->name, xmlCharStrdup("Sm"), xmlStrlen(current->name)) == 0) {
 			parse_syncm(current, esi->sii);
+#if 0
 		} else if (xmlStrncmp(current->name, xmlCharStrdup("Dc"), xmlStrlen(current->name)) == 0) {
 			parse_dclock(current, esi->sii);
+#endif
 		} else if (xmlStrncmp(current->name, xmlCharStrdup("RxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii);
 		} else if (xmlStrncmp(current->name, xmlCharStrdup("TxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii);
 		}
 	}
+
+	/* as last action, add the distributed clock settings. */
+	get_dc_proto(esi->sii); /* FIXME see comment on sii.c:get_dc_proto() */
 
 	return 0;
 }
