@@ -351,7 +351,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	return sc;
 }
 
-static struct _sii_general *parse_general(xmlNode *root)
+static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 {
 	xmlNode *parent;
 	xmlNode *node;
@@ -359,6 +359,30 @@ static struct _sii_general *parse_general(xmlNode *root)
 	struct _sii_general *general = malloc(sizeof(struct _sii_general));
 
 	/* FIXME handle string indexes */
+
+	/* Search group-,image-, order- and namestring and store these strings
+	 * to the corresponding *index.
+	 *
+	 * Note, these strings are Vendor specific.
+	 */
+
+	parent = search_node(root, "Groups");
+	node = search_node(parent, "Group"); /* FIXME handle multiple groups??? */
+	tmp = search_node(node, "Name"); /* FIXME check language id and use the english version */
+	general->groupindex = sii_strings_add(sii, (const char *)tmp->children->content);
+
+	general->imageindex = 0;
+	general->orderindex = 0;
+
+	parent = search_node(root, "Devices");
+	node = search_node(parent, "Device"); /* FIXME handle multiple groups??? */
+	tmp = search_node(node, "Name"); /* FIXME check language id and use the english version */
+	general->nameindex = sii_strings_add(sii, (const char *)tmp->children->content);
+
+	/* reset temporial nodes */
+	parent = NULL;
+	node = NULL;
+	tmp = NULL;
 
 	/* fetch CoE details */
 	//printf("[DEBUG %s] get CoE details\n", __func__);
@@ -833,7 +857,7 @@ int esi_parse(EsiData *esi)
 	esi->sii->preamble = parse_preamble(n);
 	esi->sii->config = parse_config(root);
 
-	struct _sii_general *general = parse_general(root);
+	struct _sii_general *general = parse_general(esi->sii, root);
 	struct _sii_cat *gencat = malloc(sizeof(struct _sii_cat));
 	gencat->next = NULL;
 	gencat->prev = NULL;
