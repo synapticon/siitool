@@ -2433,39 +2433,6 @@
 				<Sm MinSize="128" MaxSize="128" DefaultSize="128" StartAddress="#x1080" ControlByte="#x22" Enable="1">MBoxIn</Sm>
 				<Sm DefaultSize="18" StartAddress="#x1100" ControlByte="#x24" Enable="1">Outputs</Sm>
 				<Sm DefaultSize="18" StartAddress="#x1180" ControlByte="#x20" Enable="1">Inputs</Sm>
-				<Mailbox DataLinkLayer="true">
-					<!-- ctrlproto doesn't support any mailbox protocols
-					<CoE SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="1"/>
-					<FoE/>
-					-->
-				</Mailbox>
-				<!-- FIXME set current DC settings -->
-				<Dc>
-					<OpMode>
-						<Name>Synchron</Name>
-						<Desc>SM-Synchron</Desc>
-						<AssignActivate>#x0</AssignActivate>
-						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
-						<ShiftTimeSync0>0</ShiftTimeSync0>
-						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
-						<ShiftTimeSync1>0</ShiftTimeSync1>
-					</OpMode>
-					<OpMode>
-						<Name>DC</Name>
-						<Desc>DC-Synchron</Desc>
-						<AssignActivate>#x300</AssignActivate>
-						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
-						<ShiftTimeSync0>0</ShiftTimeSync0>
-						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
-						<ShiftTimeSync1>0</ShiftTimeSync1>
-					</OpMode>
-				</Dc>
-				<Eeprom>
-					<ByteSize>1920</ByteSize>
-					<!-- org: <ConfigData>0800020800000000000000000000</ConfigData> -->
-					<ConfigData>080e028800000000000000000000</ConfigData>
-					<!-- the crc8 checksum of the above: 2f00 -->
-				</Eeprom>
 				<RxPdo Fixed="true" Sm="2">
 					<Index>#x1a00</Index>
 					<Name>Outputs</Name>
@@ -2544,6 +2511,39 @@
 						<DataType>UDINT</DataType>
 					</Entry>
 				</TxPdo>
+				<Mailbox DataLinkLayer="true">
+					<!-- ctrlproto doesn't support any mailbox protocols
+					<CoE SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="1"/>
+					<FoE/>
+					-->
+				</Mailbox>
+				<!-- FIXME set current DC settings -->
+				<Dc>
+					<OpMode>
+						<Name>Synchron</Name>
+						<Desc>SM-Synchron</Desc>
+						<AssignActivate>#x0</AssignActivate>
+						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
+						<ShiftTimeSync0>0</ShiftTimeSync0>
+						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
+						<ShiftTimeSync1>0</ShiftTimeSync1>
+					</OpMode>
+					<OpMode>
+						<Name>DC</Name>
+						<Desc>DC-Synchron</Desc>
+						<AssignActivate>#x300</AssignActivate>
+						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
+						<ShiftTimeSync0>0</ShiftTimeSync0>
+						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
+						<ShiftTimeSync1>0</ShiftTimeSync1>
+					</OpMode>
+				</Dc>
+				<Eeprom>
+					<ByteSize>1920</ByteSize>
+					<!-- org: <ConfigData>0800020800000000000000000000</ConfigData> -->
+					<ConfigData>080e028800000000000000000000</ConfigData>
+					<!-- the crc8 checksum of the above: 2f00 -->
+				</Eeprom>
 			</Device>
 		</Devices>
 	</Descriptions>

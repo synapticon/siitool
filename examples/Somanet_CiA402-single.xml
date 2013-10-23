@@ -2435,39 +2435,6 @@
 				<!-- FIXME fix size according to PDOs -->
 				<Sm DefaultSize="18" StartAddress="#x1100" ControlByte="#x24" Enable="1">Outputs</Sm>
 				<Sm DefaultSize="18" StartAddress="#x1180" ControlByte="#x20" Enable="1">Inputs</Sm>
-				<Mailbox DataLinkLayer="true">
-					<CoE SdoInfo="1" CompleteAccess="0" PdoAssign="0" PdoConfig="0" PdoUpload="0" />
-					<!-- SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="1" PdoUpload="0" -->
-					<EoE/> <!-- this is optional in this device -->
-					<FoE/>
-				</Mailbox>
-				<!-- FIXME set current DC settings -->
-				<Dc>
-					<OpMode>
-						<Name>Synchron</Name>
-						<Desc>SM-Synchron</Desc>
-						<AssignActivate>#x0</AssignActivate>
-						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
-						<ShiftTimeSync0>0</ShiftTimeSync0>
-						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
-						<ShiftTimeSync1>0</ShiftTimeSync1>
-					</OpMode>
-					<OpMode>
-						<Name>DC</Name>
-						<Desc>DC-Synchron</Desc>
-						<AssignActivate>#x300</AssignActivate>
-						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
-						<ShiftTimeSync0>0</ShiftTimeSync0>
-						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
-						<ShiftTimeSync1>0</ShiftTimeSync1>
-					</OpMode>
-				</Dc>
-				<Eeprom>
-					<ByteSize>15360</ByteSize>
-					<!-- org: <ConfigData>0800020800000000000000000000</ConfigData> -->
-					<ConfigData>080e028800000000000000000000</ConfigData>
-					<!-- the crc8 checksum of the above: 2f00 -->
-				</Eeprom>
 				<!-- these strange DataTypes are defined above in the profile area -->
 				<RxPdo Fixed="true" Sm="2">
 					<Index>#x1600</Index>
@@ -2547,6 +2514,39 @@
 						<DataType>UINT</DataType>
 					</Entry>
 				</TxPdo>
+				<Mailbox DataLinkLayer="true">
+					<EoE/> <!-- this is optional in this device -->
+					<CoE SdoInfo="1" CompleteAccess="0" PdoAssign="0" PdoConfig="0" PdoUpload="0" />
+					<!-- SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="1" PdoUpload="0" -->
+					<FoE/>
+				</Mailbox>
+				<!-- FIXME set current DC settings -->
+				<Dc>
+					<OpMode>
+						<Name>Synchron</Name>
+						<Desc>SM-Synchron</Desc>
+						<AssignActivate>#x0</AssignActivate>
+						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
+						<ShiftTimeSync0>0</ShiftTimeSync0>
+						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
+						<ShiftTimeSync1>0</ShiftTimeSync1>
+					</OpMode>
+					<OpMode>
+						<Name>DC</Name>
+						<Desc>DC-Synchron</Desc>
+						<AssignActivate>#x300</AssignActivate>
+						<CycleTimeSync0 Factor="0">0</CycleTimeSync0>
+						<ShiftTimeSync0>0</ShiftTimeSync0>
+						<CycleTimeSync1 Factor="1">0</CycleTimeSync1>
+						<ShiftTimeSync1>0</ShiftTimeSync1>
+					</OpMode>
+				</Dc>
+				<Eeprom>
+					<ByteSize>15360</ByteSize>
+					<!-- org: <ConfigData>0800020800000000000000000000</ConfigData> -->
+					<ConfigData>080e028800000000000000000000</ConfigData>
+					<!-- the crc8 checksum of the above: 2f00 -->
+				</Eeprom>
 			</Device>
 		</Devices>
 	</Descriptions>
