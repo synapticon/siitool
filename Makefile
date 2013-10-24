@@ -36,4 +36,4 @@ clean:
 	rm -f $(TARGET) $(OBJECTS)
 
 lint:
-	splint -weak +posixlib -skipposixheaders -skipisoheaders +trytorecover  main.c
+	clang --analyze `xml2-config --cflags` main.c sii.c esi.c esifile.c
