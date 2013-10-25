@@ -279,7 +279,7 @@ static struct _sii_strings *parse_string_section(const unsigned char *buffer, si
 	strings->current = NULL;
 	strings->count = 0;
 	strings->padbyte = 0;
-	strings->count = 0;
+	strings->size = 0;
 	int stringcount = *pos++;
 	int counter = 0;
 
@@ -692,6 +692,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	int entry = 0;
 
 	struct _sii_pdo *pdo = malloc(sizeof(struct _sii_pdo));
+	memset(pdo, 0, sizeof(struct _sii_pdo));
 
 	switch (t) {
 	case RxPDO:
