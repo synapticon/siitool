@@ -225,6 +225,7 @@ int main(int argc, char *argv[])
 	unsigned char eeprom[MAX_BUFFER_SIZE];
 	char *filename = NULL;
 	char *output = NULL;
+	int bytesread = 0;
 
 	for (int i=1; i<argc; i++) {
 		switch (argv[i][0]) {
@@ -237,8 +238,8 @@ int main(int argc, char *argv[])
 				return 0;
 			} else if (argv[i][1] == 'o') {
 				i++;
-				output = malloc(strlen(argv[i]+1));
-				strncpy(output, argv[i], strlen(argv[i]));
+				output = malloc(strlen(argv[i])+1);
+				memmove(output, argv[i], strlen(argv[i])+1);
 			} else if (argv[i][1] == 'p') {
 				g_print_content = 1;
 			} else if (argv[i][1] == '\0') { /* read from stdin (default) */
@@ -257,8 +258,9 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	memset(eeprom, 0, MAX_BUFFER_SIZE);
 	if (filename == NULL)
-		read_input(stdin, eeprom, MAX_BUFFER_SIZE);
+		bytesread = read_input(stdin, eeprom, MAX_BUFFER_SIZE);
 	else {
 		f = fopen(filename, "r");
 		if (f == NULL) {
@@ -268,7 +270,7 @@ int main(int argc, char *argv[])
 
 		printf("Start reading contents of file %s\n", filename);
 
-		read_input(f, eeprom, MAX_BUFFER_SIZE);
+		bytesread = read_input(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
 	}
 
