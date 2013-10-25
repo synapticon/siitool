@@ -228,6 +228,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	xmlNode *n, *tmp;
 
 	struct _sii_stdconfig *sc = malloc(sizeof(struct _sii_stdconfig));
+	memset(sc, 0, sizeof(struct _sii_stdconfig));
 
 	//xmlNode *n = search_node(root, "Vendor");
 	n = search_node(root, "Vendor");
@@ -357,6 +358,7 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 	xmlNode *node;
 	xmlNode *tmp;
 	struct _sii_general *general = malloc(sizeof(struct _sii_general));
+	memset(general, 0, sizeof(struct _sii_general));
 
 	/* FIXME handle string indexes */
 
@@ -481,6 +483,9 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	//size_t smsize = 0;
 	struct _sii_syncm *sm = (struct _sii_syncm *)cat->data;
 	struct _syncm_entry *entry = malloc(sizeof(struct _syncm_entry));
+	entry->id = -1;
+	entry->next = NULL;
+	entry->prev = NULL;
 
 	/* FIXME add entries */
 	xmlAttr *args = current->properties;

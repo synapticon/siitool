@@ -233,6 +233,10 @@ static struct _string *string_new(const char *string, size_t size)
 {
 	struct _string *new = malloc(sizeof(struct _string));
 
+	new->id = 0;
+	new->next = NULL;
+	new->prev = NULL;
+
 	new->data = malloc(size+1);
 	new->length = size;
 	memset(new->data, 0, size+1);
