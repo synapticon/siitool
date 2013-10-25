@@ -796,6 +796,7 @@ struct _esi_data *esi_init(const char *file)
 	return esi;
 }
 
+/* FIXME Input type is already given in the calling function parse_xml_input() */
 EsiData *esi_init_string(const unsigned char *buf, size_t size)
 {
 	EsiData *esi = malloc(sizeof(struct _esi_data));
@@ -823,7 +824,7 @@ EsiData *esi_init_string(const unsigned char *buf, size_t size)
 		LIBXML_TEST_VERSION
 
 		esi->sii = sii_init();
-		esi->doc = xmlReadMemory((const char *)buf, size, "newsii.xml", NULL, 0);
+		esi->doc = xmlReadMemory((const char *)buf, size, "noname.xml", NULL, 0);
 		if (esi->doc == NULL) {
 			fprintf(stderr, "Failed to parse XML.\n");
 			free(esi->sii);
