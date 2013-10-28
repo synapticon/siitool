@@ -340,7 +340,6 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 	fmmu->count = 0;
 	fmmu->list = NULL;
 
-	printf("FMMU Settings:\n");
 	while ((unsigned int)(b-buffer)<secsize) {
 		fmmu_add_entry(fmmu, *b);
 		b++;
@@ -686,7 +685,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 	struct _sii_dclock *distributedclock;
 
 	while (1) {
-		print_offsets(eeprom, secstart);
 		switch (section) {
 		case SII_CAT_NOP:
 			break;
