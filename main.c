@@ -178,6 +178,7 @@ static int parse_xml_input(const unsigned char *buffer, const char *output)
 
 	if (esi_parse(esi)) {
 		fprintf(stderr, "Error something went wrong in XML parsing\n");
+		esi_release(esi);
 		return -1;
 	}
 
@@ -189,6 +190,7 @@ static int parse_xml_input(const unsigned char *buffer, const char *output)
 		int ret = sii_write_bin(sii, output);
 		if (ret < 0) {
 			fprintf(stderr, "Error, couldn't write output file\n");
+			esi_release(esi);
 			return -1;
 		}
 	}
@@ -225,6 +227,7 @@ int main(int argc, char *argv[])
 	unsigned char eeprom[MAX_BUFFER_SIZE];
 	char *filename = NULL;
 	char *output = NULL;
+	int ret = -1;
 	int bytesread = 0;
 
 	for (int i=1; i<argc; i++) {
@@ -265,7 +268,8 @@ int main(int argc, char *argv[])
 		f = fopen(filename, "r");
 		if (f == NULL) {
 			perror("Error open input file");
-			return -1;
+			ret = -1;
+			goto finish;
 		}
 
 		printf("Start reading contents of file %s\n", filename);
@@ -273,9 +277,6 @@ int main(int argc, char *argv[])
 		bytesread = read_input(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
 	}
-
-	int ret = -1;
-
 
 	/* recognize input */
 	enum eInputFileType filetype = file_type(filename, eeprom);
@@ -292,9 +293,11 @@ int main(int argc, char *argv[])
 
 	case UNDEFINED:
 	default:
-		return -1;
+		ret = -1;
+		goto finish;
 	}
 
+finish:
 	if (output)
 		free(output);
 

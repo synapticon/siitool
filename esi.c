@@ -10,6 +10,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#define Char2xmlChar(s)   ((xmlChar *)s)
+
 struct _esi_data {
 	SiiInfo *sii;
 	char *siifile; /* also opt for sii->outfile */
@@ -232,8 +234,10 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	//xmlNode *n = search_node(root, "Vendor");
 	n = search_node(root, "Vendor");
-	if (n==NULL)
+	if (n==NULL) {
+		free(sc);
 		return NULL;
+	}
 
 	tmp = search_node(n, "Id");
 	//char *vendoridstr = tmp->children->content;
@@ -248,11 +252,11 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	xmlAttr *prop = tmp->properties;
 
 	while (prop != NULL) {
-		if (xmlStrncmp(prop->name, xmlCharStrdup("ProductCode"), xmlStrlen(prop->name))) {
+		if (xmlStrncmp(prop->name, Char2xmlChar("ProductCode"), xmlStrlen(prop->name))) {
 			sscanf((const char *)prop->children->content, "#x%x", &(sc->product_id));
 		}
 
-		if (xmlStrncmp(prop->name, xmlCharStrdup("RevisionNo"), xmlStrlen(prop->name))) {
+		if (xmlStrncmp(prop->name, Char2xmlChar("RevisionNo"), xmlStrlen(prop->name))) {
 			sscanf((const char *)prop->children->content, "#x%x", &(sc->revision_id));
 		}
 
@@ -276,17 +280,17 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	tmp = n->children;
 	while (tmp != NULL) {
-		if (xmlStrncmp(tmp->name, xmlCharStrdup("Sm"), xmlStrlen(tmp->name)) == 0) {
+		if (xmlStrncmp(tmp->name, Char2xmlChar("Sm"), xmlStrlen(tmp->name)) == 0) {
 			xmlNode *smchild = tmp->children;
 			while (smchild != NULL) {
-				if (xmlStrncmp(smchild->content, xmlCharStrdup("MBoxOut"), xmlStrlen(smchild->content))== 0) {
+				if (xmlStrncmp(smchild->content, Char2xmlChar("MBoxOut"), xmlStrlen(smchild->content))== 0) {
 					xmlAttr *p = tmp->properties;
 					while (p!=NULL) {
-						if (xmlStrncmp(p->name, xmlCharStrdup("DefaultSize"), xmlStrlen(p->name)) == 0) {
+						if (xmlStrncmp(p->name, Char2xmlChar("DefaultSize"), xmlStrlen(p->name)) == 0) {
 							sc->std_rec_mbox_size = (uint16_t)atoi((const char *)p->children->content);
 						}
 
-						if (xmlStrncmp(p->name, xmlCharStrdup("StartAddress"), xmlStrlen(p->name)) == 0) {
+						if (xmlStrncmp(p->name, Char2xmlChar("StartAddress"), xmlStrlen(p->name)) == 0) {
 							unsigned int atmp = 0;
 							sscanf((const char *)p->children->content, "#x%x", &atmp);
 							sc->std_rec_mbox_offset = atmp;
@@ -297,14 +301,14 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 				}
 
-				if (xmlStrncmp(smchild->content, xmlCharStrdup("MBoxIn"), xmlStrlen(smchild->content))== 0) {
+				if (xmlStrncmp(smchild->content, Char2xmlChar("MBoxIn"), xmlStrlen(smchild->content))== 0) {
 					xmlAttr *p = tmp->properties;
 					while (p!=NULL) {
-						if (xmlStrncmp(p->name, xmlCharStrdup("DefaultSize"), xmlStrlen(p->name)) == 0) {
+						if (xmlStrncmp(p->name, Char2xmlChar("DefaultSize"), xmlStrlen(p->name)) == 0) {
 							sc->std_snd_mbox_size = (uint16_t)atoi((const char *)p->children->content);
 						}
 
-						if (xmlStrncmp(p->name, xmlCharStrdup("StartAddress"), xmlStrlen(p->name)) == 0) {
+						if (xmlStrncmp(p->name, Char2xmlChar("StartAddress"), xmlStrlen(p->name)) == 0) {
 							unsigned int atmp = 0;
 							sscanf((const char *)p->children->content, "#x%x", &atmp);
 							sc->std_snd_mbox_offset = atmp;
@@ -396,19 +400,19 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 		general->coe_enable_sdo = 1;
 		/* parse the attributes */
 		for (xmlAttr *attr = tmp->properties; attr; attr = attr->next) {
-			if (xmlStrcmp(attr->name, xmlCharStrdup("SdoInfo")) == 0)
+			if (xmlStrcmp(attr->name, Char2xmlChar("SdoInfo")) == 0)
 				general->coe_enable_sdo_info = atoi((char *)attr->children->content);
 
-			if (xmlStrcmp(attr->name, xmlCharStrdup("PdoAssign")) == 0)
+			if (xmlStrcmp(attr->name, Char2xmlChar("PdoAssign")) == 0)
 				general->coe_enable_pdo_assign = atoi((char *)attr->children->content);
 
-			if (xmlStrcmp(attr->name, xmlCharStrdup("PdoConfig")) == 0)
+			if (xmlStrcmp(attr->name, Char2xmlChar("PdoConfig")) == 0)
 				general->coe_enable_pdo_conf = atoi((char *)attr->children->content);
 
-			if (xmlStrcmp(attr->name, xmlCharStrdup("PdoUpload")) == 0)
+			if (xmlStrcmp(attr->name, Char2xmlChar("PdoUpload")) == 0)
 				general->coe_enable_upload_start = atoi((char *)attr->children->content);
 
-			if (xmlStrcmp(attr->name, xmlCharStrdup("??sdoComplete")) == 0)
+			if (xmlStrcmp(attr->name, Char2xmlChar("??sdoComplete")) == 0)
 				general->coe_enable_sdo_complete = atoi((char *)attr->children->content);
 
 			//attr = attr->next;
@@ -449,11 +453,11 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 
 	/* now fetch the data */
 	xmlChar *content = current->children->content;
-	if (xmlStrncmp(content, xmlCharStrdup("Inputs"), xmlStrlen(content)))
+	if (xmlStrncmp(content, Char2xmlChar("Inputs"), xmlStrlen(content)))
 		fmmu_add_entry(fmmu, FMMU_INPUTS);
-	else if (xmlStrncmp(content, xmlCharStrdup("Outputs"), xmlStrlen(content)))
+	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)))
 		fmmu_add_entry(fmmu, FMMU_OUTPUTS);
-	else if (xmlStrncmp(content, xmlCharStrdup("SynmanagerStat"), xmlStrlen(content))) //FIXME what is the valid content?
+	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content))) //FIXME what is the valid content?
 		fmmu_add_entry(fmmu, FMMU_SYNCMSTAT);
 	else
 		fmmu_add_entry(fmmu, FMMU_UNUSED);
@@ -490,17 +494,17 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	/* FIXME add entries */
 	xmlAttr *args = current->properties;
 	for (xmlAttr *a = args; a ; a = a->next) {
-		if (xmlStrncmp(a->name, xmlCharStrdup("DefaultSize"), xmlStrlen(a->name)) == 0) {
+		if (xmlStrncmp(a->name, Char2xmlChar("DefaultSize"), xmlStrlen(a->name)) == 0) {
 			entry->length = atoi((char *)a->children->content);
-		} else if (xmlStrncmp(a->name, xmlCharStrdup("StartAddress"), xmlStrlen(a->name)) == 0) {
+		} else if (xmlStrncmp(a->name, Char2xmlChar("StartAddress"), xmlStrlen(a->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)a->children->content, "#x%x", &tmp);
 			entry->phys_address = tmp&0xffff;
-		} else if (xmlStrncmp(a->name, xmlCharStrdup("ControlByte"), xmlStrlen(a->name)) == 0) {
+		} else if (xmlStrncmp(a->name, Char2xmlChar("ControlByte"), xmlStrlen(a->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)a->children->content, "#x%x", &tmp);
 			entry->control = tmp&0xff;
-		} else if (xmlStrncmp(a->name, xmlCharStrdup("Enable"), xmlStrlen(a->name)) == 0) {
+		} else if (xmlStrncmp(a->name, Char2xmlChar("Enable"), xmlStrlen(a->name)) == 0) {
 			entry->enable = atoi((char *)a->children->content);
 		}
 	}
@@ -509,13 +513,13 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 
 	/* type is encoded in the value of the node */
 	xmlChar *type = current->children->content;
-	if (xmlStrncmp(type, xmlCharStrdup("MBoxIn"), xmlStrlen(type)) == 0)
+	if (xmlStrncmp(type, Char2xmlChar("MBoxIn"), xmlStrlen(type)) == 0)
 		entry->type = SMT_MBOXIN;
-	else if (xmlStrncmp(type, xmlCharStrdup("MBoxOut"), xmlStrlen(type)) == 0)
+	else if (xmlStrncmp(type, Char2xmlChar("MBoxOut"), xmlStrlen(type)) == 0)
 		entry->type = SMT_MBOXOUT;
-	else if (xmlStrncmp(type, xmlCharStrdup("Inputs"), xmlStrlen(type)) == 0)
+	else if (xmlStrncmp(type, Char2xmlChar("Inputs"), xmlStrlen(type)) == 0)
 		entry->type = SMT_INPUTS;
-	else if (xmlStrncmp(type, xmlCharStrdup("Outputs"), xmlStrlen(type)) == 0)
+	else if (xmlStrncmp(type, Char2xmlChar("Outputs"), xmlStrlen(type)) == 0)
 		entry->type = SMT_OUTPUTS;
 	else
 		entry->type = SMT_UNUSED;
@@ -556,21 +560,21 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 
 	xmlNode *op = search_node(current, "OpMode");
 	for (xmlNode *vals = op->children; vals; vals = vals->next) {
-		if (xmlStrncmp(vals->name, xmlCharStrdup("Name"), xmlStrlen(vals->name))) {
+		if (xmlStrncmp(vals->name, Char2xmlChar("Name"), xmlStrlen(vals->name))) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, xmlCharStrdup("Desc"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("Desc"), xmlStrlen(vals->name))) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, xmlCharStrdup("AssignActivate"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("AssignActivate"), xmlStrlen(vals->name))) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, xmlCharStrdup("CycleTimeSync0"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync0"), xmlStrlen(vals->name))) {
 			int tmp = atoi((char *)vals->children->content);
 			dc->sync0_cycle_time = (uint32_t)tmp;
-		} else if (xmlStrncmp(vals->name, xmlCharStrdup("ShiftTimeSync0"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync0"), xmlStrlen(vals->name))) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, xmlCharStrdup("CycleTimeSync1"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync1"), xmlStrlen(vals->name))) {
 			int tmp = atoi((char *)vals->children->content);
 			dc->sync1_cycle_time = (uint32_t)tmp;
-		} else if (xmlStrncmp(vals->name, xmlCharStrdup("ShiftTimeSync1"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync1"), xmlStrlen(vals->name))) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
 		} else {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
@@ -642,17 +646,17 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 	memset(entry, 0, sizeof(struct _pdo_entry));
 
 	for (xmlNode *child = val->children; child; child = child->next) {
-		if (xmlStrncmp(child->name, xmlCharStrdup("Index"), xmlStrlen(child->name)) == 0) {
+		if (xmlStrncmp(child->name, Char2xmlChar("Index"), xmlStrlen(child->name)) == 0) {
 			sscanf((char *)child->children->content, "#x%x", &tmp);
 			entry->index = tmp&0xffff;
 			tmp = 0;
-		} else if (xmlStrncmp(child->name, xmlCharStrdup("SubIndex"), xmlStrlen(child->name)) == 0) {
+		} else if (xmlStrncmp(child->name, Char2xmlChar("SubIndex"), xmlStrlen(child->name)) == 0) {
 			tmp = atoi((char *)child->children->content);
 			entry->subindex = tmp&0xff;
 			tmp = 0;
-		} else if (xmlStrncmp(child->name, xmlCharStrdup("BitLen"), xmlStrlen(child->name)) == 0) {
+		} else if (xmlStrncmp(child->name, Char2xmlChar("BitLen"), xmlStrlen(child->name)) == 0) {
 			entry->bit_length = atoi((char *)child->children->content);
-		} else if (xmlStrncmp(child->name, xmlCharStrdup("Name"), xmlStrlen(child->name)) == 0) {
+		} else if (xmlStrncmp(child->name, Char2xmlChar("Name"), xmlStrlen(child->name)) == 0) {
 			/* again, write this to the string category and store index to string here. */
 			tmp = sii_strings_add(sii, (char *)child->children->content);
 			if (tmp < 0) {
@@ -661,7 +665,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 			} else {
 				entry->string_index = (uint8_t)tmp&0xff;
 			}
-		} else if (xmlStrncmp(child->name, xmlCharStrdup("DataType"), xmlStrlen(child->name)) == 0) {
+		} else if (xmlStrncmp(child->name, Char2xmlChar("DataType"), xmlStrlen(child->name)) == 0) {
 			int dt = parse_pdo_get_data_type((char *)child->children->content);
 			if (dt <= 0)
 				fprintf(stderr, "Warning unrecognized esi data type '%s'\n", (char *)child->children->content);
@@ -681,9 +685,9 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 static void parse_pdo(xmlNode *current, SiiInfo *sii)
 {
 	enum ePdoType type;
-	if (xmlStrcmp(current->name, xmlCharStrdup("RxPdo")) == 0)
+	if (xmlStrcmp(current->name, Char2xmlChar("RxPdo")) == 0)
 		type = SII_CAT_RXPDO;
-	else if(xmlStrcmp(current->name, xmlCharStrdup("TxPdo")) == 0)
+	else if(xmlStrcmp(current->name, Char2xmlChar("TxPdo")) == 0)
 		type = SII_CAT_TXPDO;
 	else {
 		fprintf(stderr, "[%s] Error, no PDO type\n", __func__);
@@ -711,11 +715,11 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 
 	/* get Arguments for syncmanager */
 	for (xmlAttr *attr = current->properties; attr; attr = attr->next) {
-		if (xmlStrncmp(attr->name, xmlCharStrdup("Sm"), xmlStrlen(attr->name)) == 0) {
+		if (xmlStrncmp(attr->name, Char2xmlChar("Sm"), xmlStrlen(attr->name)) == 0) {
 			pdo->syncmanager = atoi((char *)attr->children->content);
 		}
 		/* currently fixed is unhandled - check where this setting should reside
-		else if (xmlStrncmp(attr->name, xmlCharStrdup("Fixed"), xmlStrlen(attr->name))) {
+		else if (xmlStrncmp(attr->name, Char2xmlChar("Fixed"), xmlStrlen(attr->name))) {
 		}
 		 */
 	}
@@ -727,7 +731,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	/* get node Name and node Index */
 	/* then parse the pdo list - all <Entry> children */
 	for (xmlNode *val = current->children; val; val = val->next) {
-		if (xmlStrncmp(val->name, xmlCharStrdup("Name"), xmlStrlen(val->name)) == 0) {
+		if (xmlStrncmp(val->name, Char2xmlChar("Name"), xmlStrlen(val->name)) == 0) {
 			int tmp = sii_strings_add(sii, (char *)val->children->content);
 			if (tmp < 0) {
 				fprintf(stderr, "Error creating input string!\n");
@@ -735,11 +739,11 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 			} else {
 				pdo->name_index = (uint8_t)tmp&0xff;
 			}
-		} else if (xmlStrncmp(val->name, xmlCharStrdup("Index"), xmlStrlen(val->name)) == 0) {
+		} else if (xmlStrncmp(val->name, Char2xmlChar("Index"), xmlStrlen(val->name)) == 0) {
 			int tmp = 0;
 			sscanf((char *)val->children->content, "#x%x", &tmp);
 			pdo->index = tmp&0xffff;
-		} else if (xmlStrncmp(val->name, xmlCharStrdup("Entry"), xmlStrlen(val->name)) == 0) {
+		} else if (xmlStrncmp(val->name, Char2xmlChar("Entry"), xmlStrlen(val->name)) == 0) {
 			/* add new pdo entry */
 			pdo->entries += 1;
 			struct _pdo_entry *entry = parse_pdo_entry(val, sii);
@@ -757,6 +761,11 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 struct _esi_data *esi_init(const char *file)
 {
 	struct _esi_data *esi = (struct _esi_data *)malloc(sizeof(struct _esi_data));
+	esi->sii = NULL;
+	esi->siifile = NULL;
+	esi->doc = NULL;
+	esi->xmlroot = NULL;
+	esi->xmlfile = NULL;
 
 	if (file == NULL) {
 		fprintf(stderr, "Warning, init with empty filename\n");
@@ -805,6 +814,11 @@ struct _esi_data *esi_init(const char *file)
 EsiData *esi_init_string(const unsigned char *buf, size_t size)
 {
 	EsiData *esi = malloc(sizeof(struct _esi_data));
+	esi->sii = NULL;
+	esi->siifile = NULL;
+	esi->doc = NULL;
+	esi->xmlroot = NULL;
+	esi->xmlfile = NULL;
 
 	enum eFileType type = UNKNOWN;
 
@@ -832,8 +846,8 @@ EsiData *esi_init_string(const unsigned char *buf, size_t size)
 		esi->doc = xmlReadMemory((const char *)buf, size, "noname.xml", NULL, 0);
 		if (esi->doc == NULL) {
 			fprintf(stderr, "Failed to parse XML.\n");
-			free(esi->sii);
-			free(esi);
+			sii_release(esi->sii);
+			esi_release(esi);
 			return NULL;
 		}
 		break;
@@ -851,8 +865,20 @@ EsiData *esi_init_string(const unsigned char *buf, size_t size)
 
 void esi_release(struct _esi_data *esi)
 {
-	sii_release(esi->sii);
 	xmlFreeDoc(esi->doc);
+
+	if (esi->sii != NULL)
+		sii_release(esi->sii);
+
+	if (esi->siifile != NULL)
+		free(esi->siifile);
+
+	if (esi->xmlroot != NULL)
+		free(esi->xmlroot);
+
+	if (esi->xmlfile != NULL)
+		free(esi->xmlfile);
+
 	free(esi);
 }
 
@@ -893,17 +919,17 @@ int esi_parse(EsiData *esi)
 	/* iterate through children of node 'Device' and get the necessary informations */
 	for (xmlNode *current = device->children; current; current = current->next) {
 		//printf("[DEBUG %s] start parsing of %s\n", __func__, current->name);
-		if (xmlStrncmp(current->name, xmlCharStrdup("Fmmu"), xmlStrlen(current->name)) == 0) {
+		if (xmlStrncmp(current->name, Char2xmlChar("Fmmu"), xmlStrlen(current->name)) == 0) {
 			parse_fmmu(current, esi->sii);
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("Sm"), xmlStrlen(current->name)) == 0) {
+		} else if (xmlStrncmp(current->name, Char2xmlChar("Sm"), xmlStrlen(current->name)) == 0) {
 			parse_syncm(current, esi->sii);
 #if 0
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("Dc"), xmlStrlen(current->name)) == 0) {
+		} else if (xmlStrncmp(current->name, Char2xmlChar("Dc"), xmlStrlen(current->name)) == 0) {
 			parse_dclock(current, esi->sii);
 #endif
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("RxPdo"), xmlStrlen(current->name)) == 0) {
+		} else if (xmlStrncmp(current->name, Char2xmlChar("RxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii);
-		} else if (xmlStrncmp(current->name, xmlCharStrdup("TxPdo"), xmlStrlen(current->name)) == 0) {
+		} else if (xmlStrncmp(current->name, Char2xmlChar("TxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii);
 		}
 	}

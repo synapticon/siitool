@@ -412,10 +412,11 @@ static void fmmu_rm_entry(struct _sii_fmmu *fmmu)
 	while (fe->next != NULL)
 		fe = fe->next;
 
-	if (fe->prev != NULL) {
+	if (fe->prev != NULL)
 		fe->prev->next = NULL;
+	else
 		fmmu->list = NULL;
-	}
+
 	free(fe);
 }
 
@@ -493,10 +494,10 @@ static void syncm_rm_entry(struct _sii_syncm *sm)
 	while (entry->next != NULL)
 		entry = entry->next;
 
-	if (entry->prev != NULL) {
+	if (entry->prev != NULL)
 		entry->prev->next = NULL;
+	else
 		sm->list = NULL;
-	}
 
 	free(entry);
 }
@@ -629,6 +630,7 @@ static void pdo_rm_entry(struct _sii_pdo *pdo)
 
 	if (pe->id == 0)
 		pdo->list = NULL;
+
 	free(pe);
 }
 
@@ -2026,6 +2028,7 @@ SiiInfo *sii_init(void)
 
 	sii->cat_head = NULL;
 	sii->cat_current = NULL;
+	sii->outfile = NULL;
 	sii->rawbytes = NULL;
 	sii->rawvalid = 0;
 
@@ -2083,6 +2086,15 @@ void sii_release(SiiInfo *sii)
 
 	if (sii->rawbytes != NULL)
 		free(sii->rawbytes);
+
+	if (sii->outfile != NULL)
+		free(sii->outfile);
+
+	if (sii->preamble != NULL)
+		free(sii->preamble);
+
+	if (sii->config != NULL)
+		free(sii->config);
 
 	free(sii);
 }
