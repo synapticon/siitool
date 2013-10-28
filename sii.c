@@ -1809,6 +1809,7 @@ SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size)
 	sii->cat_current = NULL;
 	sii->rawbytes = NULL;
 	sii->rawvalid = 0;
+	sii->outfile = NULL;
 
 	parse_content(sii, eeprom, size);
 
@@ -1832,6 +1833,7 @@ SiiInfo *sii_init_file(const char *filename)
 	sii->cat_current = NULL;
 	sii->rawbytes = NULL;
 	sii->rawvalid = 0;
+	sii->outfile = NULL;
 
 	parse_content(sii, eeprom, 1024);
 

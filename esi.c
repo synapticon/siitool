@@ -441,6 +441,7 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 		cat->prev = NULL;
 		cat->data = NULL;
 		cat->type = SII_CAT_FMMU;
+		cat->size = 0;
 		sii_category_add(sii, cat);
 	}
 
@@ -475,6 +476,7 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 		cat->prev = NULL;
 		cat->data = NULL;
 		cat->type = SII_CAT_SYNCM;
+		cat->size = 0;
 		sii_category_add(sii, cat);
 	}
 
@@ -534,6 +536,7 @@ static void get_dc_proto(SiiInfo *sii)
 	cat->next = NULL;
 	cat->prev = NULL;
 	cat->type = SII_CAT_DCLOCK;
+	cat->size = 0;
 
 	/* now fetch the data */
 	struct _sii_dclock *dc = dclock_get_default();
@@ -549,6 +552,7 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 	cat->next = NULL;
 	cat->prev = NULL;
 	cat->type = SII_CAT_DCLOCK;
+	cat->size = 0;
 
 	/* now fetch the data */
 	size_t dcsize = 0;
@@ -701,6 +705,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 		cat->prev = NULL;
 		cat->data = NULL;
 		cat->type = type;
+		cat->size = 0;
 		sii_category_add(sii, cat);
 	}
 
