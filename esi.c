@@ -214,7 +214,7 @@ static struct _sii_preamble *parse_preamble(xmlNode *node)
 
 	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
 	pa->alias = BYTES_TO_WORD(highbyte, lowbyte);
-	b+=4;
+	//b+=4;
 
 	for (int i=0; i<4; i++)
 		pa->reserved[i] = 0x00;

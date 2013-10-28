@@ -523,7 +523,6 @@ static void pdo_add_entry(struct _sii_pdo *pdo,
 static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t secsize, enum ePdoType t)
 {
 	const unsigned char *b = buffer;
-	char *pdostr;
 	int entry = 0;
 
 	struct _sii_pdo *pdo = malloc(sizeof(struct _sii_pdo));
@@ -532,15 +531,12 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	switch (t) {
 	case RxPDO:
 		pdo->type = SII_RX_PDO;
-		pdostr = "RxPDO";
 		break;
 	case TxPDO:
 		pdo->type = SII_TX_PDO;
-		pdostr = "TxPDO";
 		break;
 	default:
 		pdo->type = SII_UNDEF_PDO;
-		pdostr = "undefined";
 		break;
 	}
 
@@ -672,7 +668,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 	enum eSection section = SII_PREAMBLE;
 	size_t secsize = 0;
 	const unsigned char *buffer = eeprom;
-	const unsigned char *secstart = eeprom;
 
 	struct _sii_cat *newcat;
 
@@ -692,14 +687,12 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 		case SII_PREAMBLE:
 			sii->preamble = parse_preamble(buffer, 16);
 			buffer = eeprom+16;
-			secstart = buffer;
 			section = SII_STD_CONFIG;
 			break;
 
 		case SII_STD_CONFIG:
 			sii->config = parse_stdconfig(buffer, 46+66);
 			buffer = buffer+46+66;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer += 4;
 			break;
@@ -714,7 +707,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -722,7 +714,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 		case SII_CAT_DATATYPES:
 			parse_datatype_section(buffer, secsize);
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -737,7 +728,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -752,7 +742,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -767,7 +756,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -782,7 +770,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -797,7 +784,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -812,7 +798,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 #endif
 
 			buffer+=secsize;
-			secstart = buffer;
 			section = get_next_section(buffer, &secsize);
 			buffer+=4;
 			break;
@@ -1625,7 +1610,6 @@ static size_t sii_cat_write(struct _sii *sii)
 		catsize = catsize/2; /* byte -> word count */
 		*cs = catsize&0xff;
 		*(cs+1) = (catsize>>8)&0xff;
-		catsize = 0;
 
 nextcat:
 		cat = cat->next;

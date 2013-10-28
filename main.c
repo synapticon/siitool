@@ -228,7 +228,6 @@ int main(int argc, char *argv[])
 	char *filename = NULL;
 	char *output = NULL;
 	int ret = -1;
-	int bytesread = 0;
 
 	for (int i=1; i<argc; i++) {
 		switch (argv[i][0]) {
@@ -263,7 +262,7 @@ int main(int argc, char *argv[])
 
 	memset(eeprom, 0, MAX_BUFFER_SIZE);
 	if (filename == NULL)
-		bytesread = read_input(stdin, eeprom, MAX_BUFFER_SIZE);
+		read_input(stdin, eeprom, MAX_BUFFER_SIZE);
 	else {
 		f = fopen(filename, "r");
 		if (f == NULL) {
@@ -274,7 +273,7 @@ int main(int argc, char *argv[])
 
 		printf("Start reading contents of file %s\n", filename);
 
-		bytesread = read_input(f, eeprom, MAX_BUFFER_SIZE);
+		read_input(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
 	}
 
