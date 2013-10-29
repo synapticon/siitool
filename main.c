@@ -48,7 +48,11 @@
 #include <errno.h>
 
 #define VERSION_MAJOR    0
-#define VERSION_MINNOR   1
+#define VERSION_MINOR    1
+#define VERSION_APPEND   "a"
+
+#define VERSION_STRING(x,y,z)  VERSION_ARGS(x, y, z)
+#define VERSION_ARGS(x,y,z)    "Version " #x "." #y z
 
 #define MAX_BUFFER_SIZE    (1000*1024)
 #define MAX_FILENAME_SIZE  (256)
@@ -236,7 +240,7 @@ int main(int argc, char *argv[])
 				printhelp(base(argv[0]));
 				return 0;
 			} else if (argv[i][1] == 'v') {
-				printf("Version %d.%d\n", VERSION_MAJOR, VERSION_MINNOR);
+				printf("%s\n", VERSION_STRING(VERSION_MAJOR,VERSION_MINOR,VERSION_APPEND));
 				return 0;
 			} else if (argv[i][1] == 'o') {
 				i++;
