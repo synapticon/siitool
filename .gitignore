@@ -1,0 +1,5 @@
+siitool
+*.o
+*.log
+*~
+*.sw*
