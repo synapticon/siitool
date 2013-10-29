@@ -30,6 +30,7 @@ $(TARGET): $(OBJECTS)
 .PHONY: clean install lint
 
 install:
+	strip $(TARGET)
 	install $(TARGET) $(PREFIX)
 
 clean:
