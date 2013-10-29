@@ -25,7 +25,7 @@ PREFIX = /usr/local/bin
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean install lint
 
