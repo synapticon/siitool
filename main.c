@@ -244,7 +244,9 @@ int main(int argc, char *argv[])
 				printhelp(base(argv[0]));
 				return 0;
 			} else if (argv[i][1] == 'v') {
-				printf("%s\n", VERSION_STRING(VERSION_MAJOR,VERSION_MINOR,VERSION_APPEND));
+				printf("%s %s\n",
+					base(argv[0]),
+					VERSION_STRING(VERSION_MAJOR,VERSION_MINOR,VERSION_APPEND));
 				return 0;
 			} else if (argv[i][1] == 'o') {
 				i++;
