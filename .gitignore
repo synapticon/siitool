@@ -3,3 +3,4 @@ siitool
 *.log
 *~
 *.sw*
+tmp/
