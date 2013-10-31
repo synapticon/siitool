@@ -24,12 +24,12 @@ PREFIX = /usr/local/bin
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-all: $(TARGET)
+all: $(TARGET) $(TARGET).1
 
 $(TARGET): $(OBJECTS)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
-man: $(TARGET)
+$(TARGET).1: $(TARGET)
 	help2man -o $<.1 $(H2MFLAGS) -i misc/mansections.txt ./$<
 
 .PHONY: clean install install-man install-prg lint
@@ -45,7 +45,7 @@ install-man:
 	@mandb
 
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET) $(TARGET).1 $(OBJECTS)
 
 lint:
 	clang --analyze `xml2-config --cflags` main.c sii.c esi.c esifile.c
