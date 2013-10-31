@@ -141,6 +141,7 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 	stdc->eeprom_size = BYTES_TO_WORD(*(b+0), *(b+1));
 	b+=2;
 	stdc->version =  BYTES_TO_WORD(*(b+0), *(b+1));
+	b+=2;
 
 	count = b-buffer;
 	if (size != count)
