@@ -1,7 +1,7 @@
 [DESCRIPTION]
 Read XML or binary SII information from the input file and generates a binary
 EEPROM file.  If no input file is provided the program reads from stdin. With
-'-p' no output is generated.
+-p no output is generated.
 
 [AUTHOR]
 Frank Jeschke <fjeschke@synapticon.com>
