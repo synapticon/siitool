@@ -1,0 +1,31 @@
+[DESCRIPTION]
+Read XML or binary SII information from the input file and generates a binary
+EEPROM file.  If no input file is provided the program reads from stdin. With
+'-p' no output is generated.
+
+[AUTHOR]
+Frank Jeschke <fjeschke@synapticon.com>
+
+[COPYRIGHTS]
+2013 Synapticon GmbH
+
+[EXAMPLES]
+Verbose output of contents of binary file file.sii
+
+  $ siitool -p file.sii
+
+Verbose output of recognized contents of file file.xml
+
+  $ siitool -p file.xml
+
+Generate SII binary from file file.xml and pipe output to xxd
+
+  $ siitool file.xml | xxd
+
+Generate SII binary file ofile.sii from input file.xml
+
+  $ siitool -o ofile.sii file.xml
+
+Read SII binary file.sii and verbose print the recognized contents.
+
+  $ cat file.sii | siitool -p

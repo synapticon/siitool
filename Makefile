@@ -14,6 +14,8 @@ LDFLAGS = -g  $(WARNINGS)
 CFLAGS += `xml2-config --cflags`
 LDFLAGS += `xml2-config --libs`
 
+H2MFLAGS = --help-option "-h" --version-option "-v" --no-discard-stderr --no-info
+
 TARGET = siitool
 OBJECTS = main.o sii.o esi.o esifile.o
 
@@ -27,11 +29,20 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
-.PHONY: clean install lint
+man: $(TARGET)
+	help2man -o $<.1 $(H2MFLAGS) -i misc/mansections.txt ./$<
 
-install:
+.PHONY: clean install install-man install-prg lint
+
+install: install-man install-prg
+
+install-prg:
 	strip $(TARGET)
 	install $(TARGET) $(PREFIX)
+
+install-man:
+	install $(TARGET).1 $(PREFIX)/../man/man1
+	@mandb
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
