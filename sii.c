@@ -144,7 +144,7 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 
 	count = b-buffer;
 	if (size != count)
-		printf("Warning counter differs from size\n");
+		printf("%s: Warning counter differs from size\n", __func__);
 
 	return stdc;
 }
@@ -213,7 +213,7 @@ static struct _sii_strings *parse_string_section(const unsigned char *buffer, si
 	}
 
 	if ((size_t)(pos-buffer) > size)
-		printf("[%s] Warning counter differs from size\n", __func__);
+		printf("%s: Warning counter differs from size\n", __func__);
 
 	return strings;
 }
@@ -289,7 +289,7 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 
 	size_t count = b-buffer;
 	if (size != count)
-		printf("Warning counter differs from size\n");
+		printf("%s: Warning counter differs from size\n", __func__);
 
 	return siig;
 }
@@ -648,7 +648,7 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 
 	size_t count = b-buffer;
 	if (size != count)
-		printf("Warning counter differs from size\n");
+		printf("%s: Warning counter differs from size\n", __func__);
 
 	return dc;
 }

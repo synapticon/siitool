@@ -197,6 +197,8 @@ static int parse_xml_input(const unsigned char *buffer, const char *output)
 			esi_release(esi);
 			return -1;
 		}
+
+		printf("= %s generated\n", output);
 	}
 
 	esi_release(esi);
@@ -218,6 +220,8 @@ static int parse_sii_input(const unsigned char *buffer, const char *output)
 			fprintf(stderr, "Error, couldn't write output file\n");
 			return -1;
 		}
+
+		printf("= %s generated\n", output);
 	}
 
 	sii_release(sii);
@@ -275,7 +279,9 @@ int main(int argc, char *argv[])
 			goto finish;
 		}
 
+#ifdef DEBUG
 		printf("Start reading contents of file %s\n", filename);
+#endif
 
 		read_input(f, eeprom, MAX_BUFFER_SIZE);
 		fclose(f);
@@ -285,12 +291,16 @@ int main(int argc, char *argv[])
 	enum eInputFileType filetype = file_type(filename, eeprom);
 	switch (filetype) {
 	case ESIXML:
+#ifdef DEBUG
 		printf("Processing ESI/XML file\n");
+#endif
 		ret = parse_xml_input(eeprom, output);
 		break;
 
 	case SIIEEPROM:
+#ifdef DEBUG
 		printf("Processing SII/EEPROM file\n");
+#endif
 		ret = parse_sii_input(eeprom, output);
 		break;
 
