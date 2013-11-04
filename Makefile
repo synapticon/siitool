@@ -20,6 +20,7 @@ TARGET = siitool
 OBJECTS = main.o sii.o esi.o esifile.o
 
 PREFIX = /usr/local/bin
+MANPATH = ../man/man1
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
@@ -32,7 +33,7 @@ $(TARGET): $(OBJECTS)
 $(TARGET).1: $(TARGET)
 	help2man -o $<.1 $(H2MFLAGS) -i misc/mansections.txt ./$<
 
-.PHONY: clean install install-man install-prg lint
+.PHONY: clean install install-man install-prg uninstall lint
 
 install: install-man install-prg
 
@@ -41,8 +42,12 @@ install-prg:
 	install $(TARGET) $(PREFIX)
 
 install-man:
-	install $(TARGET).1 $(PREFIX)/../man/man1
+	install $(TARGET).1 $(PREFIX)/$(MANPATH)
 	@mandb
+
+uninstall:
+	rm -i $(PREFIX)/$(TARGET)
+	rm -i $(PREFIX)/$(MANPATH)/$(TARGET).1
 
 clean:
 	rm -f $(TARGET) $(TARGET).1 $(OBJECTS)
