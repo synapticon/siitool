@@ -2,3 +2,4 @@
 .gitignore export-ignore
 /misc  export-ignore
 /examples/ModulesSlots_DS402_Simple export-ignore
+/scripts
