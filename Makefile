@@ -36,7 +36,7 @@ $(TARGET): $(OBJECTS)
 $(TARGET).1: $(TARGET)
 	help2man -o $<.1 $(H2MFLAGS) -i misc/mansections.txt ./$<
 
-.PHONY: clean install install-man install-prg uninstall lint
+.PHONY: clean install install-man install-prg uninstall lint tarball
 
 install: install-man install-prg
 
@@ -57,3 +57,6 @@ clean:
 
 lint:
 	clang --analyze `xml2-config --cflags` main.c sii.c esi.c esifile.c
+
+tarball:
+	git archive --format=tar --prefix="$(TARGET)-$(VERSION)/" HEAD | gzip > $(TARGET)-$(VERSION).tar.gz
