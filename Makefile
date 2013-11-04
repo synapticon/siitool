@@ -22,6 +22,9 @@ OBJECTS = main.o sii.o esi.o esifile.o
 PREFIX = /usr/local/bin
 MANPATH = ../man/man1
 
+SOURCEDIR = `pwd`
+VERSION = `scripts/getversion`
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 

@@ -1,8 +1,17 @@
 #!/bin/sh
 
+VERSIONFILE=main.c
+
+if [ ! -e ${VERSIONFILE} ]
+then
+	echo "Error, version file (${VERSIONFILE}) not found!"
+	exit 1
+fi
+
 awk '\
 	/define VERSION_MAJOR/ { printf "%d.", $3 }\
 	/define VERSION_MINOR/ { printf "%d", $3 } \
 	/define VERSION_APPEND/ { val=$3; gsub(/"/,"",val); printf  "-%s", val }\
-	END { print "\n" }' main.c
+	END { }' ${VERSIONFILE}
 
+exit 0
