@@ -4,6 +4,7 @@
  */
 
 #include "sii.h"
+#include "crc8.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -67,35 +68,55 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 {
 	struct _sii_preamble *preamble = malloc(sizeof(struct _sii_preamble));
 	size_t count = 0;
+	uint8_t crc = 0xff; /* init value for crc */
 
 	/* pdi control */
 	preamble->pdi_ctrl = ((int)buffer[1]<<8) | buffer[0];
+	crc8byte(&crc, buffer[0]);
+	crc8byte(&crc, buffer[1]);
 
 	/* pdi config */
 	preamble->pdi_conf = ((int)buffer[3]<<8) | buffer[2];
+	crc8byte(&crc, buffer[2]);
+	crc8byte(&crc, buffer[3]);
 
 	count = 4;
 
 	/* sync impulse len (multiples of 10ns), stored as nano seconds */
 	preamble->sync_impulse = BYTES_TO_WORD(buffer[count], buffer[count+1]) * 10;
+	crc8byte(&crc, buffer[count]);
+	crc8byte(&crc, buffer[count+1]);
 	count+=2;
 
 	/* PDI config 2 */
 	preamble->pdi_conf2 = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	crc8byte(&crc, buffer[count]);
+	crc8byte(&crc, buffer[count+1]);
 	count+=2;
 
 	/* configured station alias */
 	preamble->alias = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	crc8byte(&crc, buffer[count]);
+	crc8byte(&crc, buffer[count+1]);
 	count+=2;
 
+	crc8byte(&crc, buffer[count]);
+	crc8byte(&crc, buffer[count+1]);
+	crc8byte(&crc, buffer[count+2]);
+	crc8byte(&crc, buffer[count+3]);
 	count+=4; /* next 4 bytes are reserved */
 
 	/* checksum FIXME add checksum test */
 	preamble->checksum = BYTES_TO_WORD(buffer[count], buffer[count+1]);
+	crc8byte(&crc, buffer[count]);
+	crc8byte(&crc, buffer[count+1]);
 	count += 2;
 
 	if (size != count)
 		printf("%s: Warning counter differs from size\n", __func__);
+
+	if (crc != 0)
+		fprintf(stderr, "Error, checksum is not correct!\n");
 
 	return preamble;
 }
