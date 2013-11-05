@@ -24,9 +24,9 @@ uint8_t crc8(const uint8_t *msg, size_t blen)
 {
 	uint8_t rem = 0xff;
 	uint8_t rpoly = POLYNOM;
-	int i,b;
+	int b;
 
-	for (i=0; i<blen; i++) {
+	for (size_t i=0; i<blen; i++) {
 		rem ^= msg[i];
 
 		for (b=0; b<8; b++) {

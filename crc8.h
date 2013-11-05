@@ -1,6 +1,7 @@
 #ifndef CRC8_H
 #define CRC8_H
 
+#include <stdlib.h>
 #include <stdint.h>
 
 /* calculates crc-8 sum for each byte given by msg */
