@@ -150,8 +150,31 @@ static uint16_t preamble_crc8(struct _sii_preamble *pa)
 	if (pa == NULL)
 		return 0;
 
-	/* FIXME add crc calculation! */
-	return 0x2f;
+	uint8_t crc = 0xff;
+
+	crc8byte(&crc, pa->pdi_ctrl&0xff);
+	crc8byte(&crc, (pa->pdi_ctrl>>8)&0xff);
+
+	crc8byte(&crc, pa->pdi_conf&0xff);
+	crc8byte(&crc, (pa->pdi_conf>>8)&0xff);
+
+	crc8byte(&crc, pa->sync_impulse&0xff);
+	crc8byte(&crc, (pa->sync_impulse>>8)&0xff);
+
+	crc8byte(&crc, pa->pdi_conf2&0xff);
+	crc8byte(&crc, (pa->pdi_conf2>>8)&0xff);
+
+	crc8byte(&crc, pa->alias&0xff);
+	crc8byte(&crc, (pa->alias>>8)&0xff);
+
+	crc8byte(&crc, pa->reserved[0]&0xff);
+	crc8byte(&crc, pa->reserved[1]&0xff);
+	crc8byte(&crc, pa->reserved[2]&0xff);
+	crc8byte(&crc, pa->reserved[3]&0xff);
+
+	pa->checksum = crc;
+
+	return pa->checksum;
 }
 
 /* Searches the first occurence of node named 'name' */
