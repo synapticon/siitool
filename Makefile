@@ -17,7 +17,7 @@ LDFLAGS += `xml2-config --libs`
 H2MFLAGS = --help-option "-h" --version-option "-v" --no-discard-stderr --no-info
 
 TARGET = siitool
-OBJECTS = main.o sii.o esi.o esifile.o
+OBJECTS = main.o sii.o esi.o esifile.o crc8.o
 
 PREFIX = /usr/local/bin
 MANPATH = ../man/man1
