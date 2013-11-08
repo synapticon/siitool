@@ -7,3 +7,4 @@ siitool.1
 tmp/
 test/
 *.tar.gz
+*.plist
