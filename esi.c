@@ -3,6 +3,7 @@
 #include "esi.h"
 #include "esifile.h"
 #include "sii.h"
+#include "crc8.h"
 
 #include <stdio.h>
 #include <string.h>
