@@ -242,7 +242,7 @@ static struct _sii_strings *parse_string_section(const unsigned char *buffer, si
 
 static void parse_datatype_section(const unsigned char *buffer, size_t size)
 {
-	printf("\n+++ parsing of datatype section not yet implemented (first byte: 0x%.2x, size: %d)\n",
+	printf("\n+++ parsing of datatype section not yet implemented (first byte: 0x%.2x, size: %zu)\n",
 			*buffer, size);
 }
 
@@ -682,7 +682,7 @@ static void print_offsets(const unsigned char *start, const unsigned char *curre
 		return;
 	}
 
-	printf("\n[Offset: 0x%0x (%d)] ", current-start, current-start);
+	printf("\n[Offset: 0x%0x (%zu)] ", (unsigned int)(current-start), current-start);
 }
 
 static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t maxsize)

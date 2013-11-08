@@ -170,7 +170,7 @@ static int read_input(FILE *f, unsigned char *buffer, size_t size)
 		buffer[count++] = (unsigned char)(input&0xff);
 
 	if (count>size)
-		fprintf(stderr, "Error: read size is larger than expected (bytes read: %d)\n", count);
+		fprintf(stderr, "Error: read size is larger than expected (bytes read: %zu)\n", count);
 
 	return count;
 }
