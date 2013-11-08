@@ -187,9 +187,10 @@ static int parse_xml_input(const unsigned char *buffer, const char *output)
 	}
 
 	SiiInfo *sii = esi_get_sii(esi);
-	if (g_print_content)
+	if (g_print_content) {
+		sii_cat_sort(sii);
 		sii_print(sii);
-	else {
+	} else {
 		sii_generate(sii);
 		int ret = sii_write_bin(sii, output);
 		if (ret < 0) {

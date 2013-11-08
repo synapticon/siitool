@@ -1640,6 +1640,21 @@ nextcat:
 	return written;
 }
 
+static struct _sii_cat *sii_cat_get_min(struct _sii_cat *head)
+{
+	struct _sii_cat *h = head;
+	struct _sii_cat *min = head;
+
+	while (h != NULL) {
+		if (min->type > h->type)
+			min = h;
+
+		h = h->next;
+	}
+
+	return min;
+}
+
 static void sii_write(SiiInfo *sii)
 {
 	unsigned char *outbuf = sii->rawbytes;
@@ -2102,6 +2117,42 @@ char *cat2string(enum eSection cat)
 	default:
 		return "undefined";
 	}
+}
+
+void sii_cat_sort(SiiInfo *sii)
+{
+	struct _sii_cat *head = sii->cat_head;
+	struct _sii_cat *min = head;
+	struct _sii_cat *new = NULL;
+	struct _sii_cat *current = NULL;
+
+	while ( (min = sii_cat_get_min(head)) != NULL ) {
+		if (min == head)
+			head = head->next;
+
+		// cut out current min node
+		if (min->prev != NULL)
+			min->prev->next = min->next;
+
+		if (min->next != NULL)
+			min->next->prev = min->prev;
+
+		min->next = NULL;
+		min->prev = NULL;
+
+		// paste into new
+		if (new == NULL) {
+			new = min;
+			current = new;
+		} else {
+			current->next = min;
+			min->prev = current;
+			min->next = NULL;
+			current = current->next;
+		}
+	}
+
+	sii->cat_head = new;
 }
 
 struct _sii_dclock *dclock_get_default(void)

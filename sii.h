@@ -339,6 +339,9 @@ int string_search_string(struct _sii_strings *strings, const char *str);
 /* misc functions */
 char *cat2string(enum eSection cat);
 
+/* sort the categories in increasing order of cathegories type */
+void sii_cat_sort(SiiInfo *sii);
+
 /* Attention: Since the documentation of the distributed clock is not very
  * clear and marked as "for future use" (as to date 2013-10-22) the category
  * is fixed with a default value found on the EEPROM file of one of our
