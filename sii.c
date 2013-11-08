@@ -71,12 +71,12 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 	uint8_t crc = 0xff; /* init value for crc */
 
 	/* pdi control */
-	preamble->pdi_ctrl = ((int)buffer[1]<<8) | buffer[0];
+	preamble->pdi_ctrl = ((int)(buffer[1]&0xff)<<8) | buffer[0];
 	crc8byte(&crc, buffer[0]);
 	crc8byte(&crc, buffer[1]);
 
 	/* pdi config */
-	preamble->pdi_conf = ((int)buffer[3]<<8) | buffer[2];
+	preamble->pdi_conf = ((int)(buffer[3]&0xff)<<8) | buffer[2];
 	crc8byte(&crc, buffer[2]);
 	crc8byte(&crc, buffer[3]);
 
@@ -2130,7 +2130,7 @@ char *cat2string(enum eSection cat)
 void sii_cat_sort(SiiInfo *sii)
 {
 	struct _sii_cat *head = sii->cat_head;
-	struct _sii_cat *min = head;
+	struct _sii_cat *min = NULL;
 	struct _sii_cat *new = NULL;
 	struct _sii_cat *current = NULL;
 
