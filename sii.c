@@ -14,8 +14,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-static int g_print_offsets = 0;
-
 /* category functions */
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size);
 static void cat_data_cleanup(struct _sii_cat *cat);
@@ -44,7 +42,9 @@ static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
 //static void sii_cat_write_txpdo(struct _sii_cat *cat);
 static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
 static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
+#if DEBUG
 static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf);
+#endif
 static size_t sii_cat_write(struct _sii *sii);
 static void sii_write(SiiInfo *sii);
 
@@ -675,6 +675,9 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 	return dc;
 }
 
+#if 0 // FIXME this could become usefull in the future.
+static int g_print_offsets = 0;
+
 static void print_offsets(const unsigned char *start, const unsigned char *current)
 {
 	if (!g_print_offsets) {
@@ -684,6 +687,7 @@ static void print_offsets(const unsigned char *start, const unsigned char *curre
 
 	printf("\n[Offset: 0x%0x (%zu)] ", (unsigned int)(current-start), current-start);
 }
+#endif
 
 static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t maxsize)
 {
@@ -922,6 +926,7 @@ static void cat_data_cleanup(struct _sii_cat *cat)
 	}
 }
 
+#if 0
 static struct _sii_cat *cat_new_data(uint16_t type, uint16_t size, void *data)
 {
 	struct _sii_cat *new = malloc(sizeof(struct _sii_cat));
@@ -935,6 +940,7 @@ static struct _sii_cat *cat_new_data(uint16_t type, uint16_t size, void *data)
 
 	return new;
 }
+#endif
 
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size)
 {
@@ -1494,6 +1500,7 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 }
 
 
+#if DEBUG
 static size_t cat_size(struct _sii_cat *cat)
 {
 	size_t sz = 0;
@@ -1537,7 +1544,9 @@ static size_t cat_size(struct _sii_cat *cat)
 
 	return sz;
 }
+#endif
 
+#ifdef DEBUG
 static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *b = buf;
@@ -1550,13 +1559,12 @@ static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 	for (size_t i=0; i<catbsz; i++)
 		*b++ = *catb++;
 
-#ifdef DEBUG
 	printf("DEBUG: print cat: 0x%x; expected write: %d, written: %d\n",
 			cat->type, catbsz, (b-buf));
-#endif
 
 	return (uint16_t)(b-buf);
 }
+#endif
 
 static size_t sii_cat_write(struct _sii *sii)
 {
