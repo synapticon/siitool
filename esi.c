@@ -419,6 +419,47 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 	/* fetch CoE details */
 	//printf("[DEBUG %s] get CoE details\n", __func__);
 	parent = search_node(root, "Device");
+	
+	for (xmlAttr *attr = parent->properties; attr; attr = attr->next) {
+		if (xmlStrcmp(attr->name, Char2xmlChar("Physics")) == 0) {
+			char *phys = malloc(xmlStrlen(attr->children->content)+1);
+			memmove(phys, attr->children->content, xmlStrlen(attr->children->content)+1);
+			for (char *c = phys, port=0; *c != '\0'; c++, port++) {
+				int val = 0;
+				switch (*c) {
+				case 'Y': /* MII */
+					val = 0x01;
+					break;
+				case 'K': /* EBUS */
+					val = 0x03;
+					break;
+				default:
+					val = 0x00;
+					break;
+				}
+
+				switch (port) {
+				case 0:
+					general->phys_port_0 = val&0xf;
+					break;
+				case 1:
+					general->phys_port_1 = val&0xf;
+					break;
+				case 2:
+					general->phys_port_2 = val&0xf;
+					break;
+				case 3:
+					general->phys_port_3 = val&0xf;
+					break;
+				default:
+					fprintf(stderr, "Error invalid port %d\n", port);
+					break;
+				}
+			}
+					
+			free(phys);
+		}
+	}
 
 	node = search_children(parent, "Mailbox");
 	tmp = search_node(node, "CoE");
@@ -452,8 +493,6 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 	tmp = search_node(node, "FoE");
 	if (tmp != NULL)
 		general->foe_enabled = 1;
-
-	/* FIXME where are the physical port settings? */
 
 	return general;
 }
