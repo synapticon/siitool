@@ -1666,45 +1666,67 @@ static struct _sii_cat *sii_cat_get_min(struct _sii_cat *head)
 static void sii_write(SiiInfo *sii)
 {
 	unsigned char *outbuf = sii->rawbytes;
+	uint8_t crc = 0xff;
 
 	// - write preamble
 	struct _sii_preamble *pre = sii->preamble;
 	*outbuf = pre->pdi_ctrl&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = (pre->pdi_ctrl>>8)&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = pre->pdi_conf&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = (pre->pdi_conf>>8)&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = pre->sync_impulse&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = (pre->sync_impulse>>8)&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = pre->pdi_conf2&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = (pre->pdi_conf2>>8)&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = pre->alias&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = (pre->alias>>8)&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 
 	// reserved[4]; /* shall be zero */
 	*outbuf = 0;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = 0;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = 0;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = 0;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 
-	/* FIXME calculate checksum */
 	*outbuf = pre->checksum&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
 	*outbuf = (pre->checksum>>8)&0xff;
+	crc8byte(&crc, *outbuf);
 	outbuf++;
+
+	/* checksum should be 0 now */
+	if (crc != 0) {
+		fprintf(stderr, "Error checksum mismatch - abort write operation.\n");
+		return;
+	}
 
 	// - write standard config
 	struct _sii_stdconfig *scfg = sii->config;
