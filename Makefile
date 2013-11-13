@@ -45,8 +45,8 @@ install-prg:
 	install $(TARGET) $(PREFIX)
 
 install-man:
-	install $(TARGET).1 $(PREFIX)/$(MANPATH)
-	@mandb
+	install -D $(TARGET).1 $(PREFIX)/$(MANPATH)/$(TARGET).1
+	@mandb -f $(PREFIX)/$(MANPATH)/$(TARGET).1
 
 uninstall:
 	rm -i $(PREFIX)/$(TARGET)
