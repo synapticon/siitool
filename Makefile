@@ -49,8 +49,8 @@ install-man:
 	@mandb -f $(PREFIX)/$(MANPATH)/$(TARGET).1
 
 uninstall:
-	rm -i $(PREFIX)/$(TARGET)
-	rm -i $(PREFIX)/$(MANPATH)/$(TARGET).1
+	rm -f $(PREFIX)/$(TARGET)
+	rm -f $(PREFIX)/$(MANPATH)/$(TARGET).1
 
 clean:
 	rm -f $(TARGET) $(TARGET).1 $(OBJECTS)
