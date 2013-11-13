@@ -106,7 +106,7 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 	crc8byte(&crc, buffer[count+3]);
 	count+=4; /* next 4 bytes are reserved */
 
-	/* checksum FIXME add checksum test */
+	/* checksum test */
 	preamble->checksum = BYTES_TO_WORD(buffer[count], buffer[count+1]);
 	crc8byte(&crc, buffer[count]);
 	crc8byte(&crc, buffer[count+1]);

@@ -392,8 +392,6 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 	struct _sii_general *general = malloc(sizeof(struct _sii_general));
 	memset(general, 0, sizeof(struct _sii_general));
 
-	/* FIXME handle string indexes */
-
 	/* Search group-,image-, order- and namestring and store these strings
 	 * to the corresponding *index.
 	 *
@@ -486,7 +484,7 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 		fmmu_add_entry(fmmu, FMMU_INPUTS);
 	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)))
 		fmmu_add_entry(fmmu, FMMU_OUTPUTS);
-	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content))) //FIXME what is the valid content?
+	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content)))
 		fmmu_add_entry(fmmu, FMMU_SYNCMSTAT);
 	else
 		fmmu_add_entry(fmmu, FMMU_UNUSED);
@@ -521,7 +519,6 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	entry->next = NULL;
 	entry->prev = NULL;
 
-	/* FIXME add entries */
 	xmlAttr *args = current->properties;
 	for (xmlAttr *a = args; a ; a = a->next) {
 		if (xmlStrncmp(a->name, Char2xmlChar("DefaultSize"), xmlStrlen(a->name)) == 0) {
@@ -944,7 +941,7 @@ int esi_parse(EsiData *esi)
 	gencat->next = NULL;
 	gencat->prev = NULL;
 	gencat->type = SII_CAT_GENERAL;
-	gencat->size = sizeof(struct _sii_general); /* FIXME CHECK is this size valid? */
+	gencat->size = sizeof(struct _sii_general);
 	gencat->data = (void *)general;
 	sii_category_add(esi->sii, gencat);
 
