@@ -36,7 +36,16 @@ $(TARGET): $(OBJECTS)
 $(TARGET).1: $(TARGET)
 	help2man -o $<.1 $(H2MFLAGS) -i misc/mansections.txt ./$<
 
-.PHONY: clean install install-man install-prg uninstall lint tarball
+.PHONY: clean install install-man install-prg uninstall lint tarball help
+
+help:
+	@echo "Available make targets:"
+	@echo "  all        builds binary and man page"
+	@echo "  install    installs this software at $(PREFIX)"
+	@echo "  uninstall  removes installed software from $(PREFIX)"
+	@echo "  clean      cleans all objects"
+	@echo "  lint       static code analyzing (works best with clang v3.4+)"
+	@echo "  tarball    packages a software release tar.gz file."
 
 install: install-man install-prg
 
