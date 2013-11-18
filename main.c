@@ -47,9 +47,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define VERSION_MAJOR    0
-#define VERSION_MINOR    3
-#define VERSION_APPEND   "a"
+#define VERSION_MAJOR    1
+#define VERSION_MINOR    0
+#define VERSION_APPEND   "-rc1"
 
 #define VERSION_STRING(x,y,z)  VERSION_ARGS(x, y, z)
 #define VERSION_ARGS(x,y,z)    "Version " #x "." #y z
