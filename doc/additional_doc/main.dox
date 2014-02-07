@@ -1,0 +1,105 @@
+/**
+
+\mainpage
+
+This program prints the contents of the SII/EEPROM file of Synapticon EtherCAT nodes or builds the SII/EEPROM file from a given ESI description.
+
+\page Legal Legal Information
+
+\section License
+Copyright © 2003, Synapticon GmbH\n
+All rights reserved.\n
+\n
+Redistribution and use in source and binary forms, with or without\n
+modification, are permitted provided that the following conditions are met: \n
+\n
+1. Redistributions of source code must retain the above copyright notice, this\n
+   list of conditions and the following disclaimer. \n
+2. Redistributions in binary form must reproduce the above copyright notice,\n
+ this list of conditions and the following disclaimer in the documentation\n
+ and/or other materials provided with the distribution. \n
+\n
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR\n
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n
+\n
+The views and conclusions contained in the software and documentation are those\n
+of the authors and should not be interpreted as representing official policies, \n
+either expressed or implied, of the FreeBSD Project.\n
+\n
+
+\section Address Company Address
+
+<b>Synapticon GmbH</b>\n
+Hohlbachweg 2\n
+73344 Gruibingen\n
+Germany\n
+
+Phone:  +49 (0) 7335 / 186 999 0\n
+Fax: +49 (0) 7335 / 186 999 1 
+
+\section Development Development Contact
+
+Frank Jeschke \n
+<fjeschke [AT] synapticon [DOT] de>
+
+\page manual Manual
+
+Usage: siitool [-h] [-v] [-p] [-o outfile] [filename]\n\n
+	-h         print this help and exit\n
+	-v         print version an exit
+	-o <name>  write output to file <name>\n
+	-p         print content human readable\n
+	filename   path to eeprom file, if missing read from stdin\n
+	Recognized file types: SII and ESI/XML.\n
+
+
+\page version Version
+
+siitool Version 1.0-rc1
+
+\warning This is not a stable final release. Future changes might come.
+
+\example sii_example.bin
+In this example we will read the sii_example.bin binary file and output it in a human readable syntax in our terminal:\n\n
+
+./siitool -p examples/sii_example.bin\n\n
+
+sii_example is a binary file not suitable for human reading:\n\n
+
+\example Somanet_CtrlProto.xml
+In this example we will transform the Somanet_CtrlProto.xml definition file into a binary output:\n\n
+
+./siitool examples/Somanet_CtrolProto.xml\n\n
+
+This file is a simple ESI for use with controlproto. Features:
+	- no mailbox
+	- single set of predefined PDOs\n\n
+
+
+\example Somanet_CiA402-single.xml
+In this example we will transform the Somanet_CiA402-single.xml definition file into a binary output and we will save it into a file:\n\n
+
+./siitool -o cia402_single examples/Somanet_CiA402-single.xml\n\n
+
+This file is a simple CiA402 ESI. Features:
+	- Mailbox
+	- single set of predefined PDOs\n\n
+
+\example Somanet_CiA402-multi.xml
+In this example we will transform the  Somanet_CiA402-multi.xml definition file into a binary output, we will save it into a file, and a human friendly description will be shown on the terminal:\n\n
+
+./siitool -p -o cia402_single examples/Somanet_CiA402-single.xml\n\n
+
+This definition file is a more complex CiA402 ESI which supports a set of PDOs for various CiA402 modes. Features:
+	- Mailbox
+	- multiple PDOs\n\n
+
+*/
