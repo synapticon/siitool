@@ -1,13 +1,9 @@
 var NAVTREE =
 [
   [ "siitool", "index.html", [
-    [ "Legal Information", "d8/d83/Legal.html", [
-      [ "License", "d8/d83/Legal.html#License", null ],
-      [ "Company Address", "d8/d83/Legal.html#Address", null ],
-      [ "Development Contact", "d8/d83/Legal.html#Development", null ]
-    ] ],
+    [ "Synapticon", "d4/df0/Synapticon.html", null ],
     [ "Manual", "d3/da5/manual.html", null ],
-    [ "Version", "dc/d08/version.html", null ],
+    [ "License", "d8/d83/Legal.html", null ],
     [ "Examples", "examples.html", "examples" ]
   ] ]
 ];
