@@ -1,6 +1,7 @@
 siitool
 ====
 ![synapticon logo](http://forum.synapticon.com/Themes/MinimalistAndEffective_by_SMFSimple/images/logo.png)
+..............................
 
 :Latest release: 1.0-rc1
 :Maintainer: fjeschke[AT]synapticon[DOT]de
