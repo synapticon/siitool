@@ -1,6 +1,6 @@
 siitool
 ====
-![synapticon logo](http://web1.synapticon.com/wp/wp-content/uploads/2013/06/synapticon_xs.jpg)
+![synapticon logo](http://forum.synapticon.com/Themes/MinimalistAndEffective_by_SMFSimple/images/logo.png)
 
 :Latest release: 1.0-rc1
 :Maintainer: fjeschke[AT]synapticon[DOT]de
