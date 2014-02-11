@@ -6,7 +6,7 @@ siitool
 Synapticon's siitool helps you generate, and view EtherCAT EPROM files
 
 
-| Tables        | Are           | 
+
 | ------------- |:------------- | 
 | Latest release| 1.0-rc1       | 
 | Maintainer      | fjeschke[AT]synapticon[DOT]de      | 
