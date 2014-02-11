@@ -42,8 +42,6 @@ Changelog
 * `1.0-rc1`_ (2012-02-11)
 
 
-------------
-
 .. _DOCUMENTATION: http://synapticon.github.io/siitool/
 .. _1.0-rc1: https://github.com/synapticon/siitool/releases/tag/1.0-rc1
 .. _LICENSE: https://github.com/synapticon/siitool/blob/master/LICENSE
