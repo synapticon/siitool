@@ -3,9 +3,11 @@ siitool
 ![synapticon logo](http://forum.synapticon.com/Themes/MinimalistAndEffective_by_SMFSimple/images/logo.png)
 ============
 
-:Latest release: 1.0-rc1
-:Maintainer: fjeschke[AT]synapticon[DOT]de
-:Description: Synapticon's siitool helps you generate, and view EtherCAT EPROM files.
+Synapticon's siitool helps you generate, and view EtherCAT EPROM files
+
+|Latest release | 1.0-rc1                       |
+|Maintainer     | fjeschke[AT]synapticon[DOT]de |
+
 
 Key Features
 ============
