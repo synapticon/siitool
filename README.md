@@ -5,9 +5,12 @@ siitool
 
 Synapticon's siitool helps you generate, and view EtherCAT EPROM files
 
-|:--------------|:------------------------------|
-|Latest release | 1.0-rc1                       |
-|Maintainer     | fjeschke[AT]synapticon[DOT]de |
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| Latest release| 1.0-rc1       | $1600 |
+ Maintainer      | fjeschke[AT]synapticon[DOT]de      |   $12 |
+ zebra stripes | are neat      |    $1 |
 
 
 Key Features
