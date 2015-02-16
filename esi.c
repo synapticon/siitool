@@ -280,11 +280,11 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	xmlAttr *prop = tmp->properties;
 
 	while (prop != NULL) {
-		if (xmlStrncmp(prop->name, Char2xmlChar("ProductCode"), xmlStrlen(prop->name))) {
+		if (xmlStrncmp(prop->name, Char2xmlChar("ProductCode"), xmlStrlen(prop->name)) == 0) {
 			sscanf((const char *)prop->children->content, "#x%x", &(sc->product_id));
 		}
 
-		if (xmlStrncmp(prop->name, Char2xmlChar("RevisionNo"), xmlStrlen(prop->name))) {
+		if (xmlStrncmp(prop->name, Char2xmlChar("RevisionNo"), xmlStrlen(prop->name)) == 0) {
 			sscanf((const char *)prop->children->content, "#x%x", &(sc->revision_id));
 		}
 
