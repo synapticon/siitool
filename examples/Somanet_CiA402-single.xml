@@ -68,62 +68,11 @@
 								<BitSize>48</BitSize>
 							</DataType>
 							<DataType>
-								<Name>DT0700EN16</Name>
-								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
-								<EnumInfo>
-									<Text>Free run</Text>
-									<Enum>0</Enum>
-								</EnumInfo>
-								<EnumInfo>
-									<Text>Synchron</Text>
-									<Enum>1</Enum>
-								</EnumInfo>
-								<EnumInfo>
-									<Text>DC SYNC0</Text>
-									<Enum>2</Enum>
-								</EnumInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1011ARR</Name>
-								<BaseType>UDINT</BaseType>
-								<BitSize>32</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>1</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1011</Name>
-								<BitSize>48</BitSize>
-								<SubItem>
-									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>0</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-								<SubItem>
-									<Name>Elements</Name>
-									<Type>DT1011ARR</Type>
-									<BitSize>32</BitSize>
-									<BitOffs>16</BitOffs>
-									<Flags>
-										<Access>rw</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-							</DataType>
-							<DataType>
 								<Name>DT1018</Name>
 								<BitSize>144</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
+									<Name>Identity</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -188,6 +137,251 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C00</Name>
+								<BitSize>48</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>SubIndex 000</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<Name>Elements</Name>
+									<Type>DT1C00ARR</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>8</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1400</Name>
+								<BitSize>48</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>RX PDO Comm Param</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>1</SubIdx>
+									<Name>COD ID used by PDO</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>2</SubIdx>
+									<Name>PDO Transmission Type</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>48</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1600</Name>
+								<BitSize>144</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>RX PDO Mapping</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>1</SubIdx>
+									<Name>RX PDO Control Word</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>2</SubIdx>
+									<Name>Rx PDO Mapping Opmodes</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>48</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>3</SubIdx>
+									<Name>Target Torque</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>80</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>4</SubIdx>
+									<Name>Target Velocity</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>112</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1800</Name>
+								<BitSize>48</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>TX PDO Comm Param</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>1</SubIdx>
+									<Name>COD ID used by PDO</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>2</SubIdx>
+									<Name>PDO Transmission Type</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>48</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1A00</Name>
+								<BitSize>144</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>Tx PDO Mapping Statusword</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>1</SubIdx>
+									<Name>Tx PDO Mapping Modes Display</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>2</SubIdx>
+									<Name>Position Value</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>48</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>3</SubIdx>
+									<Name>Velocity Value</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>80</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<SubIdx>4</SubIdx>
+									<Name>Torque Value</Name>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>112</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+<!-- Below this line only objects are described which are currently not in use. -->
+
+							<DataType>
+								<Name>DT0700EN16</Name>
+								<BaseType>UINT</BaseType>
+								<BitSize>16</BitSize>
+								<EnumInfo>
+									<Text>Free run</Text>
+									<Enum>0</Enum>
+								</EnumInfo>
+								<EnumInfo>
+									<Text>Synchron</Text>
+									<Enum>1</Enum>
+								</EnumInfo>
+								<EnumInfo>
+									<Text>DC SYNC0</Text>
+									<Enum>2</Enum>
+								</EnumInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1011ARR</Name>
+								<BaseType>UDINT</BaseType>
+								<BitSize>32</BitSize>
+								<ArrayInfo>
+									<LBound>1</LBound>
+									<Elements>1</Elements>
+								</ArrayInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1011</Name>
 								<BitSize>48</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
