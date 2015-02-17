@@ -31,7 +31,7 @@
 						<!-- didn't found anything in the SII/EEPROM -->
 						<Timeout>
 							<RequestTimeout>100</RequestTimeout>
-							<ResponseTimeout>2002</ResponseTimeout>
+							<ResponseTimeout>6000</ResponseTimeout>
 						</Timeout>
 					</Mailbox>
 				</Info>
