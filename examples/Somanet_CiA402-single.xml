@@ -153,8 +153,8 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C00ARR</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>8</BitOffs>
+									<BitSize>32</BitSize>
+									<BitOffs>32</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
