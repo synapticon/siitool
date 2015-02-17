@@ -44,6 +44,10 @@
 					<Dictionary>
 						<DataTypes>
 							<DataType>
+								<Name>BOOL</Name>
+								<BitSize>1</BitSize>
+							</DataType>
+							<DataType>
 								<Name>UDINT</Name>
 								<BitSize>32</BitSize>
 							</DataType>
