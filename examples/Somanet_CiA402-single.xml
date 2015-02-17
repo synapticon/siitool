@@ -495,14 +495,32 @@
 								<Name>Device type</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>1</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1011</Name>
-								<BitSize>48</BitSize>
+								<Info>
+									<DefaultData>1879179666</DefaultData>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1001</Index>
+								<Name>Error Register</Name>
+								<Type>USINT</Type>
+								<BitSize>8</BitSize>
+								<Info>
+									<DefaultData>00</DefaultData>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1018</Index>
+								<Name>Identity</Name>
+								<Type>DT1018</Type>
+								<BitSize>144</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
