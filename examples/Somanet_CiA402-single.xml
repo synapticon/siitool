@@ -24,9 +24,11 @@
 				<Name LcId="1033">CiA402 Drive</Name>
 				<Name LcId="1031">CiA402 Antrieb (Modules/Slots)</Name>
 				<Info>
+					<!-- Needed? What for?
 					<Electrical>
 						<EBusCurrent>0</EBusCurrent>
 					</Electrical>
+					-->
 					<Mailbox>
 						<!-- didn't found anything in the SII/EEPROM -->
 						<Timeout>
