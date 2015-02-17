@@ -41,8 +41,7 @@
 				<!-- this profile section is optional -->
 				<!-- If used, this should be a replica of the object dictionary used in the firmware -->
 				<Profile>
-					<ProfileNo>402</ProfileNo> <!-- Note Profile number is the lower word of object 0x1000 -->
-					<!-- these are the object information about the CoE/CiA402 object dictionary -->
+					<ProfileNo>402</ProfileNo> <!-- Note: Profile number is the lower word of object 0x1000 -->
 					<Dictionary>
 						<DataTypes>
 							<DataType>
