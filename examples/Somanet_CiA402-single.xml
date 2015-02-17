@@ -186,8 +186,8 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C10ARR</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>8</BitOffs>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -220,8 +220,8 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C11ARR</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>8</BitOffs>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -254,8 +254,8 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C12ARR</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>8</BitOffs>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -540,6 +540,50 @@
 									<Category>o</Category>
 								</Flags>
 							</Object>
+							<!-- Object 0x1800 - RxPDO Mapping -->
+							<!-- Object 0x1A00 - TxPDO Mapping -->
+							<Object>
+								<Index>#x1c00</Index>
+								<Name>Sync manager type</Name>
+								<Type>DT1C00</Type>
+								<BitSize>48</BitSize>
+								<Info>
+									<SubItem>
+										<Name>Sync Manager Comm</Name>
+										<Info>
+											<DefaultData>04</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SyncMan 1</Name>
+										<Info>
+											<DefaultData>01</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SyncMan 2</Name>
+										<Info>
+											<DefaultData>02</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SyncMan 3</Name>
+										<Info>
+											<DefaultData>03</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SyncMan 4</Name>
+										<Info>
+											<DefaultData>04</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
 							<Object>
 								<Index>#x1c10</Index>
 								<Name>SM 0 Assignment</Name>
@@ -559,15 +603,15 @@
 								</Flags>
 							</Object>
 							<Object>
-								<Index>#x1c02</Index>
-								<Name>Cycle diagnosis</Name>
-								<Type>DT1C02</Type>
-								<BitSize>80</BitSize>
+								<Index>#x1c11</Index>
+								<Name>SM 1 Assignment</Name>
+								<Type>DT1C10</Type>
+								<BitSize>8</BitSize>
 								<Info>
 									<SubItem>
-										<Name>SubIndex 000</Name>
+										<Name>Assignement</Name>
 										<Info>
-											<DefaultData>04</DefaultData>
+											<DefaultData>01</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
