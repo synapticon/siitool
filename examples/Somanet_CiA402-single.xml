@@ -949,19 +949,19 @@
 									<SubItem>
 										<Name>Vendor ID</Name>
 										<Info>
-											<DefaultData>02000000</DefaultData>
+											<DefaultData>000022d2</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Product code</Name>
+										<Name>Product Code</Name>
 										<Info>
-											<DefaultData>e3c2bf77</DefaultData>
+											<DefaultData>00000201</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Revision</Name>
 										<Info>
-											<DefaultData>c82c5303</DefaultData>
+											<DefaultData>0a000002</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
