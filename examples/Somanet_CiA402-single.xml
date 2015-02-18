@@ -644,7 +644,7 @@
 							<Object>
 								<Index>#x1c11</Index>
 								<Name>SM 1 Assignment</Name>
-								<Type>DT1C10</Type>
+								<Type>DT1C11</Type>
 								<BitSize>8</BitSize>
 								<Info>
 									<SubItem>
@@ -662,7 +662,7 @@
 							<Object>
 								<Index>#x1c12</Index>
 								<Name>SM 2 Assignment</Name>
-								<Type>DT1C10</Type>
+								<Type>DT1C12</Type>
 								<BitSize>24</BitSize>
 								<Info>
 									<SubItem>
@@ -686,7 +686,7 @@
 							<Object>
 								<Index>#x1c13</Index>
 								<Name>SM 3 Assignment</Name>
-								<Type>DT1C10</Type>
+								<Type>DT1C13</Type>
 								<BitSize>24</BitSize>
 								<Info>
 									<SubItem>
