@@ -515,11 +515,11 @@
 						<Objects>
 							<Object>
 								<Index>#x1000</Index>
-								<Name>Device type</Name>
+								<Name>Device Type</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
-									<DefaultData>1879179666</DefaultData>
+									<DefaultData>92012070</DefaultData>
 								</Info>
 								<Flags>
 									<Access>ro</Access>
