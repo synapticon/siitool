@@ -401,7 +401,7 @@
 									<Name>Op Modes</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
-									<BitOffs>24</BitOffs>
+									<BitOffs>32</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -411,8 +411,8 @@
 									<SubIdx>3</SubIdx>
 									<Name>Target Torque</Name>
 									<Type>UDINT</Type>
-									<BitSize>32</BitSize>
-									<BitOffs>32</BitOffs>
+									<BitSize>16</BitSize>
+									<BitOffs>48</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -423,7 +423,7 @@
 									<Name>Target Position</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>112</BitOffs>
+									<BitOffs>80</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -434,7 +434,7 @@
 									<Name>Target Velocity</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>144</BitOffs>
+									<BitOffs>112</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -460,7 +460,7 @@
 									<Name>Statusword</Name>
 									<Type>UINT</Type>
 									<BitSize>16</BitSize>
-									<BitOffs>8</BitOffs>
+									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -470,7 +470,7 @@
 									<Name>Opmode Display</Name>
 									<Type>UDINT</Type>
 									<BitSize>8</BitSize>
-									<BitOffs>16</BitOffs>
+									<BitOffs>32</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -502,7 +502,7 @@
 									<SubIdx>4</SubIdx>
 									<Name>Torque Value</Name>
 									<Type>UDINT</Type>
-									<BitSize>32</BitSize>
+									<BitSize>16</BitSize>
 									<BitOffs>112</BitOffs>
 									<Flags>
 										<Access>ro</Access>
