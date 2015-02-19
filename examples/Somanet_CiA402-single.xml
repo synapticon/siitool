@@ -708,6 +708,46 @@
 								</Flags>
 							</Object>
 							<Object>
+								<Index>#x1400</Index>
+								<Name>Rx PDO Communication Parameter</Name>
+								<Type>DT1400</Type>
+								<BitSize>64</BitSize>
+								<Info>
+									<SubItem>
+										<Name>COB ID</Name>
+										<Info>
+											<DefaultData>40000000</DefaultData> <!-- must this also be in LSB? -->
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>Transmission Type</Name>
+										<Info>
+											<DefaultData>01</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+							</Object>
+							<Object>
+								<Index>#x1800</Index>
+								<Name>Tx PDO Communication Parameter</Name>
+								<Type>DT1800</Type>
+								<BitSize>64</BitSize>
+								<Info>
+									<SubItem>
+										<Name>COB ID</Name>
+										<Info>
+											<DefaultData>40000000</DefaultData> <!-- must this also be in LSB? -->
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>Transmission Type</Name>
+										<Info>
+											<DefaultData>01</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+							</Object>
+							<Object>
 								<Index>#x1600</Index>
 								<Name>Rx PDO Mapping</Name>
 								<Type>DT1600</Type>
