@@ -632,7 +632,7 @@
 									<SubItem>
 										<Name>SubIndex 000</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -650,7 +650,7 @@
 									<SubItem>
 										<Name>SubIndex 000</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
