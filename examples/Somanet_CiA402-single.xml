@@ -130,7 +130,7 @@
 							<DataType>
 								<Name>DT1C00ARR</Name>
 								<BaseType>USINT</BaseType>
-								<BitSize>32</BitSize>
+								<BitSize>80</BitSize>
 								<ArrayInfo>
 									<LBound>1</LBound>
 									<Elements>4</Elements>
@@ -138,7 +138,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C00</Name>
-								<BitSize>48</BitSize>
+								<BitSize>40</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -153,8 +153,8 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C00ARR</Type>
-									<BitSize>32</BitSize>
-									<BitOffs>32</BitOffs>
+									<BitSize>8</BitSize>
+									<BitOffs>8</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -172,7 +172,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C10</Name>
-								<BitSize>48</BitSize>
+								<BitSize>32</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -206,7 +206,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C11</Name>
-								<BitSize>48</BitSize>
+								<BitSize>32</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -240,7 +240,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C12</Name>
-								<BitSize>48</BitSize>
+								<BitSize>32</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -299,7 +299,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1400</Name>
-								<BitSize>48</BitSize>
+								<BitSize>64</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>RX PDO Comm Param</Name>
@@ -336,7 +336,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1800</Name>
-								<BitSize>48</BitSize>
+								<BitSize>64</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>TX PDO Comm Param</Name>
@@ -423,7 +423,7 @@
 									<Name>Target Position</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>80</BitOffs>
+									<BitOffs>64</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -434,7 +434,7 @@
 									<Name>Target Velocity</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>112</BitOffs>
+									<BitOffs>96</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -687,7 +687,7 @@
 								<Index>#x1c13</Index>
 								<Name>SM 3 Assignment</Name>
 								<Type>DT1C13</Type>
-								<BitSize>24</BitSize>
+								<BitSize>16</BitSize>
 								<Info>
 									<SubItem>
 										<Name>Assignement</Name>
