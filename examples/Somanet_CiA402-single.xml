@@ -73,7 +73,7 @@
 								<BitSize>144</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>Identity</Name>
+									<Name>SubIndex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -588,7 +588,7 @@
 								<BitSize>48</BitSize>
 								<Info>
 									<SubItem>
-										<Name>Sync Manager Comm</Name>
+										<Name>SubIndex 000</Name>
 										<Info>
 											<DefaultData>04</DefaultData>
 										</Info>
@@ -630,9 +630,9 @@
 								<BitSize>8</BitSize>
 								<Info>
 									<SubItem>
-										<Name>Assignement</Name>
+										<Name>SubIndex 000</Name>
 										<Info>
-											<DefaultData>00</DefaultData>
+											<DefaultData>0</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -648,9 +648,9 @@
 								<BitSize>8</BitSize>
 								<Info>
 									<SubItem>
-										<Name>Assignement</Name>
+										<Name>SubIndex 000</Name>
 										<Info>
-											<DefaultData>01</DefaultData>
+											<DefaultData>0</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -663,10 +663,10 @@
 								<Index>#x1c12</Index>
 								<Name>SM 2 Assignment</Name>
 								<Type>DT1C12</Type>
-								<BitSize>24</BitSize>
+								<BitSize>16</BitSize>
 								<Info>
 									<SubItem>
-										<Name>Assignement</Name>
+										<Name>SubIndex 000</Name>
 										<Info>
 											<DefaultData>01</DefaultData>
 										</Info>
@@ -714,6 +714,12 @@
 								<BitSize>64</BitSize>
 								<Info>
 									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>02</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
 										<Name>COB ID</Name>
 										<Info>
 											<DefaultData>40000000</DefaultData> <!-- must this also be in LSB? -->
@@ -734,6 +740,12 @@
 								<BitSize>64</BitSize>
 								<Info>
 									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>02</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
 										<Name>COB ID</Name>
 										<Info>
 											<DefaultData>40000000</DefaultData> <!-- must this also be in LSB? -->
@@ -753,6 +765,12 @@
 								<Type>DT1600</Type>
 								<BitSize>144</BitSize>
 								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>05</DefaultData>
+										</Info>
+									</SubItem>
 									<SubItem>
 										<Name>Controlword</Name>
 										<Info>
@@ -795,6 +813,12 @@
 								<Type>DT1A00</Type>
 								<BitSize>144</BitSize>
 								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>05</DefaultData>
+										</Info>
+									</SubItem>
 									<SubItem>
 										<Name>Statusword</Name>
 										<Info>
