@@ -945,8 +945,7 @@
 					</Entry>
 				</TxPdo>
 				<Mailbox DataLinkLayer="true">
-					<EoE/> <!-- this is optional in this device -->
-					<CoE SdoInfo="1" CompleteAccess="0" PdoAssign="0" PdoConfig="0" PdoUpload="0" />
+					<CoE SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="0" PdoUpload="0" />
 					<!-- SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="1" PdoUpload="0" -->
 					<FoE/>
 				</Mailbox>
