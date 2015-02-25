@@ -690,13 +690,13 @@
 								<BitSize>16</BitSize>
 								<Info>
 									<SubItem>
-										<Name>Assignement</Name>
+										<Name>SubIndex 000</Name>
 										<Info>
 											<DefaultData>01</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 4</Name>
+										<Name>SyncMan 3</Name>
 										<Info>
 											<DefaultData>1A00</DefaultData>
 										</Info>
