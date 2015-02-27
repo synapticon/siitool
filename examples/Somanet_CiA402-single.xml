@@ -95,7 +95,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>2</SubIdx>
-									<Name>Product code</Name>
+									<Name>Product Code</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>48</BitOffs>
@@ -376,7 +376,7 @@
 								<BitSize>144</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>Rx PDO Mapping Statusword</Name>
+									<Name>Subindex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -446,7 +446,7 @@
 								<BitSize>144</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>Tx PDO Mapping Statusword</Name>
+									<Name>Subindex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -826,7 +826,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Op Mode Display</Name>
+										<Name>Opmode Display</Name>
 										<Info>
 											<DefaultData>00</DefaultData>
 										</Info>
