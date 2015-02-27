@@ -373,7 +373,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1600</Name>
-								<BitSize>144</BitSize>
+								<BitSize>176</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>Subindex 000</Name>
@@ -388,8 +388,8 @@
 								<SubItem>
 									<SubIdx>1</SubIdx>
 									<Name>Controlword</Name>
-									<Type>UINT</Type>
-									<BitSize>16</BitSize>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
 									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
@@ -399,9 +399,9 @@
 								<SubItem>
 									<SubIdx>2</SubIdx>
 									<Name>Op Modes</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>32</BitOffs>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>48</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -411,8 +411,8 @@
 									<SubIdx>3</SubIdx>
 									<Name>Target Torque</Name>
 									<Type>UDINT</Type>
-									<BitSize>16</BitSize>
-									<BitOffs>48</BitOffs>
+									<BitSize>32</BitSize>
+									<BitOffs>80</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -423,7 +423,7 @@
 									<Name>Target Position</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>64</BitOffs>
+									<BitOffs>112</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -434,7 +434,7 @@
 									<Name>Target Velocity</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>96</BitOffs>
+									<BitOffs>144</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -443,7 +443,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1A00</Name>
-								<BitSize>144</BitSize>
+								<BitSize>176</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>Subindex 000</Name>
@@ -458,8 +458,8 @@
 								<SubItem>
 									<SubIdx>1</SubIdx>
 									<Name>Statusword</Name>
-									<Type>UINT</Type>
-									<BitSize>16</BitSize>
+									<Type>UDINT</Type>
+									<BitSize>32</BitSize>
 									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
@@ -470,8 +470,8 @@
 									<SubIdx>2</SubIdx>
 									<Name>Opmode Display</Name>
 									<Type>UDINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>32</BitOffs>
+									<BitSize>32</BitSize>
+									<BitOffs>48</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -482,7 +482,7 @@
 									<Name>Position Value</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>48</BitOffs>
+									<BitOffs>80</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -493,7 +493,7 @@
 									<Name>Velocity Value</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
-									<BitOffs>80</BitOffs>
+									<BitOffs>112</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -504,7 +504,7 @@
 									<Name>Torque Value</Name>
 									<Type>UDINT</Type>
 									<BitSize>16</BitSize>
-									<BitOffs>112</BitOffs>
+									<BitOffs>144</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
@@ -763,7 +763,7 @@
 								<Index>#x1600</Index>
 								<Name>Rx PDO Mapping</Name>
 								<Type>DT1600</Type>
-								<BitSize>144</BitSize>
+								<BitSize>176</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
@@ -774,31 +774,31 @@
 									<SubItem>
 										<Name>Controlword</Name>
 										<Info>
-											<DefaultData>0000</DefaultData>
+											<DefaultData>60400010</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Op Modes</Name>
 										<Info>
-											<DefaultData>00</DefaultData>
+											<DefaultData>60600008</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Target Torque</Name>
 										<Info>
-											<DefaultData>0000</DefaultData>
+											<DefaultData>60710010</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Target Postion</Name>
 										<Info>
-											<DefaultData>00000000</DefaultData>
+											<DefaultData>607A0020</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Target Velocity</Name>
 										<Info>
-											<DefaultData>00000000</DefaultData>
+											<DefaultData>60FF0020</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -811,7 +811,7 @@
 								<Index>#x1A00</Index>
 								<Name>Tx PDO Mapping</Name>
 								<Type>DT1A00</Type>
-								<BitSize>144</BitSize>
+								<BitSize>176</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
@@ -822,31 +822,31 @@
 									<SubItem>
 										<Name>Statusword</Name>
 										<Info>
-											<DefaultData>0000</DefaultData>
+											<DefaultData>60410010</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Opmode Display</Name>
 										<Info>
-											<DefaultData>00</DefaultData>
+											<DefaultData>60610008</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Postion Value</Name>
 										<Info>
-											<DefaultData>00000000</DefaultData>
+											<DefaultData>60640020</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Velocity Value</Name>
 										<Info>
-											<DefaultData>00000000</DefaultData>
+											<DefaultData>606C0020</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Torque Value</Name>
 										<Info>
-											<DefaultData>0000</DefaultData>
+											<DefaultData>60770010</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
