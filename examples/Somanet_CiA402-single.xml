@@ -138,7 +138,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C00</Name>
-								<BitSize>40</BitSize>
+								<BitSize>48</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -153,8 +153,8 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C00ARR</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>8</BitOffs>
+									<BitSize>32</BitSize>
+									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
 										<Category>o</Category>
