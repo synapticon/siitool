@@ -722,7 +722,7 @@
 									<SubItem>
 										<Name>COB ID</Name>
 										<Info>
-											<DefaultData>40000000</DefaultData> <!-- must this also be in LSB? -->
+											<DefaultData>00000002</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
@@ -748,7 +748,7 @@
 									<SubItem>
 										<Name>COB ID</Name>
 										<Info>
-											<DefaultData>40000000</DefaultData> <!-- must this also be in LSB? -->
+											<DefaultData>00000002</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
