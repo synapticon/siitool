@@ -519,7 +519,7 @@
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
-									<DefaultData>92012070</DefaultData>
+									<DefaultData>92010270</DefaultData>
 								</Info>
 								<Flags>
 									<Access>ro</Access>
@@ -554,19 +554,19 @@
 									<SubItem>
 										<Name>Vendor ID</Name>
 										<Info>
-											<DefaultData>000022d2</DefaultData>
+											<DefaultData>d2220000</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Product Code</Name>
 										<Info>
-											<DefaultData>00000201</DefaultData>
+											<DefaultData>01020000</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Revision</Name>
 										<Info>
-											<DefaultData>0a000002</DefaultData>
+											<DefaultData>0200000a</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
@@ -774,31 +774,31 @@
 									<SubItem>
 										<Name>Controlword</Name>
 										<Info>
-											<DefaultData>60400010</DefaultData>
+											<DefaultData>10004060</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Op Mode</Name>
 										<Info>
-											<DefaultData>60600008</DefaultData>
+											<DefaultData>08006060</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Target Torque</Name>
 										<Info>
-											<DefaultData>60710010</DefaultData>
+											<DefaultData>10007160</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Target Postion</Name>
 										<Info>
-											<DefaultData>607A0020</DefaultData>
+											<DefaultData>20007A60</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Target Velocity</Name>
 										<Info>
-											<DefaultData>60FF0020</DefaultData>
+											<DefaultData>2000FF60</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -822,31 +822,31 @@
 									<SubItem>
 										<Name>Statusword</Name>
 										<Info>
-											<DefaultData>60410010</DefaultData>
+											<DefaultData>10004160</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Opmode Display</Name>
+										<Name>Op Mode Display</Name>
 										<Info>
-											<DefaultData>60610008</DefaultData>
+											<DefaultData>08006160</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Postion Value</Name>
 										<Info>
-											<DefaultData>60640020</DefaultData>
+											<DefaultData>20006460</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Velocity Value</Name>
 										<Info>
-											<DefaultData>606C0020</DefaultData>
+											<DefaultData>20006C60</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Torque Value</Name>
 										<Info>
-											<DefaultData>60770010</DefaultData>
+											<DefaultData>10007760</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
