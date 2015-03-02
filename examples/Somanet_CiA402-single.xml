@@ -117,7 +117,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>4</SubIdx>
-									<Name>Serial number</Name>
+									<Name>Serialnumber</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>112</BitOffs>
@@ -302,7 +302,7 @@
 								<BitSize>64</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>RX PDO Comm Param</Name>
+									<Name>SubIndex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -313,7 +313,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>1</SubIdx>
-									<Name>COD ID used by PDO</Name>
+									<Name>COD ID</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>16</BitOffs>
@@ -324,7 +324,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>2</SubIdx>
-									<Name>PDO Transmission Type</Name>
+									<Name>Transmission Type</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>48</BitOffs>
@@ -339,7 +339,7 @@
 								<BitSize>64</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>TX PDO Comm Param</Name>
+									<Name>Subindex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -350,7 +350,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>1</SubIdx>
-									<Name>COD ID used by PDO</Name>
+									<Name>COD ID</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>16</BitOffs>
@@ -361,7 +361,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>2</SubIdx>
-									<Name>PDO Transmission Type</Name>
+									<Name>Transmission Type</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>48</BitOffs>
@@ -398,7 +398,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>2</SubIdx>
-									<Name>Op Modes</Name>
+									<Name>Op Mode</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>48</BitOffs>
@@ -468,7 +468,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>2</SubIdx>
-									<Name>Opmode Display</Name>
+									<Name>Op Mode Display</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>48</BitOffs>
@@ -583,7 +583,7 @@
 							</Object>
 							<Object>
 								<Index>#x1c00</Index>
-								<Name>Sync manager type</Name>
+								<Name>Sync Manager Type</Name>
 								<Type>DT1C00</Type>
 								<BitSize>48</BitSize>
 								<Info>
@@ -594,25 +594,25 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 1</Name>
+										<Name>SyncMan 0</Name>
 										<Info>
 											<DefaultData>01</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 2</Name>
+										<Name>SyncMan 1</Name>
 										<Info>
 											<DefaultData>02</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 3</Name>
+										<Name>SyncMan 2</Name>
 										<Info>
 											<DefaultData>03</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 4</Name>
+										<Name>SyncMan 3</Name>
 										<Info>
 											<DefaultData>04</DefaultData>
 										</Info>
@@ -672,7 +672,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 2</Name>
+										<Name>SM 2</Name>
 										<Info>
 											<DefaultData>1600</DefaultData>
 										</Info>
@@ -696,7 +696,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 3</Name>
+										<Name>SM 3</Name>
 										<Info>
 											<DefaultData>1A00</DefaultData>
 										</Info>
@@ -778,7 +778,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Op Modes</Name>
+										<Name>Op Mode</Name>
 										<Info>
 											<DefaultData>60600008</DefaultData>
 										</Info>
@@ -858,7 +858,7 @@
 							<!-- CiA400 Tx-/Rx-PDOs -->
 							<Object>
 								<Index>#x6040</Index>
-								<Name>Device Type</Name>
+								<Name>Controlword</Name>
 								<Type>UINT</Type>
 								<BitSize>16</BitSize>
 								<Info>
@@ -871,7 +871,7 @@
 							</Object>
 							<Object>
 								<Index>#x6041</Index>
-								<Name>Device Type</Name>
+								<Name>Statusword</Name>
 								<Type>UINT</Type>
 								<BitSize>16</BitSize>
 								<Info>
@@ -884,7 +884,7 @@
 							</Object>
 							<Object>
 								<Index>#x6060</Index>
-								<Name>Device Type</Name>
+								<Name>Op Modes</Name>
 								<Type>USINT</Type>
 								<BitSize>8</BitSize>
 								<Info>
@@ -897,7 +897,7 @@
 							</Object>
 							<Object>
 								<Index>#x6061</Index>
-								<Name>Device Type</Name>
+								<Name>Opmode Display</Name>
 								<Type>USINT</Type>
 								<BitSize>8</BitSize>
 								<Info>
@@ -910,7 +910,7 @@
 							</Object>
 							<Object>
 								<Index>#x6071</Index>
-								<Name>Device Type</Name>
+								<Name>Target Torque</Name>
 								<Type>UINT</Type>
 								<BitSize>16</BitSize>
 								<Info>
@@ -923,7 +923,7 @@
 							</Object>
 							<Object>
 								<Index>#x6077</Index>
-								<Name>Device Type</Name>
+								<Name>Torque Value</Name>
 								<Type>UINT</Type>
 								<BitSize>16</BitSize>
 								<Info>
@@ -936,7 +936,7 @@
 							</Object>
 							<Object>
 								<Index>#x6064</Index>
-								<Name>Device Type</Name>
+								<Name>Postion Value</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
@@ -949,7 +949,7 @@
 							</Object>
 							<Object>
 								<Index>#x606C</Index>
-								<Name>Device Type</Name>
+								<Name>Velocity Value</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
@@ -962,7 +962,7 @@
 							</Object>
 							<Object>
 								<Index>#x607A</Index>
-								<Name>Device Type</Name>
+								<Name>Target Position</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
@@ -975,7 +975,7 @@
 							</Object>
 							<Object>
 								<Index>#x60FF</Index>
-								<Name>Device Type</Name>
+								<Name>Target Velocity</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
