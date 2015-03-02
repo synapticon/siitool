@@ -130,7 +130,7 @@
 							<DataType>
 								<Name>DT1C00ARR</Name>
 								<BaseType>USINT</BaseType>
-								<BitSize>80</BitSize>
+								<BitSize>32</BitSize>
 								<ArrayInfo>
 									<LBound>1</LBound>
 									<Elements>4</Elements>
@@ -274,7 +274,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C13</Name>
-								<BitSize>48</BitSize>
+								<BitSize>32</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
