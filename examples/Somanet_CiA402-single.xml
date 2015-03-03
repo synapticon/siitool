@@ -167,7 +167,7 @@
 								<BitSize>16</BitSize>
 								<ArrayInfo>
 									<LBound>1</LBound>
-									<Elements>1</Elements>
+									<Elements>0</Elements>
 								</ArrayInfo>
 							</DataType>
 							<DataType>
@@ -201,7 +201,7 @@
 								<BitSize>16</BitSize>
 								<ArrayInfo>
 									<LBound>1</LBound>
-									<Elements>1</Elements>
+									<Elements>0</Elements>
 								</ArrayInfo>
 							</DataType>
 							<DataType>
