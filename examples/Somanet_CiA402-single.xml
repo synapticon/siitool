@@ -674,7 +674,7 @@
 									<SubItem>
 										<Name>SubIndex 001</Name>
 										<Info>
-											<DefaultData>1600</DefaultData>
+											<DefaultData>0016</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -698,7 +698,7 @@
 									<SubItem>
 										<Name>SubIndex 001</Name>
 										<Info>
-											<DefaultData>1A00</DefaultData>
+											<DefaultData>001A</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
