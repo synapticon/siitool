@@ -313,7 +313,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>1</SubIdx>
-									<Name>COD ID</Name>
+									<Name>COB ID</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>16</BitOffs>
@@ -350,7 +350,7 @@
 								</SubItem>
 								<SubItem>
 									<SubIdx>1</SubIdx>
-									<Name>COD ID</Name>
+									<Name>COB ID</Name>
 									<Type>UDINT</Type>
 									<BitSize>32</BitSize>
 									<BitOffs>16</BitOffs>
@@ -570,7 +570,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Serial number</Name>
+										<Name>Serialnumber</Name>
 										<Info>
 											<DefaultData>00000000</DefaultData>
 										</Info>
@@ -594,25 +594,25 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 0</Name>
+										<Name>SubIndex 001</Name>
 										<Info>
 											<DefaultData>01</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 1</Name>
+										<Name>SubIndex 002</Name>
 										<Info>
 											<DefaultData>02</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 2</Name>
+										<Name>SubIndex 003</Name>
 										<Info>
 											<DefaultData>03</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SyncMan 3</Name>
+										<Name>SubIndex 004</Name>
 										<Info>
 											<DefaultData>04</DefaultData>
 										</Info>
@@ -672,7 +672,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SM 2</Name>
+										<Name>SubIndex 001</Name>
 										<Info>
 											<DefaultData>1600</DefaultData>
 										</Info>
@@ -696,7 +696,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>SM 3</Name>
+										<Name>SubIndex 001</Name>
 										<Info>
 											<DefaultData>1A00</DefaultData>
 										</Info>
