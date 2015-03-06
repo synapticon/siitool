@@ -297,6 +297,7 @@
 									</Flags>
 								</SubItem>
 							</DataType>
+							<!-- removed possible unnecessary objects.
 							<DataType>
 								<Name>DT1400</Name>
 								<BitSize>64</BitSize>
@@ -371,6 +372,7 @@
 									</Flags>
 								</SubItem>
 							</DataType>
+							-->
 							<DataType>
 								<Name>DT1600</Name>
 								<BitSize>176</BitSize>
@@ -707,6 +709,7 @@
 									<Category>o</Category>
 								</Flags>
 							</Object>
+							<!-- removed possible unnecessary objects.
 							<Object>
 								<Index>#x1400</Index>
 								<Name>Rx PDO Communication Parameter</Name>
@@ -759,6 +762,7 @@
 									</SubItem>
 								</Info>
 							</Object>
+							-->
 							<Object>
 								<Index>#x1600</Index>
 								<Name>Rx PDO Mapping</Name>
