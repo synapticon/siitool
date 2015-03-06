@@ -1001,35 +1001,35 @@
 					<Index>#x1600</Index>
 					<Name>Outputs</Name>
 					<Entry>
-						<Index>#x1600</Index>
-						<SubIndex>1</SubIndex>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>16</BitLen>
 						<Name>Controlword</Name>
 						<DataType>UINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1600</Index>
-						<SubIndex>2</SubIndex>
+						<Index>#x6060</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>8</BitLen>
 						<Name>Op Modes</Name>
 						<DataType>USINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1600</Index>
-						<SubIndex>3</SubIndex>
+						<Index>#x6071</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>16</BitLen>
 						<Name>Target Torque</Name>
 						<DataType>UINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1600</Index>
+						<Index>#x607A</Index>
 						<SubIndex>4</SubIndex>
 						<BitLen>32</BitLen>
 						<Name>Target Position</Name>
 						<DataType>UDINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1600</Index>
+						<Index>#x60FF</Index>
 						<SubIndex>5</SubIndex>
 						<BitLen>32</BitLen>
 						<Name>Target Velocity</Name>
@@ -1040,36 +1040,36 @@
 					<Index>#x1a00</Index>
 					<Name>Inputs</Name>
 					<Entry>
-						<Index>#x1a00</Index>
-						<SubIndex>1</SubIndex>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>16</BitLen>
 						<Name>Statusword</Name>
 						<DataType>UINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1a00</Index>
-						<SubIndex>2</SubIndex>
+						<Index>#x6061</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>8</BitLen>
 						<Name>Op Mode Display</Name>
 						<DataType>USINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1a00</Index>
-						<SubIndex>3</SubIndex>
+						<Index>#x6064</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>32</BitLen>
 						<Name>Position Value</Name>
 						<DataType>UDINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1a00</Index>
-						<SubIndex>4</SubIndex>
+						<Index>#x606C</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>32</BitLen>
 						<Name>Velocity Value</Name>
 						<DataType>UDINT</DataType>
 					</Entry>
 					<Entry>
-						<Index>#x1a00</Index>
-						<SubIndex>5</SubIndex>
+						<Index>#x6077</Index>
+						<SubIndex>0</SubIndex>
 						<BitLen>16</BitLen>
 						<Name>Torque Value</Name>
 						<DataType>UINT</DataType>
