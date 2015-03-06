@@ -897,7 +897,7 @@
 							</Object>
 							<Object>
 								<Index>#x6061</Index>
-								<Name>Opmode Display</Name>
+								<Name>Op Mode Display</Name>
 								<Type>USINT</Type>
 								<BitSize>8</BitSize>
 								<Info>
@@ -936,7 +936,7 @@
 							</Object>
 							<Object>
 								<Index>#x6064</Index>
-								<Name>Postion Value</Name>
+								<Name>Position Value</Name>
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
@@ -1050,28 +1050,28 @@
 						<Index>#x1a00</Index>
 						<SubIndex>2</SubIndex>
 						<BitLen>8</BitLen>
-						<Name>Opmode display</Name>
+						<Name>Op Mode Display</Name>
 						<DataType>USINT</DataType>
 					</Entry>
 					<Entry>
 						<Index>#x1a00</Index>
 						<SubIndex>3</SubIndex>
 						<BitLen>32</BitLen>
-						<Name>Position</Name>
+						<Name>Position Value</Name>
 						<DataType>UDINT</DataType>
 					</Entry>
 					<Entry>
 						<Index>#x1a00</Index>
 						<SubIndex>4</SubIndex>
 						<BitLen>32</BitLen>
-						<Name>Velocity</Name>
+						<Name>Velocity Value</Name>
 						<DataType>UDINT</DataType>
 					</Entry>
 					<Entry>
 						<Index>#x1a00</Index>
 						<SubIndex>5</SubIndex>
 						<BitLen>16</BitLen>
-						<Name>Torque</Name>
+						<Name>Torque Value</Name>
 						<DataType>UINT</DataType>
 					</Entry>
 				</TxPdo>
