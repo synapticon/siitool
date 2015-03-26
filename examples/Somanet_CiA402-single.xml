@@ -170,7 +170,7 @@
 								<BitSize>64</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>Subindex 000</Name>
+									<Name>SubIndex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -208,7 +208,7 @@
 								<BitSize>176</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>Subindex 000</Name>
+									<Name>SubIndex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
@@ -278,7 +278,7 @@
 								<BitSize>176</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
-									<Name>Subindex 000</Name>
+									<Name>SubIndex 000</Name>
 									<Type>USINT</Type>
 									<BitSize>8</BitSize>
 									<BitOffs>0</BitOffs>
