@@ -127,176 +127,6 @@
 									</Flags>
 								</SubItem>
 							</DataType>
-							<DataType>
-								<Name>DT1C00ARR</Name>
-								<BaseType>USINT</BaseType>
-								<BitSize>32</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>4</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1C00</Name>
-								<BitSize>48</BitSize>
-								<SubItem>
-									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>0</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-								<SubItem>
-									<Name>Elements</Name>
-									<Type>DT1C00ARR</Type>
-									<BitSize>32</BitSize>
-									<BitOffs>16</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-							</DataType>
-							<DataType>
-								<Name>DT1C10ARR</Name>
-								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>0</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1C10</Name>
-								<BitSize>32</BitSize>
-								<SubItem>
-									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>0</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-								<SubItem>
-									<Name>Elements</Name>
-									<Type>DT1C10ARR</Type>
-									<BitSize>16</BitSize>
-									<BitOffs>16</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-							</DataType>
-							<DataType>
-								<Name>DT1C11ARR</Name>
-								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>0</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1C11</Name>
-								<BitSize>32</BitSize>
-								<SubItem>
-									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>0</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-								<SubItem>
-									<Name>Elements</Name>
-									<Type>DT1C11ARR</Type>
-									<BitSize>16</BitSize>
-									<BitOffs>16</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-							</DataType>
-							<DataType>
-								<Name>DT1C12ARR</Name>
-								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>1</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1C12</Name>
-								<BitSize>32</BitSize>
-								<SubItem>
-									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>0</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-								<SubItem>
-									<Name>Elements</Name>
-									<Type>DT1C12ARR</Type>
-									<BitSize>16</BitSize>
-									<BitOffs>16</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-							</DataType>
-							<DataType>
-								<Name>DT1C13ARR</Name>
-								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
-								<ArrayInfo>
-									<LBound>1</LBound>
-									<Elements>1</Elements>
-								</ArrayInfo>
-							</DataType>
-							<DataType>
-								<Name>DT1C13</Name>
-								<BitSize>32</BitSize>
-								<SubItem>
-									<SubIdx>0</SubIdx>
-									<Name>SubIndex 000</Name>
-									<Type>USINT</Type>
-									<BitSize>8</BitSize>
-									<BitOffs>0</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-								<SubItem>
-									<Name>Elements</Name>
-									<Type>DT1C13ARR</Type>
-									<BitSize>16</BitSize>
-									<BitOffs>16</BitOffs>
-									<Flags>
-										<Access>ro</Access>
-										<Category>o</Category>
-									</Flags>
-								</SubItem>
-							</DataType>
 							<!-- removed possible unnecessary objects.
 							<DataType>
 								<Name>DT1400</Name>
@@ -513,6 +343,176 @@
 									</Flags>
 								</SubItem>
 							</DataType>
+							<DataType>
+								<Name>DT1C00ARR</Name>
+								<BaseType>USINT</BaseType>
+								<BitSize>32</BitSize>
+								<ArrayInfo>
+									<LBound>1</LBound>
+									<Elements>4</Elements>
+								</ArrayInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1C00</Name>
+								<BitSize>48</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>SubIndex 000</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<Name>Elements</Name>
+									<Type>DT1C00ARR</Type>
+									<BitSize>32</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1C10ARR</Name>
+								<BaseType>UINT</BaseType>
+								<BitSize>16</BitSize>
+								<ArrayInfo>
+									<LBound>1</LBound>
+									<Elements>0</Elements>
+								</ArrayInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1C10</Name>
+								<BitSize>32</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>SubIndex 000</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<Name>Elements</Name>
+									<Type>DT1C10ARR</Type>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1C11ARR</Name>
+								<BaseType>UINT</BaseType>
+								<BitSize>16</BitSize>
+								<ArrayInfo>
+									<LBound>1</LBound>
+									<Elements>0</Elements>
+								</ArrayInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1C11</Name>
+								<BitSize>32</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>SubIndex 000</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<Name>Elements</Name>
+									<Type>DT1C11ARR</Type>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1C12ARR</Name>
+								<BaseType>UINT</BaseType>
+								<BitSize>16</BitSize>
+								<ArrayInfo>
+									<LBound>1</LBound>
+									<Elements>1</Elements>
+								</ArrayInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1C12</Name>
+								<BitSize>32</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>SubIndex 000</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<Name>Elements</Name>
+									<Type>DT1C12ARR</Type>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
+							<DataType>
+								<Name>DT1C13ARR</Name>
+								<BaseType>UINT</BaseType>
+								<BitSize>16</BitSize>
+								<ArrayInfo>
+									<LBound>1</LBound>
+									<Elements>1</Elements>
+								</ArrayInfo>
+							</DataType>
+							<DataType>
+								<Name>DT1C13</Name>
+								<BitSize>32</BitSize>
+								<SubItem>
+									<SubIdx>0</SubIdx>
+									<Name>SubIndex 000</Name>
+									<Type>USINT</Type>
+									<BitSize>8</BitSize>
+									<BitOffs>0</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+								<SubItem>
+									<Name>Elements</Name>
+									<Type>DT1C13ARR</Type>
+									<BitSize>16</BitSize>
+									<BitOffs>16</BitOffs>
+									<Flags>
+										<Access>ro</Access>
+										<Category>o</Category>
+									</Flags>
+								</SubItem>
+							</DataType>
 						</DataTypes>
 						<Objects>
 							<Object>
@@ -575,132 +575,6 @@
 										<Name>Serialnumber</Name>
 										<Info>
 											<DefaultData>00000000</DefaultData>
-										</Info>
-									</SubItem>
-								</Info>
-								<Flags>
-									<Access>ro</Access>
-									<Category>o</Category>
-								</Flags>
-							</Object>
-							<Object>
-								<Index>#x1c00</Index>
-								<Name>Sync Manager</Name>
-								<Type>DT1C00</Type>
-								<BitSize>48</BitSize>
-								<Info>
-									<SubItem>
-										<Name>SubIndex 000</Name>
-										<Info>
-											<DefaultData>04</DefaultData>
-										</Info>
-									</SubItem>
-									<SubItem>
-										<Name>SubIndex 001</Name>
-										<Info>
-											<DefaultData>01</DefaultData>
-										</Info>
-									</SubItem>
-									<SubItem>
-										<Name>SubIndex 002</Name>
-										<Info>
-											<DefaultData>02</DefaultData>
-										</Info>
-									</SubItem>
-									<SubItem>
-										<Name>SubIndex 003</Name>
-										<Info>
-											<DefaultData>03</DefaultData>
-										</Info>
-									</SubItem>
-									<SubItem>
-										<Name>SubIndex 004</Name>
-										<Info>
-											<DefaultData>04</DefaultData>
-										</Info>
-									</SubItem>
-								</Info>
-								<Flags>
-									<Access>ro</Access>
-									<Category>o</Category>
-								</Flags>
-							</Object>
-							<Object>
-								<Index>#x1c10</Index>
-								<Name>SM 0 Assignment</Name>
-								<Type>DT1C10</Type>
-								<BitSize>8</BitSize>
-								<Info>
-									<SubItem>
-										<Name>SubIndex 000</Name>
-										<Info>
-											<DefaultData>00</DefaultData>
-										</Info>
-									</SubItem>
-								</Info>
-								<Flags>
-									<Access>ro</Access>
-									<Category>o</Category>
-								</Flags>
-							</Object>
-							<Object>
-								<Index>#x1c11</Index>
-								<Name>SM 1 Assignment</Name>
-								<Type>DT1C11</Type>
-								<BitSize>8</BitSize>
-								<Info>
-									<SubItem>
-										<Name>SubIndex 000</Name>
-										<Info>
-											<DefaultData>00</DefaultData>
-										</Info>
-									</SubItem>
-								</Info>
-								<Flags>
-									<Access>ro</Access>
-									<Category>o</Category>
-								</Flags>
-							</Object>
-							<Object>
-								<Index>#x1c12</Index>
-								<Name>SM 2 Assignment</Name>
-								<Type>DT1C12</Type>
-								<BitSize>16</BitSize>
-								<Info>
-									<SubItem>
-										<Name>SubIndex 000</Name>
-										<Info>
-											<DefaultData>01</DefaultData>
-										</Info>
-									</SubItem>
-									<SubItem>
-										<Name>SubIndex 001</Name>
-										<Info>
-											<DefaultData>0016</DefaultData>
-										</Info>
-									</SubItem>
-								</Info>
-								<Flags>
-									<Access>ro</Access>
-									<Category>o</Category>
-								</Flags>
-							</Object>
-							<Object>
-								<Index>#x1c13</Index>
-								<Name>SM 3 Assignment</Name>
-								<Type>DT1C13</Type>
-								<BitSize>16</BitSize>
-								<Info>
-									<SubItem>
-										<Name>SubIndex 000</Name>
-										<Info>
-											<DefaultData>01</DefaultData>
-										</Info>
-									</SubItem>
-									<SubItem>
-										<Name>SubIndex 001</Name>
-										<Info>
-											<DefaultData>001A</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -851,6 +725,132 @@
 										<Name>Torque Value</Name>
 										<Info>
 											<DefaultData>10007760</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1c00</Index>
+								<Name>Sync Manager</Name>
+								<Type>DT1C00</Type>
+								<BitSize>48</BitSize>
+								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>04</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SubIndex 001</Name>
+										<Info>
+											<DefaultData>01</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SubIndex 002</Name>
+										<Info>
+											<DefaultData>02</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SubIndex 003</Name>
+										<Info>
+											<DefaultData>03</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SubIndex 004</Name>
+										<Info>
+											<DefaultData>04</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1c10</Index>
+								<Name>SM 0 Assignment</Name>
+								<Type>DT1C10</Type>
+								<BitSize>8</BitSize>
+								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>00</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1c11</Index>
+								<Name>SM 1 Assignment</Name>
+								<Type>DT1C11</Type>
+								<BitSize>8</BitSize>
+								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>00</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1c12</Index>
+								<Name>SM 2 Assignment</Name>
+								<Type>DT1C12</Type>
+								<BitSize>16</BitSize>
+								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>01</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SubIndex 001</Name>
+										<Info>
+											<DefaultData>0016</DefaultData>
+										</Info>
+									</SubItem>
+								</Info>
+								<Flags>
+									<Access>ro</Access>
+									<Category>o</Category>
+								</Flags>
+							</Object>
+							<Object>
+								<Index>#x1c13</Index>
+								<Name>SM 3 Assignment</Name>
+								<Type>DT1C13</Type>
+								<BitSize>16</BitSize>
+								<Info>
+									<SubItem>
+										<Name>SubIndex 000</Name>
+										<Info>
+											<DefaultData>01</DefaultData>
+										</Info>
+									</SubItem>
+									<SubItem>
+										<Name>SubIndex 001</Name>
+										<Info>
+											<DefaultData>001A</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
