@@ -31,7 +31,8 @@ Usage: siitool [-h] [-v] [-p] [-o outfile] [filename]
 * -v print version an exit -o <name> write output to file <name>
 * -p print content human readable
 
-*filename path to eeprom file, if missing read from stdin*
+*filename path to eeprom file, if missing read from stdin*.
+
 Recognized file types: SII and ESI/XML.
 
 Examples
