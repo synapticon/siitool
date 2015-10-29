@@ -56,7 +56,7 @@ In this example we will transform the `Somanet_CiA402-multi.xml <https://raw.git
 
 .. code-block:: bash
 
-	./siitool -p -o cia402_single examples/Somanet_CiA402-single.xml
+	./siitool -p -o cia402_single examples/Somanet_CiA402-multi.xml
 
 This definition file is a more complex CiA402 ESI which supports a set of PDOs for various CiA402 modes. Features:
 
