@@ -27,11 +27,11 @@ How to use it
 
 Usage: siitool [-h] [-v] [-p] [-o outfile] [filename]
 
-* -h print this help and exit
-* -v print version an exit -o <name> write output to file <name>
-* -p print content human readable
-
-*filename path to eeprom file, if missing read from stdin*.
+* ``-h`` print usefull help and exit
+* ``-v`` print version an exit -o <name> write output to file <name>
+* ``-p`` print content human readable
+* ``-o  <name>`` write output to file ``<name>``
+* ``filename`` path to eeprom file, if missing read from ``stdin``.
 
 Recognized file types: SII and ESI/XML.
 
