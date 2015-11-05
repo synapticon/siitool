@@ -11,7 +11,7 @@ Overview
 
   `Download Siitool <https://github.com/synapticon/siitool/archive/master.zip>`_
 
-.. cssclass:: downloadable-button github
+.. cssclass:: github
 
   `Visit Public Repository <https://github.com/synapticon/siitool>`_
 
@@ -33,7 +33,7 @@ Usage: siitool [-h] [-v] [-p] [-o outfile] [filename]
 * ``-o  <name>`` write output to file ``<name>``
 * ``filename`` path to eeprom file, if missing read from ``stdin``.
 
-Recognized file types: SII and ESI/XML.
+Recognized file types: **SII** and **ESI/XML**.
 
 Examples
 ++++++++
