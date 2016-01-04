@@ -5,7 +5,8 @@ Siitool
 Overview 
 ========
 
-**Siitool** generates your SII/EEPROM files from ESI/XML description files, it also is capable of interpreting a raw SII/EEPROM file and print it in a human-friendly syntax.
+**Siitool** generates your SII/EEPROM files from the ESI/XML description files of your EtherCAT devices.
+The program is also capable of interpreting a raw SII/EEPROM file and print it in a human-friendly syntax.
 
 .. cssclass:: downloadable-button 
 
