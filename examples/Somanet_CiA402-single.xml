@@ -455,8 +455,8 @@
 							<Object>
 								<Index>#x1001</Index>
 								<Name>Error Register</Name>
-								<Type>UDINT</Type>
-								<BitSize>32</BitSize>
+								<Type>USINT</Type>
+								<BitSize>8</BitSize>
 								<Info>
 									<DefaultData>00</DefaultData>
 								</Info>
