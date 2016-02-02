@@ -685,7 +685,7 @@
 								<Index>#x1c12</Index>
 								<Name>SM 2 Assignment</Name>
 								<Type>DT1C12</Type>
-								<BitSize>16</BitSize>
+								<BitSize>24</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
@@ -868,8 +868,8 @@
 				<Sm MinSize="128" MaxSize="128" DefaultSize="128" StartAddress="#x1000" ControlByte="#x26" Enable="1">MBoxOut</Sm>
 				<Sm MinSize="128" MaxSize="128" DefaultSize="128" StartAddress="#x1080" ControlByte="#x22" Enable="1">MBoxIn</Sm>
 				<!-- FIXME fix size according to PDOs -->
-				<Sm DefaultSize="24" StartAddress="#x1100" ControlByte="#x24" Enable="1">Outputs</Sm>
-				<Sm DefaultSize="24" StartAddress="#x1180" ControlByte="#x20" Enable="1">Inputs</Sm>
+				<Sm DefaultSize="13" StartAddress="#x1100" ControlByte="#x24" Enable="1">Outputs</Sm>
+				<Sm DefaultSize="13" StartAddress="#x1180" ControlByte="#x20" Enable="1">Inputs</Sm>
 				<!-- these strange DataTypes are defined above in the profile area -->
 				<RxPdo Fixed="true" Sm="2">
 					<Index>#x1600</Index>
@@ -950,7 +950,7 @@
 					</Entry>
 				</TxPdo>
 				<Mailbox DataLinkLayer="true">
-					<CoE SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="0" PdoUpload="0" />
+					<CoE SdoInfo="1" CompleteAccess="0" PdoAssign="0" PdoConfig="0" PdoUpload="0" />
 					<!-- SdoInfo="1" CompleteAccess="1" PdoAssign="1" PdoConfig="1" PdoUpload="0" -->
 					<FoE/>
 				</Mailbox>
