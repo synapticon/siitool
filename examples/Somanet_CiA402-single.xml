@@ -259,7 +259,7 @@
 									<SubIdx>5</SubIdx>
 									<Name>Torque Value</Name>
 									<Type>UDINT</Type>
-									<BitSize>16</BitSize>
+									<BitSize>32</BitSize>
 									<BitOffs>144</BitOffs>
 									<Flags>
 										<Access>ro</Access>
@@ -304,7 +304,7 @@
 							<DataType>
 								<Name>DT1C10ARR</Name>
 								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
+								<BitSize>0</BitSize>
 								<ArrayInfo>
 									<LBound>1</LBound>
 									<Elements>0</Elements>
@@ -312,7 +312,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C10</Name>
-								<BitSize>32</BitSize>
+								<BitSize>16</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -327,7 +327,7 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C10ARR</Type>
-									<BitSize>16</BitSize>
+									<BitSize>0</BitSize>
 									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
@@ -338,7 +338,7 @@
 							<DataType>
 								<Name>DT1C11ARR</Name>
 								<BaseType>UINT</BaseType>
-								<BitSize>16</BitSize>
+								<BitSize>0</BitSize>
 								<ArrayInfo>
 									<LBound>1</LBound>
 									<Elements>0</Elements>
@@ -346,7 +346,7 @@
 							</DataType>
 							<DataType>
 								<Name>DT1C11</Name>
-								<BitSize>32</BitSize>
+								<BitSize>16</BitSize>
 								<SubItem>
 									<SubIdx>0</SubIdx>
 									<Name>SubIndex 000</Name>
@@ -361,7 +361,7 @@
 								<SubItem>
 									<Name>Elements</Name>
 									<Type>DT1C11ARR</Type>
-									<BitSize>16</BitSize>
+									<BitSize>0</BitSize>
 									<BitOffs>16</BitOffs>
 									<Flags>
 										<Access>ro</Access>
@@ -649,7 +649,7 @@
 								<Index>#x1c10</Index>
 								<Name>SM 0 Assignment</Name>
 								<Type>DT1C10</Type>
-								<BitSize>8</BitSize>
+								<BitSize>16</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
@@ -667,7 +667,7 @@
 								<Index>#x1c11</Index>
 								<Name>SM 1 Assignment</Name>
 								<Type>DT1C11</Type>
-								<BitSize>8</BitSize>
+								<BitSize>16</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
@@ -685,7 +685,7 @@
 								<Index>#x1c12</Index>
 								<Name>SM 2 Assignment</Name>
 								<Type>DT1C12</Type>
-								<BitSize>24</BitSize>
+								<BitSize>32</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
@@ -709,7 +709,7 @@
 								<Index>#x1c13</Index>
 								<Name>SM 3 Assignment</Name>
 								<Type>DT1C13</Type>
-								<BitSize>16</BitSize>
+								<BitSize>32</BitSize>
 								<Info>
 									<SubItem>
 										<Name>SubIndex 000</Name>
