@@ -538,7 +538,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Target Postion</Name>
+										<Name>Target Position</Name>
 										<Info>
 											<DefaultData>20007A60</DefaultData>
 										</Info>
@@ -580,7 +580,7 @@
 										</Info>
 									</SubItem>
 									<SubItem>
-										<Name>Postion Value</Name>
+										<Name>Position Value</Name>
 										<Info>
 											<DefaultData>20006460</DefaultData>
 										</Info>
