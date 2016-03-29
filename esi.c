@@ -92,7 +92,7 @@ static char *type2str(int type)
 	return "empty";
 }
 
-#if DEBUG
+#if DEBUG == 1
 static void print_node(xmlNode *node)
 {
 	if ((node->type == XML_TEXT_NODE) && (0x0a == *(node->content)))
@@ -130,7 +130,7 @@ static void print_all_nodes(xmlNode *root)
 	}
 }
 
-#if DEBUG
+#if DEBUG == 1
 static void parse_example(xmlNode *root)
 {
 	for (xmlNode *current = root; current; current = current->next) {

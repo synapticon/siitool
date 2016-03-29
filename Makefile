@@ -5,9 +5,9 @@ LD = gcc
 
 WARNINGS = -Wall -Wextra
 OPTIMIZATION = -O2
-DEBUG = 
+DEBUG = 0
 
-CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99 $(DEBUG)
+CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99 -DDEBUG=$(DEBUG)
 LDFLAGS = -g  $(WARNINGS)
 
 # add libxml specific flags

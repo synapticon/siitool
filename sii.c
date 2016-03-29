@@ -42,7 +42,7 @@ static uint16_t sii_cat_write_syncm(struct _sii_cat *cat, unsigned char *buf);
 //static void sii_cat_write_txpdo(struct _sii_cat *cat);
 static uint16_t sii_cat_write_pdo(struct _sii_cat *cat, unsigned char *buf);
 static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf);
-#if DEBUG
+#if DEBUG == 1
 static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf);
 #endif
 static size_t sii_cat_write(struct _sii *sii);
@@ -728,7 +728,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			strings = parse_string_section(buffer, secsize);
 			newcat->data = (void *)strings;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added string section\n");
 #endif
 
@@ -749,7 +749,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			general = parse_general_section(buffer, secsize);
 			newcat->data = (void *)general;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added general section\n");
 #endif
 
@@ -763,7 +763,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			fmmu = parse_fmmu_section(buffer, secsize);
 			newcat->data = (void *)fmmu;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added fmmu section\n");
 #endif
 
@@ -777,7 +777,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			syncmanager = parse_syncm_section(buffer, secsize);
 			newcat->data = (void *)syncmanager;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added syncm section\n");
 #endif
 
@@ -791,7 +791,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			txpdo = parse_pdo_section(buffer, secsize, TxPDO);
 			newcat->data = (void *)txpdo;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added txpdo section\n");
 #endif
 
@@ -805,7 +805,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
 			newcat->data = (void *)rxpdo;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added rxpdo section\n");
 #endif
 
@@ -819,7 +819,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 			distributedclock = parse_dclock_section(buffer, secsize);
 			newcat->data = (void *)distributedclock;
 			cat_add(sii, newcat);
-#ifdef DEBUG
+#if DEBUG == 1
 			printf("DEBUG Added dclock section\n");
 #endif
 
@@ -1321,7 +1321,7 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 {
 #if 1
 	unsigned char *b = buf;
-#ifdef DEBUG
+#if DEBUG == 1
 	size_t size = sizeof(struct _sii_general)/sizeof(unsigned char);
 	printf("DEBUG Categorie general is %d bytes\n", size);
 #endif
@@ -1492,7 +1492,7 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 	return (uint16_t)(b-buf);
 #else
 	/* NOTE: dclock has 82 bytes, but the struct is 84 bytes. */
-#ifdef DEBUG
+#if DEBUG == 1
 	printf("DEBUG: size of struct _sii_dclock: %d\n", sizeof(struct _sii_dclock));
 #endif
 	return sii_cat_write_cat(cat, buf);
@@ -1500,7 +1500,7 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 }
 
 
-#if DEBUG
+#if DEBUG == 1
 static size_t cat_size(struct _sii_cat *cat)
 {
 	size_t sz = 0;
@@ -1546,7 +1546,7 @@ static size_t cat_size(struct _sii_cat *cat)
 }
 #endif
 
-#ifdef DEBUG
+#if DEBUG == 1
 static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 {
 	unsigned char *b = buf;
@@ -1624,7 +1624,7 @@ static size_t sii_cat_write(struct _sii *sii)
 			break;
 		}
 
-#ifdef DEBUG
+#if DEBUG == 1
 		printf("[DEBUG %s] section type 0x%.4x size: 0x%.4x\n", __func__, cat->type, catsize/2);
 #endif
 
@@ -1827,7 +1827,7 @@ static void sii_write(SiiInfo *sii)
 
 	sii->rawsize = (size_t)(outbuf-sii->rawbytes);
 
-#ifdef DEBUG
+#if DEBUG == 1
 	printf("DEBUG sii_write() wrote %d bytes for preamble and std config\n", sii->rawsize);
 #endif
 
