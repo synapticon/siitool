@@ -868,8 +868,8 @@
 				<Sm MinSize="128" MaxSize="1024" DefaultSize="1024" StartAddress="#x1000" ControlByte="#x26" Enable="1">MBoxOut</Sm>
 				<Sm MinSize="128" MaxSize="1024" DefaultSize="1024" StartAddress="#x1400" ControlByte="#x22" Enable="1">MBoxIn</Sm>
 				<!-- FIXME fix size according to PDOs -->
-				<Sm DefaultSize="13" StartAddress="#x1800" ControlByte="#x24" Enable="1">Outputs</Sm>
-				<Sm DefaultSize="13" StartAddress="#x23FF" ControlByte="#x20" Enable="1">Inputs</Sm>
+				<Sm DefaultSize="29" StartAddress="#x1800" ControlByte="#x24" Enable="1">Outputs</Sm>
+				<Sm DefaultSize="29" StartAddress="#x23FF" ControlByte="#x20" Enable="1">Inputs</Sm>
 				<!-- these strange DataTypes are defined above in the profile area -->
 				<RxPdo Fixed="true" Sm="2">
 					<Index>#x1600</Index>
