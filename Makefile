@@ -3,12 +3,26 @@
 CC = gcc
 LD = gcc
 
+INSTALL = install
+
 WARNINGS = -Wall -Wextra
 OPTIMIZATION = -O2
 DEBUG = 0
 
 CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99 -DDEBUG=$(DEBUG)
 LDFLAGS = -g  $(WARNINGS)
+
+PLATTFORM = $(shell uname -s)
+
+ifeq (Linux, $(PLATTFORM))
+  INSTFLAGS = -D -b
+else
+ifeq (Darwin, $(PLATTFORM))
+  INSTFLAGS = -b
+else
+  INSTFLAGS =
+endif
+endif
 
 # add libxml specific flags
 CFLAGS += `xml2-config --cflags`
@@ -20,7 +34,11 @@ TARGET = siitool
 OBJECTS = main.o sii.o esi.o esifile.o crc8.o
 
 PREFIX = /usr/local/bin
-MANPATH = ../man/man1
+ifeq (Darwin, $(PLATTFORM))
+MANPATH = /usr/local/share/man/man1
+else
+MANPATH = $(PREFIX)/../man/man1
+endif
 
 SOURCEDIR = `pwd`
 VERSION = `scripts/getversion`
@@ -51,15 +69,17 @@ install: install-man install-prg
 
 install-prg:
 	strip $(TARGET)
-	install $(TARGET) $(PREFIX)
+	$(INSTALL) $(INSTFLAGS) $(TARGET) $(PREFIX)
 
 install-man:
-	install -D $(TARGET).1 $(PREFIX)/$(MANPATH)/$(TARGET).1
-	@mandb -f $(PREFIX)/$(MANPATH)/$(TARGET).1
+	$(INSTALL) $(INSTFLAGS) $(TARGET).1 $(MANPATH)/$(TARGET).1
+ifeq (Linux, $(PLATTFORM))
+	@mandb -f $(MANPATH)/$(TARGET).1
+endif
 
 uninstall:
 	rm -f $(PREFIX)/$(TARGET)
-	rm -f $(PREFIX)/$(MANPATH)/$(TARGET).1
+	rm -f $(MANPATH)/$(TARGET).1
 
 clean:
 	rm -f $(TARGET) $(TARGET).1 $(OBJECTS)
