@@ -831,6 +831,13 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 		case SII_END:
 			goto finish;
 			break;
+
+		default:
+			fprintf(stderr, "[WARNING] Category 0x%.4x unknown, skipping ....\n", section);
+			buffer+=secsize;
+			section = get_next_section(buffer, &secsize);
+			buffer+=4;
+			break;
 		}
 	}
 
