@@ -1999,12 +1999,12 @@ void sii_print(SiiInfo *sii)
 	if (preamble != NULL) {
 		/* preamble */
 		printf("Preamble:\n");
-		printf("PDI Control: %.4x\n", preamble->pdi_ctrl);
-		printf("PDI config: %.4x\n", preamble->pdi_conf);
-		printf("Sync Impulse length = %d ns (raw: %.4x)\n", preamble->sync_impulse*10, preamble->sync_impulse);
-		printf("PDI config 2: %.4x\n", preamble->pdi_conf2);
-		printf("Configured station alias: %.4x\n", preamble->alias);
-		printf("Checksum of preamble: %.4x\n", preamble->checksum);
+		printf("PDI Control: ................ 0x%.4x\n", preamble->pdi_ctrl);
+		printf("PDI Config: ................. 0x%.4x\n", preamble->pdi_conf);
+		printf("Sync Impulse Length: ........ %d ns (raw: 0x%.4x)\n", preamble->sync_impulse*10, preamble->sync_impulse);
+		printf("PDI Config 2: ............... 0x%.4x\n", preamble->pdi_conf2);
+		printf("Configured Station Alias: ... 0x%.4x\n", preamble->alias);
+		printf("Checksum of Preamble: ....... 0x%.4x\n", preamble->checksum);
 	}
 
 	struct _sii_stdconfig *stdc = sii->config;
