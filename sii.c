@@ -1072,7 +1072,7 @@ static const char *cat_name(enum eSection type)
 static void cat_print(struct _sii_cat *cat)
 {
 	/* preamble and std config should printed here */
-	printf("Print categorie: %s (0x%x)\n", cat_name(cat->type), cat->type);
+	printf("Print Categorie: %s (0x%x)\n", cat_name(cat->type), cat->type);
 	switch (cat->type) {
 	case SII_CAT_STRINGS:
 		cat_print_strings(cat);
