@@ -1022,10 +1022,57 @@ static void cat_rewind(SiiInfo *sii)
 	sii->cat_current = sii->cat_head;
 }
 
+static const char *cat_name(enum eSection type)
+{
+	const char *cat_string[] = {
+		"Unknown",
+		"Strings",
+		"Datatypes",
+		"Standard Config",
+		"General",
+		"FMMU", "SyncManager",
+		"TX PDO", "RX PDO",
+		"DC CLOCK"
+	};
+	unsigned int string_index = 0;
+
+	switch (type) {
+	case SII_CAT_STRINGS:
+		string_index = 1;
+		break;
+	case SII_CAT_DATATYPES:
+		string_index = 2;
+		break;
+	case SII_CAT_GENERAL:
+		string_index = 4;
+		break;
+	case SII_CAT_FMMU:
+		string_index = 5;
+		break;
+	case SII_CAT_SYNCM:
+		string_index = 6;
+		break;
+	case SII_CAT_TXPDO:
+		string_index = 7;
+		break;
+	case SII_CAT_RXPDO:
+		string_index = 8;
+		break;
+	case SII_CAT_DCLOCK:
+		string_index = 9;
+		break;
+	default:
+		string_index = 0;
+		break;
+	}
+
+	return cat_string[string_index];
+}
+
 static void cat_print(struct _sii_cat *cat)
 {
 	/* preamble and std config should printed here */
-	printf("Print categorie: 0x%x\n", cat->type);
+	printf("Print categorie: %s (0x%x)\n", cat_name(cat->type), cat->type);
 	switch (cat->type) {
 	case SII_CAT_STRINGS:
 		cat_print_strings(cat);
@@ -1059,8 +1106,7 @@ static void cat_print(struct _sii_cat *cat)
 
 static void cat_print_strings(struct _sii_cat *cat)
 {
-	printf("printing categorie strings (0x%x size: %d)\n",
-			cat->type, cat->size);
+	printf("Size: %d Bytes\n", cat->size);
 
 	struct _sii_strings *str = (struct _sii_strings *)cat->data;
 	if (str == NULL)
@@ -1074,8 +1120,8 @@ static void cat_print_strings(struct _sii_cat *cat)
 
 static void cat_print_datatypes(struct _sii_cat *cat)
 {
-	printf("printing categorie datatypes (0x%x size: %d) - not yet implemented\n",
-			cat->type, cat->size);
+	printf("Size: %d Bytes\n", cat->size);
+	printf(".... tba\n");
 }
 
 static void cat_print_general(struct _sii_cat *cat)
@@ -1116,8 +1162,7 @@ static void cat_print_general(struct _sii_cat *cat)
 
 static void cat_print_fmmu(struct _sii_cat *cat)
 {
-	printf("printing categorie fmmu (0x%x size: %d)\n",
-			cat->type, cat->size);
+	printf("Size: %d Bytes\n", cat->size);
 
 	struct _sii_fmmu *fmmus = cat->data;
 	printf("Number of FMMUs: %d\n", fmmus->count);
@@ -1190,8 +1235,7 @@ static void cat_print_syncm_entries(struct _syncm_entry *sme)
 
 static void cat_print_syncm(struct _sii_cat *cat)
 {
-	printf("printing categorie syncm (0x%x size: %d)\n",
-			cat->type, cat->size);
+	printf("Size: %d Bytes\n", cat->size);
 
 	struct _sii_syncm *sm = (struct _sii_syncm *)cat->data;
 
@@ -1211,8 +1255,7 @@ static void cat_print_txpdo(struct _sii_cat *cat)
 
 static void cat_print_pdo(struct _sii_cat *cat)
 {
-	printf("printing categorie rx-/txpdo (0x%x size: %d)\n",
-			cat->type, cat->size);
+	printf("Size: %d Bytes\n", cat->size);
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
 
@@ -1253,8 +1296,8 @@ static void cat_print_pdo(struct _sii_cat *cat)
 
 static void cat_print_dc(struct _sii_cat *cat)
 {
-	printf("printing categorie distributed clock (dc) (0x%x size: %d)\n",
-			cat->type, cat->size);
+	printf("Size: %d Bytes\n", cat->size);
+
 	struct _sii_dclock *dc = (struct _sii_dclock *)cat->data;
 
 	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
