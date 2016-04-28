@@ -37,12 +37,14 @@ enum eFileType efile_type(const char *file)
 
 	FILE *fh = fopen(file, "r");
 	char foo[7];
-	fgets(foo, 5, fh);
+	char *ret = fgets(foo, 5, fh);
 	fclose(fh);
 
-	if (strncmp(foo, "<?xml", 5) == 0) {
+	if ((ret != NULL) && (strncmp(foo, "<?xml", 5) == 0)) {
 		if (type != XML)
 			type = UNKNOWN;
+	} else {
+		type = UNKNOWN;
 	}
 
 	return type;
