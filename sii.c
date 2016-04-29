@@ -2012,22 +2012,24 @@ void sii_print(SiiInfo *sii)
 	if (stdc != NULL) {
 		/* general information */
 		printf("General Information:\n");
-		printf("Vendor ID: ....... 0x%08x\n", stdc->vendor_id);
-		printf("Product ID: ...... 0x%08x\n", stdc->product_id);
-		printf("Revision ID: ..... 0x%08x\n", stdc->revision_id);
-		printf("Serial Number: ... 0x%08x\n", stdc->serial);
+		printf("  Vendor ID: ................ 0x%08x\n", stdc->vendor_id);
+		printf("  Product ID: ............... 0x%08x\n", stdc->product_id);
+		printf("  Revision ID: .............. 0x%08x\n", stdc->revision_id);
+		printf("  Serial Number: ............ 0x%08x\n", stdc->serial);
 
 		/* mailbox settings */
 		printf("\nDefault mailbox settings:\n");
-		printf("Bootstrap received mailbox offset: 0x%04x\n", stdc->bs_rec_mbox_offset);
-		printf("Bootstrap received mailbox size:   %d\n", stdc->bs_rec_mbox_size);
-		printf("Bootstrap send mailbox offset:     0x%04x\n", stdc->bs_snd_mbox_offset);
-		printf("Bootstrap send mailbox size:       %d\n", stdc->bs_snd_mbox_size);
+		printf("  Boostrap Mailbox:\n");
+		printf("  Received Mailbox Offset:    0x%04x\n", stdc->bs_rec_mbox_offset);
+		printf("  Received Mailbox Size:      %d\n", stdc->bs_rec_mbox_size);
+		printf("  Send Mailbox Offset:        0x%04x\n", stdc->bs_snd_mbox_offset);
+		printf("  Send Mailbox Size:          %d\n", stdc->bs_snd_mbox_size);
 
-		printf("Standard received mailbox offset:  0x%04x\n", stdc->std_rec_mbox_offset);
-		printf("Standard received mailbox size:    %d\n", stdc->std_rec_mbox_size);
-		printf("Standard send mailbox offset:      0x%04x\n", stdc->std_snd_mbox_offset);
-		printf("Standard send mailbox size:        %d\n", stdc->std_snd_mbox_size);
+		printf("  Mailbox Settings:\n");
+		printf("  Received Mailbox Offset:    0x%04x\n", stdc->std_rec_mbox_offset);
+		printf("  Received Mailbox Size:      %d\n", stdc->std_rec_mbox_size);
+		printf("  Send Mailbox Offset:        0x%04x\n", stdc->std_snd_mbox_offset);
+		printf("  Send Mailbox Size:          %d\n", stdc->std_snd_mbox_size);
 
 		printf("\nSupported Mailboxes: ");
 		if (stdc->mailbox_protocol.word&MBOX_EOE)
