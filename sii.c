@@ -1131,33 +1131,36 @@ static void cat_print_general(struct _sii_cat *cat)
 
 	//printf("General:\n");
 
-	printf("  Group Index: %d (Vendor Specific, index of Strings): %s\n", gen->groupindex, "tba");
-	printf("  Image Index: %d (Vendor Specific, index to Strings): %s\n", gen->imageindex, "tba");
-	printf("  Order Index: %d (Vendor Specific, index to Strings): %s\n", gen->orderindex, "tba");
-	printf("  Name  Index: %d (Vendor Specific, index to Strings): %s\n", gen->nameindex, "tba");
+	printf("  Vendor Specific (Index of String)\n");
+	printf("    Name  Index: %d: %s\n", gen->nameindex,  "tba");
+	printf("    Group Index: %d: %s\n", gen->groupindex, "tba");
+	printf("    Image Index: %d: %s\n", gen->imageindex, "tba");
+	printf("    Order Index: %d: %s\n", gen->orderindex, "tba");
+	printf("\n");
 
 	printf("  CoE Details:\n");
-	printf("    Enable SDO: .................. %s\n", gen->coe_enable_sdo == 0 ? "no" : "yes");
-	printf("    Enable SDO Info: ............. %s\n", gen->coe_enable_sdo_info == 0 ? "no" : "yes");
-	printf("    Enable PDO Assign: ........... %s\n", gen->coe_enable_pdo_assign == 0 ? "no" : "yes");
-	printf("    Enable PDO Configuration: .... %s\n", gen->coe_enable_pdo_conf == 0 ? "no" : "yes");
+	printf("    Enable SDO: .................. %s\n", gen->coe_enable_sdo == 0          ? "no" : "yes");
+	printf("    Enable SDO Info: ............. %s\n", gen->coe_enable_sdo_info == 0     ? "no" : "yes");
+	printf("    Enable PDO Assign: ........... %s\n", gen->coe_enable_pdo_assign == 0   ? "no" : "yes");
+	printf("    Enable PDO Configuration: .... %s\n", gen->coe_enable_pdo_conf == 0     ? "no" : "yes");
 	printf("    Enable Upload at Startup: .... %s\n", gen->coe_enable_upload_start == 0 ? "no" : "yes");
 	printf("    Enable SDO complete access: .. %s\n", gen->coe_enable_sdo_complete == 0 ? "no" : "yes");
 
-	printf("  FoE Details: %s\n", gen->foe_enabled == 0 ? "not enabled" : "enabled");
-	printf("  EoE Details: %s\n", gen->eoe_enabled == 0 ? "not enabled" : "enabled");
+	printf("  FoE Details: ................... %s\n", gen->foe_enabled == 0 ? "not enabled" : "enabled");
+	printf("  EoE Details: ................... %s\n", gen->eoe_enabled == 0 ? "not enabled" : "enabled");
 
 
-	printf("  Flag SafeOp: %s\n", gen->flag_safe_op == 0 ? "not enabled" : "enabled");
-	printf("  Flag notLRW: %s\n", gen->flag_notLRW == 0 ? "not enabled" : "enabled");
+	printf("  Flag SafeOp: ................... %s\n", gen->flag_safe_op == 0 ? "not enabled" : "enabled");
+	printf("  Flag notLRW: ................... %s\n", gen->flag_notLRW == 0 ? "not enabled" : "enabled");
 
-	printf("  CurrentOnEBus: %d mA\n", gen->current_ebus);
+	printf("  CurrentOnEBus: ................. %d mA\n", gen->current_ebus);
 
 	printf("  Physical Ports:\n");
-	printf("     Port 0: %s\n", physport_type(gen->phys_port_0));
-	printf("     Port 1: %s\n", physport_type(gen->phys_port_1));
-	printf("     Port 2: %s\n", physport_type(gen->phys_port_2));
-	printf("     Port 3: %s\n", physport_type(gen->phys_port_3));
+	printf("     Port 0: ..................... %s\n", physport_type(gen->phys_port_0));
+	printf("     Port 1: ..................... %s\n", physport_type(gen->phys_port_1));
+	printf("     Port 2: ..................... %s\n", physport_type(gen->phys_port_2));
+	printf("     Port 3: ..................... %s\n", physport_type(gen->phys_port_3));
+	printf("\n");
 }
 
 static void cat_print_fmmu(struct _sii_cat *cat)
