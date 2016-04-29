@@ -307,7 +307,11 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	siig->phys_port_2 = *b&0xf;
 	siig->phys_port_3 = (*b>>4)&0xf;
 	b++;
-	b+=14;
+
+	siig->physical_address = BYTES_TO_WORD(*b, *(b+1));
+	b+=1;
+
+	b+=12; /* reserved */
 
 	size_t count = b-buffer;
 	if (size != count)
@@ -1203,6 +1207,8 @@ static void cat_print_general(struct _sii_cat *cat)
 	printf("     Port 2: ..................... %s\n", physport_type(gen->phys_port_2));
 	printf("     Port 3: ..................... %s\n", physport_type(gen->phys_port_3));
 	printf("\n");
+	printf("  Physical Memory Address ........ 0x%.4x\n", gen->physical_address);
+	printf("\n");
 }
 
 static void cat_print_fmmu(struct _sii_cat *cat)
@@ -1454,7 +1460,10 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 	*b++ = (bcat->phys_port_0&0x0f) | ((bcat->phys_port_1<<4)&0xf0);
 	*b++ = (bcat->phys_port_2&0x0f) | ((bcat->phys_port_3<<4)&0xf0);
 
-	for (int i=0; i<14; i++)
+	*b++ = bcat->physical_address&0xff;
+	*b++ = (bcat->physical_address>>8)&0xff;
+
+	for (int i=0; i<12; i++)
 		*b++ = 0x00;
 
 	return (uint16_t)(b-buf);

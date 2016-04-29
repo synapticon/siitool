@@ -136,7 +136,8 @@ struct _sii_general {
 	uint16_t phys_port_1:4;
 	uint16_t phys_port_2:4;
 	uint16_t phys_port_3:4;
-	uint8_t reservedb[14]; /* shall be zero */
+	uint16_t physical_address;
+	uint8_t reservedb[12]; /* shall be zero */
 };
 
 enum eFmmuUsage {
