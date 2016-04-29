@@ -1299,7 +1299,7 @@ static void cat_print_txpdo(struct _sii_cat *cat)
 
 static void cat_print_pdo(struct _sii_cat *cat)
 {
-	printf("Size: %d Bytes\n", cat->size);
+	printf("  Size: %d Bytes\n", cat->size);
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
 
@@ -1315,26 +1315,29 @@ static void cat_print_pdo(struct _sii_cat *cat)
 		pdostr = "undefined";
 		break;
 	}
-	printf("%s:\n", pdostr);
-	printf("  PDO Index: 0x%04x\n", pdo->index);
-	printf("  Entries: %d\n", pdo->entries);
-	printf("  SyncM: %d\n", pdo->syncmanager);
-	printf("  Synchronization: 0x%02x\n", pdo->dcsync);
-	printf("  Name Index: %d\n", pdo->name_index);
-	printf("  Flags for future use: 0x%04x\n", pdo->flags);
+	printf("  %s:\n", pdostr);
+	printf("    PDO Index: .................. 0x%04x\n", pdo->index);
+	printf("    Entries: .................... %d\n", pdo->entries);
+	printf("    SyncM: ...................... %d\n", pdo->syncmanager);
+	printf("    Synchronization: ............ 0x%02x\n", pdo->dcsync);
+	printf("    Name Index: ................. %d\n", pdo->name_index);
+	printf("    Flags for future use: ....... 0x%04x\n", pdo->flags);
 
 	struct _pdo_entry *list = pdo->list;
 	while (list != NULL) {
-		printf("\n    Entry %d:\n", list->id);
-		printf("    Entry Index: 0x%04x\n", list->index);
-		printf("    Subindex: 0x%02x\n", list->subindex);
-		printf("    String Index: %d (%s)\n", list->string_index, "*unavailable*");
-		printf("    Data Type: 0x%02x (Index in CoE Object Dictionary)\n", list->data_type);
-		printf("    Bitlength: %d\n", list->bit_length);
-		printf("     Flags (for future use): 0x%04x\n", list->flags);
+		printf("\n");
+		printf("      Entry %d:\n", list->id);
+		printf("      Entry Index: .............. 0x%04x\n", list->index);
+		printf("      Subindex: ................. 0x%02x\n", list->subindex);
+		printf("      String Index: ............. %d (%s)\n", list->string_index, "*unavailable*");
+		printf("      Data Type: ................ 0x%02x (Index in CoE Object Dictionary)\n", list->data_type);
+		printf("      Bitlength: ................ %d\n", list->bit_length);
+		printf("      Flags (for future use): ... 0x%04x\n", list->flags);
 
 		list = list->next;
 	}
+
+	printf("\n");
 }
 
 
