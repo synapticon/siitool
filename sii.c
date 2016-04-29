@@ -2031,17 +2031,12 @@ void sii_print(SiiInfo *sii)
 		printf("  Send Mailbox Offset:        0x%04x\n", stdc->std_snd_mbox_offset);
 		printf("  Send Mailbox Size:          %d\n", stdc->std_snd_mbox_size);
 
-		printf("\nSupported Mailboxes: ");
-		if (stdc->mailbox_protocol.word&MBOX_EOE)
-			printf("EoE, ");
-		if (stdc->mailbox_protocol.word&MBOX_COE)
-			printf("CoE, ");
-		if (stdc->mailbox_protocol.word&MBOX_FOE)
-			printf("FoE, ");
-		if (stdc->mailbox_protocol.word&MBOX_SOE)
-			printf("SoE, ");
-		if (stdc->mailbox_protocol.word&MBOX_VOE)
-			printf("VoE, ");
+		printf("\nSupported Mailboxes:\n");
+		printf("  CoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_COE) ? "True" : "False");
+		printf("  EoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_EOE) ? "True" : "False");
+		printf("  FoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_FOE) ? "True" : "False");
+		printf("  SoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_SOE) ? "True" : "False");
+		printf("  VoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_VOE) ? "True" : "False");
 		printf("\n");
 
 		printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
