@@ -1187,12 +1187,13 @@ static void cat_print_general(struct _sii_cat *cat)
 	printf("  FoE Details: ................... %s\n", gen->foe_enabled == 0 ? "not enabled" : "enabled");
 	printf("  EoE Details: ................... %s\n", gen->eoe_enabled == 0 ? "not enabled" : "enabled");
 
-
+	printf("\n");
 	printf("  Flag SafeOp: ................... %s\n", gen->flag_safe_op == 0 ? "not enabled" : "enabled");
 	printf("  Flag notLRW: ................... %s\n", gen->flag_notLRW == 0 ? "not enabled" : "enabled");
 	printf("  Flag MBox Data Link Layer ...... %s\n", gen->flag_MBoxDataLinkLayer == 0 ? "not enabled" : "enabled");
 	printf("  Flag Ident AL Status ........... %s\n", gen->flag_IdentALSts == 0 ? "not enabled" : "enabled");
 	printf("  Flag Ident Physical Memory ..... %s\n", gen->flag_IdentPhyM == 0  ? "not enabled" : "enabled");
+	printf("\n");
 
 	printf("  CurrentOnEBus: ................. %d mA\n", gen->current_ebus);
 
