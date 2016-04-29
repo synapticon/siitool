@@ -1324,12 +1324,19 @@ static void cat_print_pdo(struct _sii_cat *cat)
 	printf("    Flags for future use: ....... 0x%04x\n", pdo->flags);
 
 	struct _pdo_entry *list = pdo->list;
+	struct _sii_cat *sc = sii_category_find_neighbor(cat, SII_CAT_STRINGS);
+	const char *tmpstr = NULL;
+
 	while (list != NULL) {
+		tmpstr = string_search_id((struct _sii_strings *)(sc->data), list->string_index);
+		if (NULL == tmpstr)
+			tmpstr = "not set";
+
 		printf("\n");
 		printf("      Entry %d:\n", list->id);
 		printf("      Entry Index: .............. 0x%04x\n", list->index);
 		printf("      Subindex: ................. 0x%02x\n", list->subindex);
-		printf("      String Index: ............. %d (%s)\n", list->string_index, "*unavailable*");
+		printf("      String Index: ............. %d (%s)\n", list->string_index, tmpstr);
 		printf("      Data Type: ................ 0x%02x (Index in CoE Object Dictionary)\n", list->data_type);
 		printf("      Bitlength: ................ %d\n", list->bit_length);
 		printf("      Flags (for future use): ... 0x%04x\n", list->flags);
