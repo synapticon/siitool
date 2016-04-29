@@ -1124,18 +1124,56 @@ static void cat_print_datatypes(struct _sii_cat *cat)
 	printf(".... tba\n");
 }
 
+static struct _sii_cat *sii_category_find_neighbor(struct _sii_cat *cat, enum eSection sec)
+{
+	struct _sii_cat *sc = cat;
+
+	/* rewind */
+	while (sc->prev != NULL)
+		sc = sc->prev;
+
+	/* search */
+	while (sc->next != NULL) {
+		if (sc->type == sec)
+			return sc;
+
+		sc = sc->next;
+	}
+
+	return NULL;
+}
+
 static void cat_print_general(struct _sii_cat *cat)
 {
 	printf("Printing Categorie General 0x%x (byte size: %d)\n", cat->type, cat->size);
 	struct _sii_general *gen = (struct _sii_general *)cat->data;
 
 	//printf("General:\n");
+	struct _sii_cat *sc = sii_category_find_neighbor(cat, SII_CAT_STRINGS);
+	const char *tmpstr = NULL;
 
 	printf("  Vendor Specific (Index of String)\n");
-	printf("    Name  Index: %d: %s\n", gen->nameindex,  "tba");
-	printf("    Group Index: %d: %s\n", gen->groupindex, "tba");
-	printf("    Image Index: %d: %s\n", gen->imageindex, "tba");
-	printf("    Order Index: %d: %s\n", gen->orderindex, "tba");
+
+	tmpstr = string_search_id((struct _sii_strings *)(sc->data), gen->nameindex);
+	if (NULL == tmpstr)
+		tmpstr = "not set";
+	printf("    Name  Index: %d: ............. %s\n", gen->nameindex,  tmpstr);
+
+	tmpstr = string_search_id((struct _sii_strings *)(sc->data), gen->groupindex);
+	if (NULL == tmpstr)
+		tmpstr = "not set";
+	printf("    Group Index: %d: ............. %s\n", gen->groupindex, tmpstr);
+
+	tmpstr = string_search_id((struct _sii_strings *)(sc->data), gen->imageindex);
+	if (NULL == tmpstr)
+		tmpstr = "not set";
+	printf("    Image Index: %d: ............. %s\n", gen->imageindex, tmpstr);
+
+	tmpstr = string_search_id((struct _sii_strings *)(sc->data), gen->orderindex);
+	if (NULL == tmpstr)
+		tmpstr = "not set";
+	printf("    Order Index: %d: ............. %s\n", gen->orderindex, tmpstr);
+	tmpstr = NULL;
 	printf("\n");
 
 	printf("  CoE Details:\n");
