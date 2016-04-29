@@ -1243,13 +1243,13 @@ static void cat_print_syncm_entries(struct _syncm_entry *sme)
 	int smnbr = 0;
 
 	while (e != NULL) {
-		printf("SyncManager SM%d\n", smnbr);
-		printf("  Physical Startaddress: 0x%04x\n", e->phys_address);
-		printf("  Length: %d\n", e->length);
-		printf("  Control Register: 0x%02x\n", e->control);
-		printf("  Status Register: 0x%02x\n", e->status);
-		printf("  Enable byte: 0x%02x\n", e->enable);
-		printf("  SM Type: ");
+		printf("  SyncManager SM%d\n", smnbr);
+		printf("    Physical Startaddress: ... 0x%04x\n", e->phys_address);
+		printf("    Length: .................. %d\n", e->length);
+		printf("    Control Register: ........ 0x%02x\n", e->control);
+		printf("    Status Register: ......... 0x%02x\n", e->status);
+		printf("    Enable byte: ............. 0x%02x\n", e->enable);
+		printf("    SM Type: ................. ");
 		switch (e->type) {
 		case SMT_UNUSED:
 			printf("not used or unknown\n");
@@ -1278,12 +1278,13 @@ static void cat_print_syncm_entries(struct _syncm_entry *sme)
 
 static void cat_print_syncm(struct _sii_cat *cat)
 {
-	printf("Size: %d Bytes\n", cat->size);
-
 	struct _sii_syncm *sm = (struct _sii_syncm *)cat->data;
 
-	printf("Number of SyncManager: %d\n", sm->count);
+	printf("  Size: %d Bytes\n", cat->size);
+	printf("  Number of SyncManager: %d\n", sm->count);
+
 	cat_print_syncm_entries(sm->list);
+	printf("\n");
 }
 
 static void cat_print_rxpdo(struct _sii_cat *cat)
