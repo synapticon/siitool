@@ -1149,7 +1149,7 @@ static struct _sii_cat *sii_category_find_neighbor(struct _sii_cat *cat, enum eS
 
 static void cat_print_general(struct _sii_cat *cat)
 {
-	printf("Printing Categorie General 0x%x (byte size: %d)\n", cat->type, cat->size);
+	printf("  Size: %d Bytes\n", cat->type, cat->size);
 	struct _sii_general *gen = (struct _sii_general *)cat->data;
 
 	//printf("General:\n");
