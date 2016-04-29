@@ -1203,15 +1203,15 @@ static void cat_print_general(struct _sii_cat *cat)
 
 static void cat_print_fmmu(struct _sii_cat *cat)
 {
-	printf("Size: %d Bytes\n", cat->size);
+	printf("  Size: %d Bytes\n", cat->size);
 
 	struct _sii_fmmu *fmmus = cat->data;
-	printf("Number of FMMUs: %d\n", fmmus->count);
+	printf("  Number of FMMUs: %d\n", fmmus->count);
 
 	struct _fmmu_entry *fmmu = fmmus->list;
 
 	while (fmmu != NULL) {
-		printf("  FMMU%d: ", fmmu->id);
+		printf("    FMMU%d: ", fmmu->id);
 		switch (fmmu->usage) {
 		case 0x00:
 		case 0xff:
@@ -1233,6 +1233,8 @@ static void cat_print_fmmu(struct _sii_cat *cat)
 
 		fmmu = fmmu->next;
 	}
+
+	printf("\n");
 }
 
 static void cat_print_syncm_entries(struct _syncm_entry *sme)
