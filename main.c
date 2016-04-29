@@ -52,7 +52,7 @@
 #define VERSION_APPEND   ""
 
 #define VERSION_STRING(x,y,z)  VERSION_ARGS(x, y, z)
-#define VERSION_ARGS(x,y,z)    "Version " #x "." #y z
+#define VERSION_ARGS(x,y,z)    "v" #x "." #y z
 
 #define MAX_BUFFER_SIZE    (1000*1024)
 #define MAX_FILENAME_SIZE  (256)
