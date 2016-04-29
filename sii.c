@@ -309,7 +309,7 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	b++;
 
 	siig->physical_address = BYTES_TO_WORD(*b, *(b+1));
-	b+=1;
+	b+=2;
 
 	b+=12; /* reserved */
 
