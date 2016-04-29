@@ -2020,16 +2020,16 @@ void sii_print(SiiInfo *sii)
 		/* mailbox settings */
 		printf("\nDefault mailbox settings:\n");
 		printf("  Boostrap Mailbox:\n");
-		printf("  Received Mailbox Offset:    0x%04x\n", stdc->bs_rec_mbox_offset);
-		printf("  Received Mailbox Size:      %d\n", stdc->bs_rec_mbox_size);
-		printf("  Send Mailbox Offset:        0x%04x\n", stdc->bs_snd_mbox_offset);
-		printf("  Send Mailbox Size:          %d\n", stdc->bs_snd_mbox_size);
+		printf("  Received Mailbox Offset: .. 0x%04x\n", stdc->bs_rec_mbox_offset);
+		printf("  Received Mailbox Size: .... %d\n", stdc->bs_rec_mbox_size);
+		printf("  Send Mailbox Offset: ...... 0x%04x\n", stdc->bs_snd_mbox_offset);
+		printf("  Send Mailbox Size: ........ %d\n", stdc->bs_snd_mbox_size);
 
 		printf("  Mailbox Settings:\n");
-		printf("  Received Mailbox Offset:    0x%04x\n", stdc->std_rec_mbox_offset);
-		printf("  Received Mailbox Size:      %d\n", stdc->std_rec_mbox_size);
-		printf("  Send Mailbox Offset:        0x%04x\n", stdc->std_snd_mbox_offset);
-		printf("  Send Mailbox Size:          %d\n", stdc->std_snd_mbox_size);
+		printf("  Received Mailbox Offset: .. 0x%04x\n", stdc->std_rec_mbox_offset);
+		printf("  Received Mailbox Size: .... %d\n", stdc->std_rec_mbox_size);
+		printf("  Send Mailbox Offset: ...... 0x%04x\n", stdc->std_snd_mbox_offset);
+		printf("  Send Mailbox Size: ........ %d\n", stdc->std_snd_mbox_size);
 
 		printf("\nSupported Mailboxes:\n");
 		printf("  CoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_COE) ? "True" : "False");
@@ -2039,8 +2039,8 @@ void sii_print(SiiInfo *sii)
 		printf("  VoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_VOE) ? "True" : "False");
 		printf("\n");
 
-		printf("EEPROM size: %d kbit\n", stdc->eeprom_size);
-		printf("Version: %d\n", stdc->version);
+		printf("EEPROM size: ................ %d kbit\n", stdc->eeprom_size);
+		printf("Version: .................... %d\n", stdc->version);
 		printf("\n");
 	}
 
