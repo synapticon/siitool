@@ -1354,36 +1354,31 @@ static void cat_print_dc(struct _sii_cat *cat)
 
 	struct _sii_dclock *dc = (struct _sii_dclock *)cat->data;
 
-	printf("  Cyclic Operation Enable: %s\n", dc->cyclic_op_enabled == 0 ? "no" : "yes");
-	printf("  SYNC0 activate: %s\n", dc->sync0_active == 0 ? "no" : "yes");
-	printf("  SYNC1 activate: %s\n", dc->sync1_active == 0 ? "no" : "yes");
+	printf("  Cyclic Operation Enable: ...... %s\n",       dc->cyclic_op_enabled == 0 ? "no" : "yes");
+	printf("  SYNC0 activate: ............... %s\n",       dc->sync0_active == 0      ? "no" : "yes");
+	printf("  SYNC1 activate: ............... %s\n",       dc->sync1_active == 0      ? "no" : "yes");
+	printf("  SYNC Pulse: ................... %d (ns?)\n", dc->sync_pulse);
+	printf("  Interrupt 0 Status: ........... %s\n",       dc->int0_status == 0       ? "not active" : "active");
+	printf("  Interrupt 1 Status: ........... %s\n",       dc->int1_status == 0       ? "not active" : "active");
+	printf("  Cyclic Operation Startime: .... %d ns\n",    dc->cyclic_op_starttime);
+	printf("  SYNC0 Cycle Time: ............. %d (ns?)\n", dc->sync0_cycle_time);
+	printf("  SYNC0 Cycle Time: ............. %d (ns?)\n", dc->sync1_cycle_time);
+	printf("\n");
 
-	printf("  SYNC Pulse: %d (ns?)\n", dc->sync_pulse);
-
-	printf("  Interrupt 0 Status: %s\n",  dc->int0_status == 0 ? "not active" : "active");
-	printf("  Interrupt 1 Status: %s\n",  dc->int1_status == 0 ? "not active" : "active");
-
-	printf("  Cyclic Operation Startime: %d ns\n", dc->cyclic_op_starttime);
-	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync0_cycle_time);
-	printf("  SYNC0 Cycle Time: %d (ns?)\n", dc->sync1_cycle_time);
-
-	printf("\nLatch Description\n");
-	printf("  Latch 0 PosEdge: %s\n", dc->latch0_pos_edge == 0 ? "continous" : "single");
-	printf("  Latch 0 NegEdge: %s\n", dc->latch0_neg_edge == 0 ? "continous" : "single");
-
-	printf("  Latch 1 PosEdge: %s\n", dc->latch1_pos_edge == 0 ? "continous" : "single");
-	printf("  Latch 1 NegEdge: %s\n", dc->latch1_neg_edge == 0 ? "continous" : "single");
-
-	printf("  Latch 0 PosEvnt: %s\n", dc->latch0_pos_event == 0 ? "no Event" : "Event stored");
-	printf("  Latch 0 NegEvnt: %s\n", dc->latch0_neg_event == 0 ? "no Event" : "Event stored");
-
-	printf("  Latch 1 PosEvnt: %s\n", dc->latch1_pos_event == 0 ? "no Event" : "Event stored");
-	printf("  Latch 1 NegEvnt: %s\n", dc->latch1_neg_event == 0 ? "no Event" : "Event stored");
-
-	printf("  Latch0PosEdgeValue: 0x%08x\n", dc->latch0_pos_edge_value);
-	printf("  Latch0NegEdgeValue: 0x%08x\n", dc->latch0_neg_edge_value);
-	printf("  Latch1PosEdgeValue: 0x%08x\n", dc->latch1_pos_edge_value);
-	printf("  Latch1NegEdgeValue: 0x%08x\n", dc->latch1_neg_edge_value);
+	printf("  Latch Description\n");
+	printf("    Latch 0 PosEdge: ............ %s\n",       dc->latch0_pos_edge == 0   ? "continous" : "single");
+	printf("    Latch 0 NegEdge: ............ %s\n",       dc->latch0_neg_edge == 0   ? "continous" : "single");
+	printf("    Latch 1 PosEdge: ............ %s\n",       dc->latch1_pos_edge == 0   ? "continous" : "single");
+	printf("    Latch 1 NegEdge: ............ %s\n",       dc->latch1_neg_edge == 0   ? "continous" : "single");
+	printf("    Latch 0 PosEvnt: ............ %s\n",       dc->latch0_pos_event == 0  ? "no Event" : "Event stored");
+	printf("    Latch 0 NegEvnt: ............ %s\n",       dc->latch0_neg_event == 0  ? "no Event" : "Event stored");
+	printf("    Latch 1 PosEvnt: ............ %s\n",       dc->latch1_pos_event == 0  ? "no Event" : "Event stored");
+	printf("    Latch 1 NegEvnt: ............ %s\n",       dc->latch1_neg_event == 0  ? "no Event" : "Event stored");
+	printf("    Latch0PosEdgeValue: ......... 0x%08x\n",   dc->latch0_pos_edge_value);
+	printf("    Latch0NegEdgeValue: ......... 0x%08x\n",   dc->latch0_neg_edge_value);
+	printf("    Latch1PosEdgeValue: ......... 0x%08x\n",   dc->latch1_pos_edge_value);
+	printf("    Latch1NegEdgeValue: ......... 0x%08x\n",   dc->latch1_neg_edge_value);
+	printf("\n");
 }
 
 /* write sii binary data */
