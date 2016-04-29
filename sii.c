@@ -1455,7 +1455,7 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 		((bcat->flag_IdentPhyM<<4)&0x10);
 	*b++ = bcat->current_ebus&0xff;
 	*b++ = (bcat->current_ebus>>8)&0xff;
-	*b++ = 0x00;
+	*b++ = bcat->groupindex&0xff; /* mirrored groupindex */
 	*b++ = 0x00;
 	*b++ = (bcat->phys_port_0&0x0f) | ((bcat->phys_port_1<<4)&0xf0);
 	*b++ = (bcat->phys_port_2&0x0f) | ((bcat->phys_port_3<<4)&0xf0);
