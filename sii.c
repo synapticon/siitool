@@ -2011,7 +2011,7 @@ void sii_print(SiiInfo *sii)
 
 	if (stdc != NULL) {
 		/* general information */
-		printf("General Information:\n");
+		printf("Identity:\n");
 		printf("  Vendor ID: ................ 0x%08x\n", stdc->vendor_id);
 		printf("  Product ID: ............... 0x%08x\n", stdc->product_id);
 		printf("  Revision ID: .............. 0x%08x\n", stdc->revision_id);
