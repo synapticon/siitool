@@ -1106,16 +1106,16 @@ static void cat_print(struct _sii_cat *cat)
 
 static void cat_print_strings(struct _sii_cat *cat)
 {
-	printf("Size: %d Bytes\n", cat->size);
-
 	struct _sii_strings *str = (struct _sii_strings *)cat->data;
 	if (str == NULL)
 		return;
 
-	printf("  total %d strings (padding: %s)\n", str->count, (str->padbyte==1 ? "Yes" : "No"));
+	printf("  Size: %d Bytes with %d strings (padding: %s)\n", cat->size, str->count, (str->padbyte==1 ? "Yes" : "No"));
 
+	printf("  ID   Size (Bytes)    String\n");
 	for (struct _string *s = str->head; s; s = s->next)
-		printf("%i: (%d bytes) '%s'\n", s->id, s->length, s->data);
+		printf("  %3d: (%3d) ......... '%s'\n", s->id, s->length, s->data);
+	printf("\n");
 }
 
 static void cat_print_datatypes(struct _sii_cat *cat)
