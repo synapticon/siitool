@@ -290,8 +290,11 @@ static struct _sii_general *parse_general_section(const unsigned char *buffer, s
 	b++;
 	b+=3; /* SoE Channels, DS402 Channels, Sysman Class - reserved */
 
-	siig->flag_safe_op = (*b & 0x01) == 0 ? 0 : 1;
-	siig->flag_notLRW = (*b & 0x02) == 0 ? 0 : 1;
+	siig->flag_safe_op           = (*b & 0x01) == 0 ? 0 : 1;
+	siig->flag_notLRW            = (*b & 0x02) == 0 ? 0 : 1;
+	siig->flag_MBoxDataLinkLayer = (*b & 0x04) == 0 ? 0 : 1;
+	siig->flag_IdentALSts        = (*b & 0x08) == 0 ? 0 : 1;
+	siig->flag_IdentPhyM         = (*b & 0x10) == 0 ? 0 : 1;
 	b++;
 
 	siig->current_ebus = BYTES_TO_WORD(*b, *(b+1));
@@ -1187,6 +1190,9 @@ static void cat_print_general(struct _sii_cat *cat)
 
 	printf("  Flag SafeOp: ................... %s\n", gen->flag_safe_op == 0 ? "not enabled" : "enabled");
 	printf("  Flag notLRW: ................... %s\n", gen->flag_notLRW == 0 ? "not enabled" : "enabled");
+	printf("  Flag MBox Data Link Layer ...... %s\n", gen->flag_MBoxDataLinkLayer == 0 ? "not enabled" : "enabled");
+	printf("  Flag Ident AL Status ........... %s\n", gen->flag_IdentALSts == 0 ? "not enabled" : "enabled");
+	printf("  Flag Ident Physical Memory ..... %s\n", gen->flag_IdentPhyM == 0  ? "not enabled" : "enabled");
 
 	printf("  CurrentOnEBus: ................. %d mA\n", gen->current_ebus);
 
@@ -1436,7 +1442,10 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 	*b++ = 0x00; /* ds402_channels */
 	*b++ = 0x00; /* sysman class */
 	*b++ = (bcat->flag_safe_op&0x01) |
-		((bcat->flag_notLRW>>1)&0x01);
+		((bcat->flag_notLRW<<1)&0x02) |
+		((bcat->flag_MBoxDataLinkLayer<<2)&0x04) |
+		((bcat->flag_IdentALSts<<3)&0x08) |
+		((bcat->flag_IdentPhyM<<4)&0x10);
 	*b++ = bcat->current_ebus&0xff;
 	*b++ = (bcat->current_ebus>>8)&0xff;
 	*b++ = 0x00;

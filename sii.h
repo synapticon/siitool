@@ -120,7 +120,10 @@ struct _sii_general {
 	uint8_t sysman_class; /* reserved */
 	uint8_t flag_safe_op:1;
 	uint8_t flag_notLRW:1;
-	uint8_t flagreseved:6;
+	uint8_t flag_MBoxDataLinkLayer:1;
+	uint8_t flag_IdentALSts:1;
+	uint8_t flag_IdentPhyM:1;
+	uint8_t flagreseved:3;
 	int16_t current_ebus;
 	uint8_t reserved2[2];
 	/* physical ports
