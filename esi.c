@@ -760,7 +760,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 
 static void parse_pdo(xmlNode *current, SiiInfo *sii)
 {
-	enum ePdoType type;
+	enum eSection type;
 	if (xmlStrcmp(current->name, Char2xmlChar("RxPdo")) == 0)
 		type = SII_CAT_RXPDO;
 	else if(xmlStrcmp(current->name, Char2xmlChar("TxPdo")) == 0)
