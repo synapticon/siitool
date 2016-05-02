@@ -1,49 +1,37 @@
-****************************************
+=======
 siitool
-****************************************
-
-.. image:: http://forum.synapticon.com/Themes/MinimalistAndEffective_by_SMFSimple/images/logo.png
-
-Synapticon's siitool helps you generate, and view EtherCAT EPROM files
-
-:Latest release: 1.0-rc1:
-:Maintainer: fjeschke[AT]synapticon[DOT]de: 
-
 =======
-Key Features
-=======
+(Maintainer: fjeschke[AT]synapticon[DOT]de)
 
-   * SII/EEPROM file generation from ESI/XML description file
-   * SII/EEPROM file interpretation and printing in a human-friendly syntax
+This tool can View and print to screen theh contents of SII/EEPROM files and
+ESI/XML files.  In addition it is possible to generate a valid SII binary from
+a supported ESI file.
 
-=======
-Further information
+For more information please refer to the main documentation_.
+
+.. _documentation : https://doc.synapticon.com/tools/siitool/doc/index.html
+
+Install
 =======
 
-   siitool `DOCUMENTATION`_.
+To build `siitool` please make sure to install `man2help` and `libxml2-dev` on
+your system. The prefered way is with your local packet manager (eigher
+(`apt(1)` or `rpm(1)` depending on your system).
 
+Then simply do ::
 
-=======
-Known Issues
-=======
+  $ make
 
-   None
+to build the `siitool`. After that it is recommendet to install the software
+with ::
 
-=======
+  $ sudo make install
+
+This will install `siitool` to `/usr/local/bin` and will install a supportive
+man page. To change the default install location simply change the `PREFIX`
+variable in the Makefile to the location you prefer.
+
 Licence
 =======
 
-Please see `LICENSE`_.
-
-=======
-Changelog
-=======
-
-* `1.0-rc1`_ (2012-02-11)
-
-
-.. _DOCUMENTATION: http://synapticon.github.io/siitool/
-.. _1.0-rc1: https://github.com/synapticon/siitool/releases/tag/1.0-rc1
-.. _LICENSE: https://github.com/synapticon/siitool/blob/master/LICENSE
-
-
+Please see the LICENCE file in this repository.
