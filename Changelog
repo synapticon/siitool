@@ -1,4 +1,8 @@
 
+v1.0:
+- Rework of SII content printing
+- Bugfixes
+
 v0.3:
 - added optional section offset printout
 
