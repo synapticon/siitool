@@ -24,6 +24,9 @@
 				    ((unsigned int)(b&0xff)<<8)  | \
 				     (unsigned int)(a&0xff)
 
+#define EE_TO_BYTES(x) ((x << 7) + 0x80)
+#define BYTES_TO_EE(x) ((x - 0x80) >> 7)
+
 enum eSection {
 	SII_CAT_NOP
 	,SII_PREAMBLE
