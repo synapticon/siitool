@@ -519,11 +519,11 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 
 	/* now fetch the data */
 	xmlChar *content = current->children->content;
-	if (xmlStrncmp(content, Char2xmlChar("Inputs"), xmlStrlen(content)))
+	if (xmlStrncmp(content, Char2xmlChar("Inputs"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_INPUTS);
-	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)))
+	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_OUTPUTS);
-	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content)))
+	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_SYNCMSTAT);
 	else
 		fmmu_add_entry(fmmu, FMMU_UNUSED);
