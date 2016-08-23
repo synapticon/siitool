@@ -224,25 +224,31 @@ static struct _sii_preamble *parse_preamble(xmlNode *node)
 
 	unsigned int lowbyte=0, highbyte=0;
 	char *b = string;
-	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
-	pa->pdi_ctrl = BYTES_TO_WORD(highbyte, lowbyte);
-	b+=4;
 
-	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
-	pa->pdi_conf = BYTES_TO_WORD(highbyte, lowbyte);
-	b+=4;
+	if (sscanf(b, "%2x%2x", &highbyte, &lowbyte) >= 2) {
+		pa->pdi_ctrl = BYTES_TO_WORD(highbyte, lowbyte);
+		b+=4;
+	}
 
-	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
-	pa->sync_impulse = BYTES_TO_WORD(highbyte, lowbyte);
-	b+=4;
+	if (sscanf(b, "%2x%2x", &highbyte, &lowbyte) >= 2) {
+		pa->pdi_conf = BYTES_TO_WORD(highbyte, lowbyte);
+		b+=4;
+	}
 
-	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
-	pa->pdi_conf2 = BYTES_TO_WORD(highbyte, lowbyte);
-	b+=4;
+	if (sscanf(b, "%2x%2x", &highbyte, &lowbyte) >= 2) {
+		pa->sync_impulse = BYTES_TO_WORD(highbyte, lowbyte);
+		b+=4;
+	}
 
-	sscanf(b, "%2x%2x", &highbyte, &lowbyte);
-	pa->alias = BYTES_TO_WORD(highbyte, lowbyte);
-	//b+=4;
+	if (sscanf(b, "%2x%2x", &highbyte, &lowbyte) >= 2) {
+		pa->pdi_conf2 = BYTES_TO_WORD(highbyte, lowbyte);
+		b+=4;
+	}
+
+	if (sscanf(b, "%2x%2x", &highbyte, &lowbyte) >= 2) {
+		pa->alias = BYTES_TO_WORD(highbyte, lowbyte);
+		//b+=4;
+	}
 
 	for (int i=0; i<4; i++)
 		pa->reserved[i] = 0x00;
