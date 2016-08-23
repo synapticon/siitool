@@ -191,18 +191,17 @@ static void strings_entry_add(struct _sii_strings *str, struct _string *new)
 {
 	if (str->head == NULL) { /* first entry */
 		str->head = new;
-		str->count = 1;
 		new->id = 1;
-		return;
+	} else {
+		struct _string *s = str->head;
+		while (s->next)
+			s = s->next;
+
+		s->next = new;
+		new->prev = s;
+		new->id = s->id+1;
 	}
 
-	struct _string *s = str->head;
-	while (s->next)
-		s = s->next;
-
-	s->next = new;
-	new->prev = s;
-	new->id = s->id+1;
 	str->count += 1;
 	str->size += new->length;
 	str->padbyte = (str->size % 2) ? 0 : 1;
