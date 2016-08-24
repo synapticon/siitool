@@ -93,8 +93,7 @@ struct _string {
 };
 
 struct _sii_strings {
-	uint8_t count; /* if odd the padbyte must be set */
-	uint8_t padbyte; /* ==0 no padding; ==1 include padbyte */
+	uint8_t count;
 	size_t size;
 	struct _string *head;
 	struct _string *current;

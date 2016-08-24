@@ -191,21 +191,19 @@ static void strings_entry_add(struct _sii_strings *str, struct _string *new)
 {
 	if (str->head == NULL) { /* first entry */
 		str->head = new;
-		str->count = 1;
 		new->id = 1;
-		return;
+	} else {
+		struct _string *s = str->head;
+		while (s->next)
+			s = s->next;
+
+		s->next = new;
+		new->prev = s;
+		new->id = s->id+1;
 	}
 
-	struct _string *s = str->head;
-	while (s->next)
-		s = s->next;
-
-	s->next = new;
-	new->prev = s;
-	new->id = s->id+1;
 	str->count += 1;
 	str->size += new->length;
-	str->padbyte = (str->size % 2) ? 0 : 1;
 }
 
 static struct _sii_strings *parse_string_section(const unsigned char *buffer, size_t size)
@@ -220,7 +218,6 @@ static struct _sii_strings *parse_string_section(const unsigned char *buffer, si
 	strings->head = NULL;
 	strings->current = NULL;
 	strings->count = 0;
-	strings->padbyte = 0;
 	strings->size = 0;
 	int stringcount = *pos++;
 	int counter = 0;
@@ -1110,7 +1107,7 @@ static void cat_print_strings(struct _sii_cat *cat)
 	if (str == NULL)
 		return;
 
-	printf("  Size: %d Bytes with %d strings (padding: %s)\n", cat->size, str->count, (str->padbyte==1 ? "Yes" : "No"));
+	printf("  Size: %d Bytes with %d strings\n", cat->size, str->count);
 
 	printf("  ID   Size (Bytes)    String\n");
 	for (struct _string *s = str->head; s; s = s->next)
@@ -1400,11 +1397,6 @@ static uint16_t sii_cat_write_strings(struct _sii_cat *cat, unsigned char *buf)
 		b+= strlen(str);
 	}
 	*strc = strings->count;
-
-	if (strings->padbyte) {
-		*b = 0x00;
-		b++;
-	}
 
 	return (uint16_t)(b-buf);
 }
@@ -1721,6 +1713,12 @@ static size_t sii_cat_write(struct _sii *sii)
 			buf -= 4;
 			goto nextcat;
 			break;
+		}
+
+		// pad to be word alligned
+		if (catsize & 1) {
+			buf[catsize] = 0;
+			catsize++;
 		}
 
 #if DEBUG == 1
