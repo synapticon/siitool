@@ -294,15 +294,15 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	sc->serial = 0; /* FIXME the serial number is not in the esi? */
 
 	/* FIXME where are the bootstrap settings? */
-	sc->bs_rec_mbox_offset = 0x1000;
-	sc->bs_rec_mbox_size = 532;
-	sc->bs_snd_mbox_offset = 0x1800;
-	sc->bs_snd_mbox_size = 532;
+	sc->bs_rec_mbox_offset = 0;
+	sc->bs_rec_mbox_size = 0;
+	sc->bs_snd_mbox_offset = 0;
+	sc->bs_snd_mbox_size = 0;
 
-	sc->std_rec_mbox_offset = 0x000a;
-	sc->std_rec_mbox_size = 0xf;
-	sc->std_snd_mbox_offset = 0x000b;
-	sc->std_snd_mbox_size = 0xf;
+	sc->std_rec_mbox_offset = 0x1000;
+	sc->std_rec_mbox_size = 128;
+	sc->std_snd_mbox_offset = 0x1080;
+	sc->std_snd_mbox_size = 128;
 
 	/* filter the std mailbox configuration; from <Sm> description */
 
