@@ -519,11 +519,11 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 
 	/* now fetch the data */
 	xmlChar *content = current->children->content;
-	if (xmlStrncmp(content, Char2xmlChar("Inputs"), xmlStrlen(content)))
+	if (xmlStrncmp(content, Char2xmlChar("Inputs"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_INPUTS);
-	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)))
+	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_OUTPUTS);
-	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content)))
+	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_SYNCMSTAT);
 	else
 		fmmu_add_entry(fmmu, FMMU_UNUSED);
@@ -629,21 +629,21 @@ static void parse_dclock(xmlNode *current, SiiInfo *sii)
 
 	xmlNode *op = search_node(current, "OpMode");
 	for (xmlNode *vals = op->children; vals; vals = vals->next) {
-		if (xmlStrncmp(vals->name, Char2xmlChar("Name"), xmlStrlen(vals->name))) {
+		if (xmlStrncmp(vals->name, Char2xmlChar("Name"), xmlStrlen(vals->name)) == 0) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("Desc"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("Desc"), xmlStrlen(vals->name)) == 0) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("AssignActivate"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("AssignActivate"), xmlStrlen(vals->name)) == 0) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync0"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync0"), xmlStrlen(vals->name)) == 0) {
 			int tmp = atoi((char *)vals->children->content);
 			dc->sync0_cycle_time = (uint32_t)tmp;
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync0"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync0"), xmlStrlen(vals->name)) == 0) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
 		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync1"), xmlStrlen(vals->name))) {
 			int tmp = atoi((char *)vals->children->content);
 			dc->sync1_cycle_time = (uint32_t)tmp;
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync1"), xmlStrlen(vals->name))) {
+		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync1"), xmlStrlen(vals->name)) == 0) {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
 		} else {
 			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
