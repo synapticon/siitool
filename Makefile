@@ -33,11 +33,11 @@ H2MFLAGS = --help-option "-h" --version-option "-v" --no-discard-stderr --no-inf
 TARGET = siitool
 OBJECTS = main.o sii.o esi.o esifile.o crc8.o
 
-PREFIX = /usr/local/bin
+DESTDIR = /usr/local/bin
 ifeq (Darwin, $(PLATTFORM))
 MANPATH = /usr/local/share/man/man1
 else
-MANPATH = $(PREFIX)/../man/man1
+MANPATH = $(DESTDIR)/../man/man1
 endif
 
 SOURCEDIR = `pwd`
@@ -59,8 +59,8 @@ $(TARGET).1: $(TARGET)
 help:
 	@echo "Available make targets:"
 	@echo "  all        builds binary and man page"
-	@echo "  install    installs this software at $(PREFIX)"
-	@echo "  uninstall  removes installed software from $(PREFIX)"
+	@echo "  install    installs this software at $(DESTDIR)"
+	@echo "  uninstall  removes installed software from $(DESTDIR)"
 	@echo "  clean      cleans all objects"
 	@echo "  lint       static code analyzing (works best with clang v3.4+)"
 	@echo "  tarball    packages a software release tar.gz file."
@@ -69,7 +69,7 @@ install: install-man install-prg
 
 install-prg:
 	strip $(TARGET)
-	$(INSTALL) $(INSTFLAGS) $(TARGET) $(PREFIX)
+	$(INSTALL) $(INSTFLAGS) $(TARGET) $(DESTDIR)
 
 install-man:
 	$(INSTALL) $(INSTFLAGS) $(TARGET).1 $(MANPATH)/$(TARGET).1
@@ -78,7 +78,7 @@ ifeq (Linux, $(PLATTFORM))
 endif
 
 uninstall:
-	rm -f $(PREFIX)/$(TARGET)
+	rm -f $(DESTDIR)/$(TARGET)
 	rm -f $(MANPATH)/$(TARGET).1
 
 clean:
