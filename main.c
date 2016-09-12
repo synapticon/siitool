@@ -48,8 +48,8 @@
 #include <errno.h>
 
 #define VERSION_MAJOR    1
-#define VERSION_MINOR    0
-#define VERSION_APPEND   ""
+#define VERSION_MINOR    1
+#define VERSION_APPEND   "-dev"
 
 #define VERSION_STRING(x,y,z)  VERSION_ARGS(x, y, z)
 #define VERSION_ARGS(x,y,z)    "v" #x "." #y z
