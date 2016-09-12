@@ -1751,6 +1751,11 @@ static size_t sii_cat_write(struct _sii *sii)
 			goto nextcat;
 		}
 
+		/* hot patch for uneven string category sizes */
+		if ((SII_CAT_STRINGS == cat->type) && (catsize % 2 != 0)) {
+			catsize += 1;
+		}
+
 		written += catsize+4;
 		buf += catsize;
 		catsize = catsize/2; /* byte -> word count */
