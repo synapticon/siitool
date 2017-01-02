@@ -2009,9 +2009,10 @@ SiiInfo *sii_init_file(const char *filename)
 	SiiInfo *sii = malloc(sizeof(SiiInfo));
 	unsigned char eeprom[1024];
 
-	if (filename != NULL)
-		read_eeprom(stdin, eeprom, 1024);
-	else {
+	if (filename != NULL) {
+		FILE *f = fopen(filename, "r");
+		read_eeprom(f, eeprom, 1024);
+	} else {
 		fprintf(stderr, "Error no filename provided\n");
 		free(sii);
 		return NULL;
