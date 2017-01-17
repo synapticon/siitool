@@ -1,4 +1,10 @@
 
+v1.1:
+- Fix for odd sized string section
+- Fix padding for PDO entry (Ittner)
+- Fix matching of FMMU nodes
+- FIx parsing of eeprom config
+
 v1.0:
 - Rework of SII content printing
 - Bugfixes
