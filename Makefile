@@ -41,7 +41,9 @@ MANPATH = $(DESTDIR)/../man/man1
 endif
 
 SOURCEDIR = `pwd`
-VERSION = `scripts/getversion`
+VERSION = $(shell git describe --always)
+
+CFLAGS += -DVERSION=\"$(VERSION)\"
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
