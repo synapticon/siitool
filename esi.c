@@ -150,6 +150,14 @@ static void parse_example(xmlNode *root)
 }
 #endif
 
+static int parse_boolean(xmlChar *boolean)
+{
+	if (xmlStrcmp(boolean, Char2xmlChar("true")) == 0)
+		return 1;
+
+	return 0;
+}
+
 static uint16_t preamble_crc8(struct _sii_preamble *pa)
 {
 	if (pa == NULL)
@@ -218,17 +226,6 @@ static xmlNode *search_node_bfs(xmlNode *root, const char *name)
 		if (tmp != NULL) {
 			return tmp;
 		}
-	}
-
-	return NULL;
-}
-
-static xmlNode *search_children(xmlNode *root, const char *name)
-{
-	for (xmlNode *curr = root->children; curr; curr = curr->next) {
-		if (curr->type == XML_ELEMENT_NODE &&
-				xmlStrncmp(curr->name, (xmlChar *)name, xmlStrlen(curr->name)) == 0)
-			return curr;
 	}
 
 	return NULL;
@@ -489,26 +486,26 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 		}
 	}
 
-	node = search_children(parent, "Mailbox");
+	node = search_node_bfs(parent, "Mailbox");
 	tmp = search_node(node, "CoE");
 	if (tmp != NULL) {
 		general->coe_enable_sdo = 1;
 		/* parse the attributes */
 		for (xmlAttr *attr = tmp->properties; attr; attr = attr->next) {
 			if (xmlStrcmp(attr->name, Char2xmlChar("SdoInfo")) == 0)
-				general->coe_enable_sdo_info = atoi((char *)attr->children->content);
+				general->coe_enable_sdo_info = parse_boolean(attr->children->content);
 
 			if (xmlStrcmp(attr->name, Char2xmlChar("PdoAssign")) == 0)
-				general->coe_enable_pdo_assign = atoi((char *)attr->children->content);
+				general->coe_enable_pdo_assign = parse_boolean(attr->children->content);
 
 			if (xmlStrcmp(attr->name, Char2xmlChar("PdoConfig")) == 0)
-				general->coe_enable_pdo_conf = atoi((char *)attr->children->content);
+				general->coe_enable_pdo_conf = parse_boolean(attr->children->content);
 
 			if (xmlStrcmp(attr->name, Char2xmlChar("PdoUpload")) == 0)
-				general->coe_enable_upload_start = atoi((char *)attr->children->content);
+				general->coe_enable_upload_start = parse_boolean(attr->children->content);
 
 			if (xmlStrcmp(attr->name, Char2xmlChar("??sdoComplete")) == 0)
-				general->coe_enable_sdo_complete = atoi((char *)attr->children->content);
+				general->coe_enable_sdo_complete = parse_boolean(attr->children->content);
 
 			//attr = attr->next;
 		}
