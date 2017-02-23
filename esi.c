@@ -742,6 +742,11 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 				entry->string_index = (uint8_t)tmp&0xff;
 			}
 		} else if (xmlStrncmp(child->name, Char2xmlChar("DataType"), xmlStrlen(child->name)) == 0) {
+			if (child->children == NULL) {
+				fprintf(stderr, "Warning unspecified datatype found. Please check your ESI, datatype is set to 0\n");
+				continue;
+			}
+
 			int dt = parse_pdo_get_data_type((char *)child->children->content);
 			if (dt <= 0)
 				fprintf(stderr, "Warning unrecognized esi data type '%s'\n", (char *)child->children->content);
