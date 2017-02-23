@@ -201,6 +201,28 @@ static xmlNode *search_node(xmlNode *root, const char *name)
 	return NULL;
 }
 
+static xmlNode *search_node_bfs(xmlNode *root, const char *name)
+{
+	xmlNode *tmp = NULL;
+
+	for (xmlNode *curr = root; curr != NULL; curr = curr->next) {
+		if (curr->type == XML_ELEMENT_NODE &&
+			strncmp((const char *)curr->name, name, strlen((const char *)curr->name)) == 0) {
+			return curr;
+		}
+	}
+
+	for (xmlNode *curr = root; curr != NULL; curr = curr->next) {
+		tmp = search_node_bfs(curr->children, name);
+
+		if (tmp != NULL) {
+			return tmp;
+		}
+	}
+
+	return NULL;
+}
+
 static xmlNode *search_children(xmlNode *root, const char *name)
 {
 	for (xmlNode *curr = root->children; curr; curr = curr->next) {
@@ -362,7 +384,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	/* get the supported mailboxes - these also occure again in the general section */
 
-	tmp = search_node(n, "Mailbox");
+	tmp = search_node_bfs(n, "Mailbox");
 	xmlNode *mbox;
 
 	mbox = search_node(tmp, "CoE");
