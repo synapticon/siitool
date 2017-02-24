@@ -66,7 +66,8 @@ static int read_eeprom(FILE *f, unsigned char *buffer, size_t size)
 
 static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t size)
 {
-	struct _sii_preamble *preamble = malloc(sizeof(struct _sii_preamble));
+	struct _sii_preamble *preamble = calloc(1, sizeof(struct _sii_preamble));
+
 	size_t count = 0;
 	uint8_t crc = 0xff; /* init value for crc */
 
@@ -125,7 +126,9 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 {
 	size_t count =0;
 	const unsigned char *b = buffer;
-	struct _sii_stdconfig *stdc = malloc(sizeof(struct _sii_stdconfig));
+
+	struct _sii_stdconfig *stdc = calloc(1, sizeof(struct _sii_stdconfig));
+
 	stdc->vendor_id = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
 	b+=4;
 	stdc->product_id = BYTES_TO_DWORD(*(b+0), *(b+1), *(b+2), *(b+3));
@@ -173,16 +176,12 @@ static struct _sii_stdconfig *parse_stdconfig(const unsigned char *buffer, size_
 
 static struct _string *string_new(const char *string, size_t size)
 {
-	struct _string *new = malloc(sizeof(struct _string));
+	struct _string *new = calloc(1, sizeof(struct _string));
 
-	new->id = 0;
-	new->next = NULL;
-	new->prev = NULL;
-
-	new->data = malloc(size+1);
 	new->length = size;
-	memset(new->data, 0, size+1);
+	new->data = malloc(size+1);
 	memmove(new->data, string, size);
+	new->data[size] = 0;
 
 	return new;
 }
@@ -214,11 +213,8 @@ static struct _sii_strings *parse_string_section(const unsigned char *buffer, si
 	size_t len = 0;
 	memset(str, '\0', 1024);
 
-	struct _sii_strings *strings = (struct _sii_strings *)malloc(sizeof(struct _sii_strings));
-	strings->head = NULL;
-	strings->current = NULL;
-	strings->count = 0;
-	strings->size = 0;
+	struct _sii_strings *strings = (struct _sii_strings *)calloc(1, sizeof(struct _sii_strings));
+
 	int stringcount = *pos++;
 	int counter = 0;
 
@@ -264,7 +260,7 @@ static char *physport_type(uint8_t b)
 static struct _sii_general *parse_general_section(const unsigned char *buffer, size_t size)
 {
 	const unsigned char *b = buffer;
-	struct _sii_general *siig = malloc(sizeof(struct _sii_general));
+	struct _sii_general *siig = calloc(1, sizeof(struct _sii_general));
 
 	siig->groupindex = *b;
 	b++;
@@ -336,9 +332,7 @@ static void fmmu_rm_entry(struct _sii_fmmu *fmmu)
 
 void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 {
-	struct _fmmu_entry *new = malloc(sizeof(struct _fmmu_entry));
-	new->prev = NULL;
-	new->next = NULL;
+	struct _fmmu_entry *new = calloc(1, sizeof(struct _fmmu_entry));
 	new->id = -1;
 	new->usage = usage;
 
@@ -362,9 +356,7 @@ static struct _sii_fmmu *parse_fmmu_section(const unsigned char *buffer, size_t 
 {
 	const unsigned char *b = buffer;
 
-	struct _sii_fmmu *fmmu = malloc(sizeof(struct _sii_fmmu));
-	fmmu->count = 0;
-	fmmu->list = NULL;
+	struct _sii_fmmu *fmmu = calloc(1, sizeof(struct _sii_fmmu));
 
 	while ((unsigned int)(b-buffer)<secsize) {
 		fmmu_add_entry(fmmu, *b);
@@ -414,10 +406,8 @@ void syncm_entry_add(struct _sii_syncm *sm, struct _syncm_entry *entry)
 static void syncm_add_entry(struct _sii_syncm *sm,
 		int phys_address, int length, int control, int status, int enable, int type)
 {
-	struct _syncm_entry *entry = malloc(sizeof(struct _syncm_entry));
+	struct _syncm_entry *entry = calloc(1, sizeof(struct _syncm_entry));
 	entry->id = -1;
-	entry->next = NULL;
-	entry->prev = NULL;
 	entry->phys_address = phys_address;
 	entry->length = length;
 	entry->control = control;
@@ -449,9 +439,7 @@ static struct _sii_syncm *parse_syncm_section(const unsigned char *buffer, size_
 	int smnbr = 0;
 	const unsigned char *b = buffer;
 
-	struct _sii_syncm *sm = malloc(sizeof(struct _sii_syncm));
-	sm->list = NULL;
-	sm->count = 0;
+	struct _sii_syncm *sm = calloc(1, sizeof(struct _sii_syncm));
 
 	while (count<secsize) {
 		int physadr = BYTES_TO_WORD(*b, *(b+1));
@@ -518,7 +506,7 @@ static void pdo_add_entry(struct _sii_pdo *pdo,
 		int index, int subindex, int string_index, int data_type,
 		int bit_length, int flags)
 {
-	struct _pdo_entry *entry = malloc(sizeof(struct _pdo_entry));
+	struct _pdo_entry *entry = calloc(1, sizeof(struct _pdo_entry));
 
 	entry->id = -1;
 	entry->index = index;
@@ -527,8 +515,6 @@ static void pdo_add_entry(struct _sii_pdo *pdo,
 	entry->data_type = data_type;
 	entry->bit_length = bit_length;
 	entry->flags = flags;
-	entry->next = NULL;
-	entry->prev = NULL;
 
 	/* FIXME make use of pdo_entry_add() */
 	if (pdo->list == NULL) {
@@ -551,8 +537,7 @@ static struct _sii_pdo *parse_pdo_section(const unsigned char *buffer, size_t se
 	const unsigned char *b = buffer;
 	int entry = 0;
 
-	struct _sii_pdo *pdo = malloc(sizeof(struct _sii_pdo));
-	memset(pdo, 0, sizeof(struct _sii_pdo));
+	struct _sii_pdo *pdo = calloc(1, sizeof(struct _sii_pdo));
 
 	switch (t) {
 	case RxPDO:
@@ -617,8 +602,7 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 {
 	const unsigned char *b = buffer;
 
-	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
-	memset(dc, 0, sizeof(struct _sii_dclock));
+	struct _sii_dclock *dc = calloc(1, sizeof(struct _sii_dclock));
 
 	b++; /* first byte is reserved */
 
@@ -940,14 +924,12 @@ static void cat_data_cleanup(struct _sii_cat *cat)
 #if 0
 static struct _sii_cat *cat_new_data(uint16_t type, uint16_t size, void *data)
 {
-	struct _sii_cat *new = malloc(sizeof(struct _sii_cat));
+	struct _sii_cat *new = calloc(1, sizeof(struct _sii_cat));
 
 	new->type   = type&0x7fff;
 	new->vendor = (type>>16)&0x1;
 	new->size   = size;
 	new->data   = data;
-	new->next   = NULL;
-	new->prev   = NULL;
 
 	return new;
 }
@@ -955,14 +937,11 @@ static struct _sii_cat *cat_new_data(uint16_t type, uint16_t size, void *data)
 
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size)
 {
-	struct _sii_cat *new = malloc(sizeof(struct _sii_cat));
+	struct _sii_cat *new = calloc(1, sizeof(struct _sii_cat));
 
 	new->type   = type&0x7fff;
 	new->vendor = (type>>16)&0x1;
 	new->size   = size;
-	new->data   = NULL;
-	new->next   = NULL;
-	new->prev   = NULL;
 
 	return new;
 }
@@ -1972,32 +1951,18 @@ static void sii_write(SiiInfo *sii)
 
 SiiInfo *sii_init(void)
 {
-	SiiInfo *sii = malloc(sizeof(SiiInfo));
-
-	sii->cat_head = NULL;
-	sii->cat_current = NULL;
-	sii->outfile = NULL;
-	sii->rawbytes = NULL;
-	sii->rawvalid = 0;
-
+	SiiInfo *sii = calloc(1, sizeof(SiiInfo));
 	return sii;
 }
 
 SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size)
 {
-	SiiInfo *sii = malloc(sizeof(SiiInfo));
-
 	if (eeprom == NULL) {
 		fprintf(stderr, "No eeprom provided\n");
-		free(sii);
 		return NULL;
 	}
 
-	sii->cat_head = NULL;
-	sii->cat_current = NULL;
-	sii->rawbytes = NULL;
-	sii->rawvalid = 0;
-	sii->outfile = NULL;
+	SiiInfo *sii = calloc(1, sizeof(SiiInfo));
 
 	parse_content(sii, eeprom, size);
 
@@ -2006,24 +1971,15 @@ SiiInfo *sii_init_string(const unsigned char *eeprom, size_t size)
 
 SiiInfo *sii_init_file(const char *filename)
 {
-	SiiInfo *sii = malloc(sizeof(SiiInfo));
-	unsigned char eeprom[1024];
-
-	if (filename != NULL) {
-		FILE *f = fopen(filename, "r");
-		read_eeprom(f, eeprom, 1024);
-	} else {
+	if (filename == NULL) {
 		fprintf(stderr, "Error no filename provided\n");
-		free(sii);
 		return NULL;
 	}
 
-	sii->cat_head = NULL;
-	sii->cat_current = NULL;
-	sii->rawbytes = NULL;
-	sii->rawvalid = 0;
-	sii->outfile = NULL;
+	SiiInfo *sii = calloc(1, sizeof(SiiInfo));
+	unsigned char eeprom[1024];
 
+	read_eeprom(stdin, eeprom, 1024);
 	parse_content(sii, eeprom, 1024);
 
 	return sii;
@@ -2053,9 +2009,7 @@ void sii_release(SiiInfo *sii)
 size_t sii_generate(SiiInfo *sii)
 {
 	size_t maxsize = sii->config->eeprom_size * 1024;
-	sii->rawbytes = (uint8_t*) malloc(maxsize);
-	memset(sii->rawbytes, 0, maxsize);
-	sii->rawsize = 0;
+	sii->rawbytes = (uint8_t*) calloc(1, maxsize);
 
 	sii_write(sii);
 	sii->rawvalid = 1; /* FIXME valid should be set in sii_write */
