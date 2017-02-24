@@ -13,6 +13,8 @@
 
 #define Char2xmlChar(s)   ((xmlChar *)s)
 
+#define MAX_BOOTSTRAP_STRING   18
+
 struct _esi_data {
 	SiiInfo *sii;
 	char *siifile; /* also opt for sii->outfile */
@@ -318,7 +320,6 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	sc->serial = 0; /* FIXME the serial number is not in the esi? */
 
-	/* FIXME where are the bootstrap settings? */
 	sc->bs_rec_mbox_offset = 0;
 	sc->bs_rec_mbox_size = 0;
 	sc->bs_snd_mbox_offset = 0;
@@ -405,6 +406,25 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	/* convert byte -> kbyte */
 	sc->eeprom_size = atoi((char *)tmp->children->content)/1024;
 	sc->version = 1; /* also not in Esi */
+
+	tmp = search_node_bfs(n, "Eeprom");
+	if (tmp == NULL) {
+		fprintf(stderr, "Warning <Eeprom> tag not found");
+	} else {
+		xmlNode *bootstrap = search_node(tmp, "BootStrap");
+		char bsraw[MAX_BOOTSTRAP_STRING] = { 0 };
+		memmove(bsraw, (char *)bootstrap->children->content, MAX_BOOTSTRAP_STRING);
+
+		unsigned int braw[MAX_BOOTSTRAP_STRING] = { 0 };
+		sscanf(bsraw, "%2x%2x%2x%2x%2x%2x%2x%2x",
+				&braw[0], &braw[1], &braw[2], &braw[3],
+				&braw[4], &braw[5], &braw[6], &braw[7]);
+
+		sc->bs_rec_mbox_offset = braw[1] << 8 | braw[0];
+		sc->bs_rec_mbox_size =   braw[3] << 8 | braw[2];
+		sc->bs_snd_mbox_offset = braw[5] << 8 | braw[4];
+		sc->bs_snd_mbox_size =   braw[7] << 8 | braw[6];
+	}
 
 	return sc;
 }
