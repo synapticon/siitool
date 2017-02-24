@@ -2052,7 +2052,7 @@ void sii_release(SiiInfo *sii)
 
 size_t sii_generate(SiiInfo *sii)
 {
-	size_t maxsize = sii->config->eeprom_size * 1024;
+	size_t maxsize = EE_TO_BYTES(sii->config->eeprom_size);
 	sii->rawbytes = (uint8_t*) malloc(maxsize);
 	memset(sii->rawbytes, 0, maxsize);
 	sii->rawsize = 0;
@@ -2111,7 +2111,7 @@ void sii_print(SiiInfo *sii)
 		printf("  VoE ....................... %s\n", (stdc->mailbox_protocol.word&MBOX_VOE) ? "True" : "False");
 		printf("\n");
 
-		printf("EEPROM size: ................ %d kbit\n", stdc->eeprom_size);
+		printf("EEPROM size: ................ %d bytes\n", EE_TO_BYTES(stdc->eeprom_size));
 		printf("Version: .................... %d\n", stdc->version);
 		printf("\n");
 	}

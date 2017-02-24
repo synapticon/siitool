@@ -404,7 +404,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 	/* fetch eeprom size */
 	tmp = search_node(n, "ByteSize");
 	/* convert byte -> kbyte */
-	sc->eeprom_size = atoi((char *)tmp->children->content)/1024;
+	sc->eeprom_size = BYTES_TO_EE(atoi((char *)tmp->children->content));
 	sc->version = 1; /* also not in Esi */
 
 	tmp = search_node_bfs(n, "Eeprom");
