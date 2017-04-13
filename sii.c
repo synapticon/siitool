@@ -1406,7 +1406,7 @@ static uint16_t sii_cat_write_general(struct _sii_cat *cat, unsigned char *buf)
 	unsigned char *b = buf;
 #if DEBUG == 1
 	size_t size = sizeof(struct _sii_general)/sizeof(unsigned char);
-	printf("DEBUG Categorie general is %d bytes\n", size);
+	printf("DEBUG Categorie general is %lu bytes\n", size);
 #endif
 
 	struct _sii_general *bcat = (struct _sii_general *)cat->data;
@@ -1648,7 +1648,7 @@ static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 	for (size_t i=0; i<catbsz; i++)
 		*b++ = *catb++;
 
-	printf("DEBUG: print cat: 0x%x; expected write: %d, written: %d\n",
+	printf("DEBUG: print cat: 0x%x; expected write: %lu, written: %ld\n",
 			cat->type, catbsz, (b-buf));
 
 	return (uint16_t)(b-buf);
@@ -1928,7 +1928,7 @@ static void sii_write(SiiInfo *sii)
 	sii->rawsize = (size_t)(outbuf-sii->rawbytes);
 
 #if DEBUG == 1
-	printf("DEBUG sii_write() wrote %d bytes for preamble and std config\n", sii->rawsize);
+	printf("DEBUG sii_write() wrote %lu bytes for preamble and std config\n", sii->rawsize);
 #endif
 
 	// - iterate through categories
