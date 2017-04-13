@@ -752,7 +752,13 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 			entry->bit_length = atoi((char *)child->children->content);
 		} else if (xmlStrncmp(child->name, Char2xmlChar("Name"), xmlStrlen(child->name)) == 0) {
 			/* again, write this to the string category and store index to string here. */
-			tmp = sii_strings_add(sii, (char *)child->children->content);
+			if (child->children == NULL) {
+				fprintf(stderr, "[WARNING] Reading child content of size 0 (line: %d)\n", child->line);
+				tmp = -1;
+			} else {
+				tmp = sii_strings_add(sii, (char *)child->children->content);
+			}
+
 			if (tmp < 0) {
 				fprintf(stderr, "Error creating input string!\n");
 				entry->string_index = 0;
