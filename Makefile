@@ -46,22 +46,26 @@ VERSION = `scripts/getversion`
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-all: $(TARGET) $(TARGET).1
+all: $(TARGET)
+
+man: $(TARGET).1
 
 $(TARGET): $(OBJECTS)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
-$(TARGET).1: $(TARGET)
-	help2man -o $<.1 $(H2MFLAGS) -i misc/mansections.txt ./$<
+$(TARGET).1:
+	help2man -o $@ $(H2MFLAGS) -i misc/mansections.txt ./${TARGET}
 
-.PHONY: clean install install-man install-prg uninstall lint tarball help
+.PHONY: clean cleanall install install-man install-prg uninstall lint tarball help
 
 help:
 	@echo "Available make targets:"
-	@echo "  all        builds binary and man page"
+	@echo "  all        builds binary"
+	@echo "  man        builds man page"
 	@echo "  install    installs this software at $(DESTDIR)"
 	@echo "  uninstall  removes installed software from $(DESTDIR)"
-	@echo "  clean      cleans all objects"
+	@echo "  clean      clean all objects"
+	@echo "  cleanall   clean all objects, also prebuild ones"
 	@echo "  lint       static code analyzing (works best with clang v3.4+)"
 	@echo "  tarball    packages a software release tar.gz file."
 
@@ -82,7 +86,10 @@ uninstall:
 	rm -f $(MANPATH)/$(TARGET).1
 
 clean:
-	rm -f $(TARGET) $(TARGET).1 $(OBJECTS)
+	rm -f $(TARGET) $(OBJECTS)
+
+cleanall: clean
+	rm -f $(TARGET).1
 
 lint:
 	clang --analyze `xml2-config --cflags` main.c sii.c esi.c esifile.c
