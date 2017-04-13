@@ -39,6 +39,8 @@ Recognized file types: **SII** and **ESI/XML**.
 Examples
 ++++++++
 
+Please note that the files in the ``examples`` folder are not representative configuration files for any device.
+
 sii_example.bin
 ```````````````
 
