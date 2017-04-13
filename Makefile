@@ -7,7 +7,7 @@ INSTALL = install
 
 WARNINGS = -Wall -Wextra
 OPTIMIZATION = -O2
-DEBUG = 0
+DEBUG ?= 0
 
 CFLAGS = -g $(WARNINGS) $(OPTIMIZATION) -std=gnu99 -DDEBUG=$(DEBUG)
 LDFLAGS = -g  $(WARNINGS)
