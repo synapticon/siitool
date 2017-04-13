@@ -14,7 +14,7 @@ For more information please refer to the main documentation_.
 Install
 =======
 
-To build `siitool` please make sure to install `man2help` and `libxml2-dev` on
+To build `siitool` please make sure to install `libxml2-dev` on
 your system. The prefered way is with your local packet manager (eigher
 (`apt(1)` or `rpm(1)` depending on your system).
 

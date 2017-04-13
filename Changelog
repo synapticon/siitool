@@ -4,6 +4,11 @@ v1.1:
 - Fix padding for PDO entry (Ittner)
 - Fix matching of FMMU nodes
 - FIx parsing of eeprom config
+- Applied several pull requests from @sittner on github (thanks)
+- Changed versioning to git describe
+- Reduce build dependencies
+- Fix various XML related bugs (empty tags, BOM)
+- Fix recognition of mailbox attributes
 
 v1.0:
 - Rework of SII content printing
