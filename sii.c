@@ -2046,7 +2046,7 @@ void sii_print(SiiInfo *sii)
 
 		/* mailbox settings */
 		printf("\nDefault mailbox settings:\n");
-		printf("  Bootsrap Mailbox:\n");
+		printf("  Bootstrap Mailbox:\n");
 		printf("  Received Mailbox Offset: .. 0x%04x\n", stdc->bs_rec_mbox_offset);
 		printf("  Received Mailbox Size: .... %d\n", stdc->bs_rec_mbox_size);
 		printf("  Send Mailbox Offset: ...... 0x%04x\n", stdc->bs_snd_mbox_offset);
