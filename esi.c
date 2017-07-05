@@ -188,6 +188,7 @@ static uint16_t preamble_crc8(struct _sii_preamble *pa)
 	crc8byte(&crc, pa->reserved[3]&0xff);
 
 	pa->checksum = crc;
+	pa->checksum_ok = 1;
 
 	return pa->checksum;
 }

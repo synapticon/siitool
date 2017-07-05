@@ -50,6 +50,7 @@ struct _sii_preamble {
 	uint16_t alias;
 	uint8_t reserved[4]; /* shall be zero */
 	uint16_t checksum; /* checksum with x^8 + x^2 + x^1 + 1; initial value 0xff */
+	int checksum_ok;
 };
 
 struct _sii_stdconfig {
