@@ -445,7 +445,7 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root)
 
 	parent = search_node(root, "Groups");
 	node = search_node(parent, "Group"); /* FIXME handle multiple groups??? */
-	tmp = search_node(node, "Name"); /* FIXME check language id and use the english version */
+	tmp = search_node(node, "Type");
 	general->groupindex = sii_strings_add(sii, (const char *)tmp->children->content);
 
 	general->imageindex = 0;
