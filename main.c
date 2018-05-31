@@ -58,6 +58,7 @@ enum eInputFileType {
 
 //static int g_print_offsets = 0;
 static int g_print_content = 0;
+static unsigned int g_add_pdo_mapping = 0;
 
 static const char *base(const char *prog)
 {
@@ -153,6 +154,7 @@ static void printhelp(const char *prog)
 	printf("Usage: %s [-h] [-v] [-p] [-o outfile] [filename]\n", prog);
 	printf("  -h         print this help and exit\n");
 	printf("  -v         print version an exit\n");
+	printf("  -m         write pdo mapping to SII file\n");
 	printf("  -o <name>  write output to file <name>\n");
 	printf("  -p         print content human readable\n");
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
@@ -189,7 +191,7 @@ static int parse_xml_input(const unsigned char *buffer, const char *output)
 	if (g_print_content) {
 		sii_print(sii);
 	} else {
-		sii_generate(sii);
+		sii_generate(sii, g_add_pdo_mapping);
 		int ret = sii_write_bin(sii, output);
 		if (ret < 0) {
 			fprintf(stderr, "Error, couldn't write output file\n");
@@ -213,7 +215,7 @@ static int parse_sii_input(const unsigned char *buffer, const char *output)
 	if (g_print_content)
 		sii_print(sii);
 	else {
-		sii_generate(sii);
+		sii_generate(sii, g_add_pdo_mapping);
 		int ret = sii_write_bin(sii, output);
 		if (ret < 0) {
 			fprintf(stderr, "Error, couldn't write output file\n");
@@ -253,6 +255,8 @@ int main(int argc, char *argv[])
 				memmove(output, argv[i], strlen(argv[i])+1);
 			} else if (argv[i][1] == 'p') {
 				g_print_content = 1;
+			} else if (argv[i][1] == 'm') {
+				g_add_pdo_mapping = 1;
 			} else if (argv[i][1] == '\0') { /* read from stdin (default) */
 				filename = NULL;
 			} else {

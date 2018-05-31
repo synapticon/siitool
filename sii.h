@@ -304,7 +304,7 @@ void sii_release(SiiInfo *sii);
  * \param outfile  output filename
  * \return number of bytes written
  */
-size_t sii_generate(SiiInfo *sii);
+size_t sii_generate(SiiInfo *sii, unsigned int add_pdo_mapping);
 
 void sii_print(SiiInfo *sii);
 
