@@ -45,7 +45,7 @@ enum eSection {
 struct _sii_preamble {
 	uint16_t pdi_ctrl;
 	uint16_t pdi_conf;
-	uint16_t sync_impulse;
+	uint16_t sync_impulse;   /* impulse length in multiple of 10 ns */
 	uint16_t pdi_conf2;
 	uint16_t alias;
 	uint8_t reserved[4]; /* shall be zero */

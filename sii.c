@@ -84,7 +84,7 @@ static struct _sii_preamble * parse_preamble(const unsigned char *buffer, size_t
 	count = 4;
 
 	/* sync impulse len (multiples of 10ns), stored as nano seconds */
-	preamble->sync_impulse = BYTES_TO_WORD(buffer[count], buffer[count+1]) * 10;
+	preamble->sync_impulse = BYTES_TO_WORD(buffer[count], buffer[count+1]);
 	crc8byte(&crc, buffer[count]);
 	crc8byte(&crc, buffer[count+1]);
 	count+=2;
