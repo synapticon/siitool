@@ -14,6 +14,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#define SKIP_DC       0x0001
+#define SKIP_TXPDO    0x0010
+#define SKIP_RXPDO    0x0020
+
 /* category functions */
 static struct _sii_cat *cat_new(uint16_t type, uint16_t size);
 static void cat_data_cleanup(struct _sii_cat *cat);
@@ -1658,9 +1662,6 @@ static uint16_t sii_cat_write_cat(struct _sii_cat *cat, unsigned char *buf)
 }
 #endif
 
-#define SKIP_TXPDO    0x0010
-#define SKIP_RXPDO    0x0020
-
 static size_t sii_cat_write(struct _sii *sii, uint16_t skipmask)
 {
 	unsigned char *buf = sii->rawbytes+sii->rawsize;
@@ -1715,7 +1716,13 @@ static size_t sii_cat_write(struct _sii *sii, uint16_t skipmask)
 			break;
 
 		case SII_CAT_DCLOCK:
-			catsize = sii_cat_write_dc(cat, buf);
+			if (skipmask & SKIP_DC) {
+				buf -= 4;
+				cat = (cat->next != NULL) ? cat->next : NULL;
+				continue;
+			} else {
+				catsize = sii_cat_write_dc(cat, buf);
+			}
 			break;
 
 		default:
