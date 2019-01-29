@@ -1,4 +1,16 @@
 
+v1.2:
+- Dc section is no longer part of the gnerated SII binary
+- Add commandline parameter `-m` to add  PDO mapping to the generated SII
+  binary.
+- Fix check for the checksum of the first bytes
+- Fix group string
+- Fix preample sync impulse value
+
+Known Bugs:
+- Large ESI files let the application crash
+- Multiple PDO mappings are not printed correctly
+
 v1.1:
 - Fix for odd sized string section
 - Fix padding for PDO entry (Ittner)
