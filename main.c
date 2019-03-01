@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define MAX_BUFFER_SIZE    (1000*1024)
+#define MAX_BUFFER_SIZE    (10000*1024)
 #define MAX_FILENAME_SIZE  (256)
 
 enum eInputFileType {
@@ -233,7 +233,7 @@ static int parse_sii_input(const unsigned char *buffer, const char *output)
 int main(int argc, char *argv[])
 {
 	FILE *f;
-	unsigned char eeprom[MAX_BUFFER_SIZE];
+	unsigned char *eeprom = malloc(MAX_BUFFER_SIZE);
 	char *filename = NULL;
 	char *output = NULL;
 	int ret = -1;
@@ -321,6 +321,9 @@ int main(int argc, char *argv[])
 	}
 
 finish:
+    if (eeprom)
+        free(eeprom);
+
 	if (output)
 		free(output);
 
