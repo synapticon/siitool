@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define MAX_BUFFER_SIZE    (10000*1024)
+#define MAX_BUFFER_SIZE    (1000*1024)
 #define MAX_FILENAME_SIZE  (256)
 
 enum eInputFileType {
@@ -161,23 +161,42 @@ static void printhelp(const char *prog)
 	printf("\nRecognized file types: SII and ESI/XML.\n");
 }
 
-static int read_input(FILE *f, unsigned char *buffer, size_t size)
+static unsigned char * read_input(FILE *f, unsigned char *bufptr, size_t *size)
 {
+	size_t capacity = *size;
 	size_t count = 0;
 	int input;
+	unsigned char *buffer = NULL;
 
-	while ((input=fgetc(f)) != EOF)
+	if (bufptr == NULL) {
+		buffer = malloc(capacity);
+	}
+
+	while ((input=fgetc(f)) != EOF) {
 		buffer[count++] = (unsigned char)(input&0xff);
 
-	if (count>size)
-		fprintf(stderr, "Error: read size is larger than expected (bytes read: %zu)\n", count);
+		if (count >= (capacity - 1)) {
+			capacity += (capacity / 2);
+			buffer = realloc(buffer, capacity);
 
-	return count;
+			if (buffer == NULL) {
+				fprintf(stderr, "Realloc failed! Out of memory?\n");
+				*size = 0;
+				return NULL;
+			}
+		}
+	}
+
+	/* Fill the last part of the buffer capacity with zero */
+	memset((buffer+count), 0, capacity-count);
+	*size = capacity;
+
+	return buffer;
 }
 
-static int parse_xml_input(const unsigned char *buffer, const char *output)
+static int parse_xml_input(const unsigned char *buffer, size_t length, const char *output)
 {
-	EsiData *esi = esi_init_string(buffer, MAX_BUFFER_SIZE);
+	EsiData *esi = esi_init_string(buffer, length);
 	//esi_print_xml(esi);
 
 	if (esi_parse(esi)) {
@@ -233,7 +252,8 @@ static int parse_sii_input(const unsigned char *buffer, const char *output)
 int main(int argc, char *argv[])
 {
 	FILE *f;
-	unsigned char *eeprom = malloc(MAX_BUFFER_SIZE);
+	unsigned char *eeprom = NULL;
+	size_t eeprom_length = MAX_BUFFER_SIZE;
 	char *filename = NULL;
 	char *output = NULL;
 	int ret = -1;
@@ -273,9 +293,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	memset(eeprom, 0, MAX_BUFFER_SIZE);
 	if (filename == NULL)
-		read_input(stdin, eeprom, MAX_BUFFER_SIZE);
+		eeprom = read_input(stdin, eeprom, &eeprom_length);
 	else {
 		f = fopen(filename, "r");
 		if (f == NULL) {
@@ -288,8 +307,12 @@ int main(int argc, char *argv[])
 		printf("Start reading contents of file %s\n", filename);
 #endif
 
-		read_input(f, eeprom, MAX_BUFFER_SIZE);
+		eeprom = read_input(f, eeprom,  &eeprom_length);
 		fclose(f);
+	}
+
+	if (eeprom == NULL) {
+		goto finish;
 	}
 
 	/* recognize input */
@@ -304,7 +327,7 @@ int main(int argc, char *argv[])
 		while (*xml_start != '<')
 			xml_start++;
 
-		ret = parse_xml_input(xml_start, output);
+		ret = parse_xml_input(xml_start, eeprom_length, output);
 		break;
 
 	case SIIEEPROM:
@@ -321,8 +344,8 @@ int main(int argc, char *argv[])
 	}
 
 finish:
-    if (eeprom)
-        free(eeprom);
+	if (eeprom)
+		free(eeprom);
 
 	if (output)
 		free(output);
