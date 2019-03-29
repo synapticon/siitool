@@ -9,3 +9,5 @@ test/
 *.tar.gz
 *.plist
 *.gch
+.cscopedb/
+cscope.out
