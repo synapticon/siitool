@@ -800,12 +800,9 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 		return;
 	}
 
-	struct _sii_cat *cat = sii_category_find(sii, type);
-	if (cat == NULL) {
-		cat = calloc(1, sizeof(struct _sii_cat));
-		cat->type = type;
-		sii_category_add(sii, cat);
-	}
+	struct _sii_cat *cat = calloc(1, sizeof(struct _sii_cat));
+	cat->type = type;
+	sii_category_add(sii, cat);
 
 	if (cat->data == NULL) {
 		cat->data = (void *)calloc(1, sizeof(struct _sii_pdo));
