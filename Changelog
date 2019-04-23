@@ -1,4 +1,10 @@
 
+v1.3:
+- Fix bug with segfault on large ESI files
+  (see also https://github.com/synapticon/siitool/issues/9)
+- Fix display of all PDO mappings
+  (see also https://github.com/synapticon/siitool/issues/8)
+
 v1.2:
 - Dc section is no longer part of the gnerated SII binary
 - Add commandline parameter `-m` to add  PDO mapping to the generated SII
