@@ -1,4 +1,7 @@
 
+v1.4:
+- Fix potential endless loop in case of malformed SII
+
 v1.3:
 - Fix bug with segfault on large ESI files
   (see also https://github.com/synapticon/siitool/issues/9)
