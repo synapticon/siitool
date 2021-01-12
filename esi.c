@@ -23,6 +23,14 @@ struct _esi_data {
 	char *xmlfile;
 };
 
+static inline void scan_hex_dec(const char *str, uint32_t *value)
+{
+    int ret = sscanf(str, "#x%x", value);
+    if (ret != 1) {
+        sscanf(str, "%u", value);
+    }
+}
+
 static char *type2str(int type)
 {
 	switch (type) {
@@ -298,7 +306,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	/* get id */
 	// FIXME add some error and validty checking, esp. if node is set correctly and has the type
-	sscanf((const char *)tmp->children->content, "#x%x", &(sc->vendor_id));
+	scan_hex_dec((const char *)tmp->children->content, &(sc->vendor_id));
 
 	n = search_node(search_node(root, "Devices"), "Device");
 
@@ -307,11 +315,11 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 	while (prop != NULL) {
 		if (xmlStrncmp(prop->name, Char2xmlChar("ProductCode"), xmlStrlen(prop->name)) == 0) {
-			sscanf((const char *)prop->children->content, "#x%x", &(sc->product_id));
+			scan_hex_dec((const char *)prop->children->content, &(sc->product_id));
 		}
 
 		if (xmlStrncmp(prop->name, Char2xmlChar("RevisionNo"), xmlStrlen(prop->name)) == 0) {
-			sscanf((const char *)prop->children->content, "#x%x", &(sc->revision_id));
+			scan_hex_dec((const char *)prop->children->content, &(sc->revision_id));
 		}
 
 		prop = prop->next;
@@ -345,7 +353,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 						if (xmlStrncmp(p->name, Char2xmlChar("StartAddress"), xmlStrlen(p->name)) == 0) {
 							unsigned int atmp = 0;
-							sscanf((const char *)p->children->content, "#x%x", &atmp);
+							scan_hex_dec((const char *)p->children->content, &atmp);
 							sc->std_rec_mbox_offset = atmp;
 						}
 
@@ -363,7 +371,7 @@ static struct _sii_stdconfig *parse_config(xmlNode *root)
 
 						if (xmlStrncmp(p->name, Char2xmlChar("StartAddress"), xmlStrlen(p->name)) == 0) {
 							unsigned int atmp = 0;
-							sscanf((const char *)p->children->content, "#x%x", &atmp);
+							scan_hex_dec((const char *)p->children->content, &atmp);
 							sc->std_snd_mbox_offset = atmp;
 						}
 
@@ -596,12 +604,12 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 		if (xmlStrncmp(a->name, Char2xmlChar("DefaultSize"), xmlStrlen(a->name)) == 0) {
 			entry->length = atoi((char *)a->children->content);
 		} else if (xmlStrncmp(a->name, Char2xmlChar("StartAddress"), xmlStrlen(a->name)) == 0) {
-			int tmp = 0;
-			sscanf((char *)a->children->content, "#x%x", &tmp);
+			uint32_t tmp = 0;
+			scan_hex_dec((char *)a->children->content, &tmp);
 			entry->phys_address = tmp&0xffff;
 		} else if (xmlStrncmp(a->name, Char2xmlChar("ControlByte"), xmlStrlen(a->name)) == 0) {
-			int tmp = 0;
-			sscanf((char *)a->children->content, "#x%x", &tmp);
+			uint32_t tmp = 0;
+			scan_hex_dec((char *)a->children->content, &tmp);
 			entry->control = tmp&0xff;
 		} else if (xmlStrncmp(a->name, Char2xmlChar("Enable"), xmlStrlen(a->name)) == 0) {
 			entry->enable = atoi((char *)a->children->content);
@@ -742,7 +750,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 
 	for (xmlNode *child = val->children; child; child = child->next) {
 		if (xmlStrncmp(child->name, Char2xmlChar("Index"), xmlStrlen(child->name)) == 0) {
-			sscanf((char *)child->children->content, "#x%x", &tmp);
+			scan_hex_dec((char *)child->children->content, &tmp);
 			entry->index = tmp&0xffff;
 			tmp = 0;
 		} else if (xmlStrncmp(child->name, Char2xmlChar("SubIndex"), xmlStrlen(child->name)) == 0) {
@@ -839,8 +847,8 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 				pdo->name_index = (uint8_t)tmp&0xff;
 			}
 		} else if (xmlStrncmp(val->name, Char2xmlChar("Index"), xmlStrlen(val->name)) == 0) {
-			int tmp = 0;
-			sscanf((char *)val->children->content, "#x%x", &tmp);
+			uint32_t tmp = 0;
+			scan_hex_dec((char *)val->children->content, &tmp);
 			pdo->index = tmp&0xffff;
 		} else if (xmlStrncmp(val->name, Char2xmlChar("Entry"), xmlStrlen(val->name)) == 0) {
 			/* add new pdo entry */
