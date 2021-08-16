@@ -28,9 +28,9 @@
 #define BYTES_TO_EE(x) ((x - 0x80) >> 7)
 
 enum eSection {
-	SII_CAT_NOP
-	,SII_PREAMBLE
-	,SII_STD_CONFIG
+	SII_PREAMBLE = -1
+	,SII_STD_CONFIG = -2
+	,SII_CAT_NOP = 0
 	,SII_CAT_STRINGS = 10
 	,SII_CAT_DATATYPES = 20 /* future use */
 	,SII_CAT_GENERAL = 30
