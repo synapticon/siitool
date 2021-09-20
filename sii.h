@@ -7,6 +7,7 @@
 #define SII_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 #define SII_VERSION_MAJOR  0
 #define SII_VERSION_MINOR  0
