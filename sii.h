@@ -6,7 +6,6 @@
 #ifndef SII_H
 #define SII_H
 
-#include <unistd.h>
 #include <stdint.h>
 
 #define SII_VERSION_MAJOR  0

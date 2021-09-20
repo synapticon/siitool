@@ -7,7 +7,6 @@
 #define ESI_H
 
 #include "sii.h"
-#include <unistd.h>
 
 typedef struct _esi_data EsiData;
 
