@@ -47,6 +47,12 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#ifdef _WIN32
+#define NEWLINE "\r\n"
+#else
+#define NEWLINE "\n"
+#endif
+
 #define MAX_BUFFER_SIZE    (1000*1024)
 #define MAX_FILENAME_SIZE  (256)
 
@@ -104,7 +110,7 @@ static enum eInputFileType check_file_suffix(const char *filename)
 		else if (strncmp(suffix, "xml", strlen(suffix)) == 0)
 			type = ESIXML;
 		else {
-			fprintf(stderr, "Warning, unrecognized suffix: '%s'\n", suffix);
+			fprintf(stderr, "Warning, unrecognized suffix: '%s'" NEWLINE, suffix);
 			type = UNDEFINED;
 		}
 	}
@@ -142,7 +148,7 @@ static enum eInputFileType file_type(const char *filename, unsigned char *buffer
 		return inputtype2;
 
 	if ((inputtype1 == ESIXML) && (inputtype1 != inputtype2)) {
-		fprintf(stderr, "Error, file suffix and content of file doesn't match!\n");
+		fprintf(stderr, "Error, file suffix and content of file doesn't match!" NEWLINE);
 		return UNDEFINED;
 	}
 
@@ -151,14 +157,14 @@ static enum eInputFileType file_type(const char *filename, unsigned char *buffer
 
 static void printhelp(const char *prog)
 {
-	printf("Usage: %s [-h] [-v] [-p] [-o outfile] [filename]\n", prog);
-	printf("  -h         print this help and exit\n");
-	printf("  -v         print version an exit\n");
-	printf("  -m         write pdo mapping to SII file\n");
-	printf("  -o <name>  write output to file <name>\n");
-	printf("  -p         print content human readable\n");
-	printf("  filename   path to eeprom file, if missing read from stdin\n");
-	printf("\nRecognized file types: SII and ESI/XML.\n");
+	printf("Usage: %s [-h] [-v] [-p] [-o outfile] [filename]" NEWLINE, prog);
+	puts("  -h         print this help and exit");
+	puts("  -v         print version an exit");
+	puts("  -m         write pdo mapping to SII file");
+	puts("  -o <name>  write output to file <name>");
+	puts("  -p         print content human readable");
+	puts("  filename   path to eeprom file, if missing read from stdin" NEWLINE);
+	puts("Recognized file types: SII and ESI/XML.");
 }
 
 static unsigned char * read_input(FILE *f, unsigned char *bufptr, size_t *size)
@@ -180,7 +186,7 @@ static unsigned char * read_input(FILE *f, unsigned char *bufptr, size_t *size)
 			buffer = realloc(buffer, capacity);
 
 			if (buffer == NULL) {
-				fprintf(stderr, "Realloc failed! Out of memory?\n");
+				fprintf(stderr, "Realloc failed! Out of memory?" NEWLINE);
 				*size = 0;
 				return NULL;
 			}
@@ -200,7 +206,7 @@ static int parse_xml_input(const unsigned char *buffer, size_t length, const cha
 	//esi_print_xml(esi);
 
 	if (esi_parse(esi)) {
-		fprintf(stderr, "Error something went wrong in XML parsing\n");
+		fprintf(stderr, "Error something went wrong in XML parsing" NEWLINE);
 		esi_release(esi);
 		return -1;
 	}
@@ -213,7 +219,7 @@ static int parse_xml_input(const unsigned char *buffer, size_t length, const cha
 		sii_generate(sii, g_add_pdo_mapping);
 		int ret = sii_write_bin(sii, output);
 		if (ret < 0) {
-			fprintf(stderr, "Error, couldn't write output file\n");
+			fprintf(stderr, "Error, couldn't write output file" NEWLINE);
 			esi_release(esi);
 			return -1;
 		}
@@ -237,11 +243,11 @@ static int parse_sii_input(const unsigned char *buffer, const char *output)
 		sii_generate(sii, g_add_pdo_mapping);
 		int ret = sii_write_bin(sii, output);
 		if (ret < 0) {
-			fprintf(stderr, "Error, couldn't write output file\n");
+			fprintf(stderr, "Error, couldn't write output file" NEWLINE);
 			return -1;
 		}
 
-		printf("= %s generated\n", output);
+		printf("= %s generated" NEWLINE, output);
 	}
 
 	sii_release(sii);
@@ -280,7 +286,7 @@ int main(int argc, char *argv[])
 			} else if (argv[i][1] == '\0') { /* read from stdin (default) */
 				filename = NULL;
 			} else {
-				fprintf(stderr, "Invalid argument\n");
+				fprintf(stderr, "Invalid argument" NEWLINE);
 				printhelp(base(argv[0]));
 				return 0;
 			}
@@ -304,7 +310,7 @@ int main(int argc, char *argv[])
 		}
 
 #if DEBUG == 1
-		printf("Start reading contents of file %s\n", filename);
+		printf("Start reading contents of file %s" NEWLINE, filename);
 #endif
 
 		eeprom = read_input(f, eeprom,  &eeprom_length);
@@ -321,7 +327,7 @@ int main(int argc, char *argv[])
 	switch (filetype) {
 	case ESIXML:
 #if DEBUG == 1
-		printf("Processing ESI/XML file\n");
+		printf("Processing ESI/XML file" NEWLINE);
 #endif
 		/* Start XML processing at the first '<' character to avoid strange behavior when parsing. */
 		while (*xml_start != '<')
@@ -332,7 +338,7 @@ int main(int argc, char *argv[])
 
 	case SIIEEPROM:
 #if DEBUG == 1
-		printf("Processing SII/EEPROM file\n");
+		printf("Processing SII/EEPROM file" NEWLINE);
 #endif
 		ret = parse_sii_input(eeprom, output);
 		break;
