@@ -11,3 +11,7 @@ test/
 *.gch
 .cscopedb/
 cscope.out
+/build
+/out
+/.vs
+/.vscode
