@@ -157,6 +157,7 @@ static void printhelp(const char *prog)
 	printf("  -m         write pdo mapping to SII file\n");
 	printf("  -o <name>  write output to file <name>\n");
 	printf("  -p         print content human readable\n");
+	printf("  -d <num>   select device number <num>, default <num> = 0\n");
 	printf("  filename   path to eeprom file, if missing read from stdin\n");
 	printf("\nRecognized file types: SII and ESI/XML.\n");
 }
@@ -194,12 +195,12 @@ static unsigned char * read_input(FILE *f, unsigned char *bufptr, size_t *size)
 	return buffer;
 }
 
-static int parse_xml_input(const unsigned char *buffer, size_t length, const char *output)
+static int parse_xml_input(const unsigned char *buffer, size_t length, unsigned int device, const char *output)
 {
 	EsiData *esi = esi_init_string(buffer, length);
 	//esi_print_xml(esi);
 
-	if (esi_parse(esi)) {
+	if (esi_parse(esi, device)) {
 		fprintf(stderr, "Error something went wrong in XML parsing\n");
 		esi_release(esi);
 		return -1;
@@ -257,7 +258,9 @@ int main(int argc, char *argv[])
 	char *filename = NULL;
 	char *output = NULL;
 	int ret = -1;
+	unsigned int device = 0;
 
+	/* FIXME rewrite using getopt() */
 	for (int i=1; i<argc; i++) {
 		switch (argv[i][0]) {
 		case '-':
@@ -277,6 +280,8 @@ int main(int argc, char *argv[])
 				g_print_content = 1;
 			} else if (argv[i][1] == 'm') {
 				g_add_pdo_mapping = 1;
+            } else if (argv[i][1] == 'd') {
+                sscanf(argv[i+1], "%d", &device);
 			} else if (argv[i][1] == '\0') { /* read from stdin (default) */
 				filename = NULL;
 			} else {
@@ -327,7 +332,7 @@ int main(int argc, char *argv[])
 		while (*xml_start != '<')
 			xml_start++;
 
-		ret = parse_xml_input(xml_start, eeprom_length, output);
+		ret = parse_xml_input(xml_start, eeprom_length, device, output);
 		break;
 
 	case SIIEEPROM:

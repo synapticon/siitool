@@ -20,7 +20,7 @@ void esi_release(EsiData *esi);
 void esi_print_xml(EsiData *esi);
 void esi_print_sii(EsiData *esi);
 
-int esi_parse(EsiData *esi);
+int esi_parse(EsiData *esi, int dn);
 
 SiiInfo *esi_get_sii(EsiData *esi);
 #endif /* ESI_H */
