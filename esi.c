@@ -25,10 +25,10 @@ struct _esi_data {
 
 static inline void scan_hex_dec(const char *str, uint32_t *value)
 {
-    int ret = sscanf(str, "#x%x", value);
-    if (ret != 1) {
-        sscanf(str, "%u", value);
-    }
+	int ret = sscanf(str, "#x%x", value);
+	if (ret != 1) {
+		sscanf(str, "%u", value);
+	}
 }
 
 static char *type2str(int type)
