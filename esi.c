@@ -1013,7 +1013,7 @@ int esi_parse(EsiData *esi)
 			parse_fmmu(current, esi->sii);
 		} else if (xmlStrncmp(current->name, Char2xmlChar("Sm"), xmlStrlen(current->name)) == 0) {
 			parse_syncm(current, esi->sii);
-#if 0
+#if 0 /* FIXME DC should be added again! */
 		} else if (xmlStrncmp(current->name, Char2xmlChar("Dc"), xmlStrlen(current->name)) == 0) {
 			parse_dclock(current, esi->sii);
 #endif
