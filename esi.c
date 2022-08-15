@@ -345,10 +345,10 @@ static struct _sii_stdconfig *parse_config(xmlNode *root, xmlNode *device)
 	sc->bs_snd_mbox_offset = 0;
 	sc->bs_snd_mbox_size = 0;
 
-	sc->std_rec_mbox_offset = 0x1000;
-	sc->std_rec_mbox_size = 128;
-	sc->std_snd_mbox_offset = 0x1080;
-	sc->std_snd_mbox_size = 128;
+	sc->std_rec_mbox_offset = 0;
+	sc->std_rec_mbox_size = 0;
+	sc->std_snd_mbox_offset = 0;
+	sc->std_snd_mbox_size = 0;
 
 	/* filter the std mailbox configuration; from <Sm> description */
 
