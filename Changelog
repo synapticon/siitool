@@ -1,3 +1,7 @@
+v2.0:
+- Add new commandline parabeter `-d` for device selection in multidevice ESI
+- Fix bug that default mailbox is configured even if no mailbox is supported
+  in ESI.
 
 v1.4:
 - Fix potential endless loop in case of malformed SII
