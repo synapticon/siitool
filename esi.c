@@ -245,14 +245,14 @@ static xmlNode *search_node_bfs(xmlNode *root, const char *name)
 static xmlNode *search_device(xmlNode *root, int device_number)
 {
 	xmlNode *d = search_node(search_node(root, "Devices"), "Device");
-	while (device_number != 0) {
+	while (device_number != 0 && d->next != NULL) {
 		d = d->next;
 		if (d->type == XML_ELEMENT_NODE) {
 			device_number--;
 		}
 	}
 
-    return d;
+	return (device_number > 0) ? NULL : d;
 }
 
 /* TODO: Add function to search for all nodes named by 'name' (e.g. multiple <Sm>-Tags */
@@ -465,17 +465,14 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root, xmlNode *
 	 */
 
 	parent = search_node(root, "Groups");
-	node = search_node(parent, "Group"); /* FIXME handle multiple groups??? */
+	node = search_node(parent, "Group");
 	tmp = search_node(node, "Type");
 	general->groupindex = sii_strings_add(sii, (const char *)tmp->children->content);
 
 	general->imageindex = 0;
 	general->orderindex = 0;
 
-	//parent = search_node(root, "Devices");
-	//node = search_node(parent, "Device"); /* FIXME handle multiple groups??? */
-	tmp = search_node(device, "Name"); /* FIXME check language id and use the english version */
-	/* FIXME shall take the Name with LcId="1033" if LcId is available. */
+	tmp = search_node(device, "Name"); /* FIXME check language id and use the english version LcId="1033" */
 	general->nameindex = sii_strings_add(sii, (const char *)tmp->children->content);
 
 	/* reset temporial nodes */
@@ -484,8 +481,7 @@ static struct _sii_general *parse_general(SiiInfo *sii, xmlNode *root, xmlNode *
 	tmp = NULL;
 
 	/* fetch CoE details */
-	//printf("[DEBUG %s] get CoE details\n", __func__);
-	parent = device; //search_node(root, "Device");
+	parent = device;
 
 	for (xmlAttr *attr = parent->properties; attr; attr = attr->next) {
 		if (xmlStrcmp(attr->name, Char2xmlChar("Physics")) == 0) {
@@ -1007,6 +1003,10 @@ int esi_parse(EsiData *esi, int device_number)
 	}
 
 	xmlNode *device = search_device(root, device_number);
+	if (!device) {
+		fprintf(stderr, "Error, invalid device number %d\n", device_number);
+		return -1;
+	}
 	xmlNode *n = search_node(device, "ConfigData");
 	esi->sii->preamble = parse_preamble(n);
 	esi->sii->config = parse_config(root, device);
