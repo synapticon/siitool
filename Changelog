@@ -1,3 +1,6 @@
+v2.1:
+- Bugfix: CoE attributes are now detected properly
+
 v2.0:
 - Add new commandline parabeter `-d` for device selection in multidevice ESI
 - Fix bug that default mailbox is configured even if no mailbox is supported
