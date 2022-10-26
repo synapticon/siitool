@@ -342,6 +342,10 @@ void fmmu_add_entry(struct _sii_fmmu *fmmu, int usage)
 	struct _fmmu_entry *new = calloc(1, sizeof(struct _fmmu_entry));
 	new->id = -1;
 	new->usage = usage;
+	if (usage == FMMU_UNUSED) { /* skip unused entries */
+		free(new);
+		return;
+	}
 
 	if (fmmu->list == NULL) {
 		new->id = 0;
@@ -1220,7 +1224,7 @@ static void cat_print_fmmu(struct _sii_cat *cat)
 			printf("used for Inputs\n");
 			break;
 		case FMMU_SYNCMSTAT:
-			printf("used for SyncM status\n");
+			printf("used for SyncM mailbox status (MBoxStat)\n");
 			break;
 		default:
 			printf("WARNING: undefined behavior\n");
@@ -1468,6 +1472,11 @@ static uint16_t sii_cat_write_fmmu(struct _sii_cat *cat, unsigned char *buf)
 		*b++ = entry->usage;
 		entry = entry->next;
 	}
+
+    /* add padding if odd number of FMMU is defined */
+    if (data->count % 2 != 0) {
+        *b++ = 0x00;
+    }
 
 	return (uint16_t)(b-buf);
 }

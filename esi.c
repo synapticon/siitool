@@ -581,7 +581,7 @@ static void parse_fmmu(xmlNode *current, SiiInfo *sii)
 		fmmu_add_entry(fmmu, FMMU_INPUTS);
 	else if (xmlStrncmp(content, Char2xmlChar("Outputs"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_OUTPUTS);
-	else if (xmlStrncmp(content, Char2xmlChar("SynmanagerStat"), xmlStrlen(content)) == 0)
+	else if (xmlStrncmp(content, Char2xmlChar("MBoxState"), xmlStrlen(content)) == 0)
 		fmmu_add_entry(fmmu, FMMU_SYNCMSTAT);
 	else
 		fmmu_add_entry(fmmu, FMMU_UNUSED);
