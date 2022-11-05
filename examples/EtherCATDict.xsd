@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--1.17-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="EtherCATBase.xsd"/>
+	<xs:element name="EtherCATDict">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Dictionary" type="DictionaryType">
+					<xs:key name="DataTypesExtKey">
+						<xs:selector xpath="./DataTypes/DataType"/>
+						<xs:field xpath="Name"/>
+					</xs:key>
+					<xs:keyref name="ObjectTypesExtRef" refer="DataTypesExtKey">
+						<xs:selector xpath="./Objects/Object"/>
+						<xs:field xpath="Type"/>
+					</xs:keyref>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Version" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

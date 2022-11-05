@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Version 1.9 -> ETG.2000 1.0.5-->
+<!--1.17-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="EtherCATBase.xsd"/>
 	<xs:element name="EtherCATInfo">
@@ -26,11 +26,7 @@
 												<xs:complexContent>
 													<xs:extension base="GroupType">
 														<xs:attribute name="SortOrder" type="xs:int" use="optional"/>
-														<xs:attribute name="ParentGroup" use="optional">
-															<xs:annotation>
-																<xs:documentation>for future use</xs:documentation>
-															</xs:annotation>
-														</xs:attribute>
+														<xs:attribute name="ParentGroup" type="xs:string" use="optional"/>
 													</xs:extension>
 												</xs:complexContent>
 											</xs:complexType>
@@ -76,13 +72,90 @@
 			</xs:sequence>
 			<xs:attribute name="Version" type="xs:string" use="optional">
 				<xs:annotation>
-					<xs:documentation>1.9</xs:documentation>
+					<xs:documentation>1.15</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="DeviceType">
 		<xs:sequence>
+			<xs:element name="Sci" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>(SCI)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Name" type="NameType" maxOccurs="unbounded"/>
+						<xs:element name="Description" type="NameType" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="Guid" type="Guid"/>
+						<xs:element name="CreatedBy">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Company" type="xs:string"/>
+									<xs:element name="VendorId" type="HexDecValue" minOccurs="0"/>
+									<xs:element name="Tool" minOccurs="0">
+										<xs:complexType>
+											<xs:simpleContent>
+												<xs:extension base="xs:string">
+													<xs:attribute name="Version" type="xs:string" use="optional" default=""/>
+												</xs:extension>
+											</xs:simpleContent>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="TargetSpecific" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="AoeNetId" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Comment" type="xs:string" minOccurs="0"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="EoeMacIp" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Comment" type="xs:string" minOccurs="0"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="DcCycleTime" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Comment" type="xs:string" minOccurs="0"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="ModuleIdents" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ModuleIdent" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="SlotNo" type="xs:int"/>
+															<xs:element name="Esi" type="HexDecValue"/>
+															<xs:element name="Sci" type="HexDecValue"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="VendorSpecific" type="VendorSpecificType" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="SciVersion" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Version of ETG.2000 on which this SCI is based on</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="Type">
 				<xs:complexType>
 					<xs:simpleContent>
@@ -136,6 +209,7 @@
 									<xs:documentation>obsolete</xs:documentation>
 								</xs:annotation>
 							</xs:attribute>
+							<xs:attribute name="ShowHideableSubDevices" type="xs:boolean" use="optional" default="false"/>
 						</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
@@ -192,6 +266,7 @@
 							</xs:attribute>
 							<xs:attribute name="PreviousDevice" type="xs:int" use="optional"/>
 							<xs:attribute name="PreviousPortNo" type="xs:int" use="optional"/>
+							<xs:attribute name="Hideable" type="xs:boolean" use="optional" default="false"/>
 						</xs:extension>
 					</xs:simpleContent>
 				</xs:complexType>
@@ -290,6 +365,7 @@
 												<xs:element name="Transition" maxOccurs="unbounded">
 													<xs:simpleType>
 														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="IP"/>
 															<xs:enumeration value="PS"/>
 															<xs:enumeration value="SO"/>
 															<xs:enumeration value="SP"/>
@@ -318,6 +394,7 @@
 												<xs:element name="Transition" maxOccurs="unbounded">
 													<xs:simpleType>
 														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="IP"/>
 															<xs:enumeration value="PS"/>
 															<xs:enumeration value="SO"/>
 															<xs:enumeration value="SP"/>
@@ -376,6 +453,7 @@
 												<xs:element name="Transition" maxOccurs="unbounded">
 													<xs:simpleType>
 														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="IP"/>
 															<xs:enumeration value="PS"/>
 															<xs:enumeration value="SO"/>
 															<xs:enumeration value="SP"/>
@@ -420,6 +498,8 @@
 								</xs:attribute>
 								<xs:attribute name="SegmentedSdo" type="xs:boolean" use="optional"/>
 								<xs:attribute name="DiagHistory" type="xs:boolean" use="optional"/>
+								<xs:attribute name="SdoUploadWithMaxLength" type="xs:boolean" use="optional" default="0"/>
+								<xs:attribute name="TimeDistribution" type="xs:boolean" use="optional" default="0"/>
 							</xs:complexType>
 						</xs:element>
 						<xs:element name="FoE" minOccurs="0">
@@ -434,6 +514,7 @@
 												<xs:element name="Transition" maxOccurs="unbounded">
 													<xs:simpleType>
 														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="IP"/>
 															<xs:enumeration value="PS"/>
 															<xs:enumeration value="SO"/>
 															<xs:enumeration value="SP"/>
@@ -598,12 +679,25 @@
 					<xs:attribute name="Unknown64Bit" type="xs:boolean" use="optional"/>
 					<xs:attribute name="ExternalRefClock" type="xs:boolean" use="optional"/>
 					<xs:attribute name="PotentialReferenceClock" type="xs:boolean" use="optional"/>
+					<xs:attribute name="TimeLoopControlOnly" type="xs:boolean" use="optional" default="false"/>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="Slots" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="Slot" type="SlotType" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="SlotGroupData" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Name" type="NameType" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:choice minOccurs="0">
+										<xs:element name="ImageFile16x14" type="xs:string" minOccurs="0"/>
+										<xs:element name="ImageData16x14" type="xs:hexBinary" minOccurs="0"/>
+									</xs:choice>
+								</xs:sequence>
+								<xs:attribute name="SlotGroup" type="HexDecValue" use="required"/>
+							</xs:complexType>
+						</xs:element>
 						<xs:element name="ModulePdoGroup" minOccurs="0" maxOccurs="unbounded">
 							<xs:complexType>
 								<xs:simpleContent>
@@ -625,6 +719,16 @@
 						</xs:element>
 					</xs:sequence>
 					<xs:attribute name="DownloadModuleIdentList" type="xs:boolean" use="optional"/>
+					<xs:attribute name="DownloadModuleAddressList" type="xs:boolean" use="optional"/>
+					<xs:attribute name="DownloadModuleListTransition" default="PS">
+						<xs:simpleType>
+							<xs:restriction base="xs:NMTOKEN">
+								<xs:pattern value="IP"/>
+								<xs:pattern value="PS"/>
+								<xs:pattern value="SO"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
 					<xs:attribute name="MaxSlotCount" type="HexDecValue" use="optional"/>
 					<xs:attribute name="MaxSlotGroupCount" type="HexDecValue" use="optional"/>
 					<xs:attribute name="SlotPdoIncrement" type="HexDecValue" use="optional"/>
@@ -731,7 +835,183 @@
 			<xs:element name="Electrical" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="EBusCurrent" type="xs:int"/>
+						<xs:element name="EBusCurrent" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Set Value = 0, in case of only EtherCATp is needed</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="EtherCATp" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Device">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Us">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="PowerSupply" type="xs:boolean" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>If power comes from PowerSupply instead of Port 0</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="MinVoltage" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>wenn nicht angegeben, wird die MinVoltage von 20,4 V angenommen</xs:documentation>
+																</xs:annotation>
+																<xs:simpleType>
+																	<xs:restriction base="xs:float">
+																		<xs:pattern value="\d{1,2}\.\d{1,4}"/>
+																		<xs:pattern value="\d{1,2}"/>
+																		<xs:pattern value=""/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:element>
+															<xs:element name="Current" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>max. Stromverbrauch bei 24V </xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:simpleContent>
+																		<xs:extension base="xs:float">
+																			<xs:attribute name="Type" type="EtherCATPLoadType" default="SwitchingRegulator">
+																				<xs:annotation>
+																					<xs:documentation>load characteristics</xs:documentation>
+																				</xs:annotation>
+																			</xs:attribute>
+																		</xs:extension>
+																	</xs:simpleContent>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="External" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>falls vorhanden wird Us nach aussen geführt</xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="Channel" maxOccurs="unbounded">
+																			<xs:complexType>
+																				<xs:sequence>
+																					<xs:element name="Name" type="NameType" minOccurs="0" maxOccurs="unbounded"/>
+																					<xs:element name="Voltage" minOccurs="0">
+																						<xs:annotation>
+																							<xs:documentation>muss angegeben werden wenn die Spannung ungleich Us ist , e.g. 5V. 
+Falls nichts angegeben wird, wird Us untranfsormiert ausgegeben.</xs:documentation>
+																						</xs:annotation>
+																						<xs:complexType>
+																							<xs:simpleContent>
+																								<xs:extension base="xs:float">
+																									<xs:attribute name="Type" type="EtherCATPLoadType" default="SwitchingRegulator">
+																										<xs:annotation>
+																											<xs:documentation>load characteristics (default_ switching regulator)</xs:documentation>
+																										</xs:annotation>
+																									</xs:attribute>
+																								</xs:extension>
+																							</xs:simpleContent>
+																						</xs:complexType>
+																					</xs:element>
+																				</xs:sequence>
+																			</xs:complexType>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="Up" minOccurs="0">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="PowerSupply" type="xs:boolean" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>If power comes from PowerSupply instead of Port 0</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="MinVoltage" type="xs:float" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>wenn nicht angegeben, wird die MinVoltage von 20,4 V angenommen</xs:documentation>
+																</xs:annotation>
+															</xs:element>
+															<xs:element name="Current" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>max. Stromverbrauch bei 24V </xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:simpleContent>
+																		<xs:extension base="xs:float">
+																			<xs:attribute name="Type" type="EtherCATPLoadType" default="SwitchingRegulator">
+																				<xs:annotation>
+																					<xs:documentation>load characteristics</xs:documentation>
+																				</xs:annotation>
+																			</xs:attribute>
+																		</xs:extension>
+																	</xs:simpleContent>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="External" minOccurs="0">
+																<xs:annotation>
+																	<xs:documentation>falls vorhanden wird Up nach aussen geführt</xs:documentation>
+																</xs:annotation>
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="Channel" maxOccurs="unbounded">
+																			<xs:complexType>
+																				<xs:sequence>
+																					<xs:element name="Name" type="NameType" minOccurs="0" maxOccurs="unbounded"/>
+																					<xs:element name="Voltage" minOccurs="0">
+																						<xs:annotation>
+																							<xs:documentation>muss angegeben werden wenn die Spannung ungleich Up ist , e.g. 5V. 
+Falls nichts angegeben wird, wird Us untranfsormiert ausgegeben.</xs:documentation>
+																						</xs:annotation>
+																						<xs:complexType>
+																							<xs:simpleContent>
+																								<xs:extension base="xs:float">
+																									<xs:attribute name="Type" type="EtherCATPLoadType" default="SwitchingRegulator">
+																										<xs:annotation>
+																											<xs:documentation>load characteristics (default_ switching regulator)</xs:documentation>
+																										</xs:annotation>
+																									</xs:attribute>
+																								</xs:extension>
+																							</xs:simpleContent>
+																						</xs:complexType>
+																					</xs:element>
+																				</xs:sequence>
+																			</xs:complexType>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="PowerSupply" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Externe Power Einspeisung</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Us" minOccurs="0">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="MaxCurrent" type="xs:float"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="Up" minOccurs="0">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="MaxCurrent" type="xs:float"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -776,7 +1056,7 @@
 			<xs:element name="EtherCATController" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="DpramSize" type="xs:int" default="4096" minOccurs="0"/>
+						<xs:element name="DpramSize" type="xs:int" minOccurs="0"/>
 						<xs:element name="SmCount" type="xs:int" minOccurs="0"/>
 						<xs:element name="FmmuCount" type="xs:int" minOccurs="0"/>
 					</xs:sequence>
@@ -794,10 +1074,14 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:element>
-						<xs:element name="Connector" type="xs:string" minOccurs="0">
-							<xs:annotation>
-								<xs:documentation>For future use</xs:documentation>
-							</xs:annotation>
+						<xs:element name="Connector" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="VendorId" type="HexDecValue" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
 						</xs:element>
 						<xs:element name="Label" type="xs:string" minOccurs="0"/>
 						<xs:element name="RxDelay" type="xs:int" minOccurs="0">
@@ -811,6 +1095,46 @@
 							</xs:annotation>
 						</xs:element>
 						<xs:element name="PhysicalPhyAddr" type="xs:int" minOccurs="0"/>
+						<xs:element name="EtherCATp" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Us" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PowerSupply" type="xs:boolean" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>If power comes from PowerSupply instead of Port 0</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="MaxCurrent" type="xs:float" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Default 3A</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Resistance" type="xs:float"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Up" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PowerSupply" type="xs:boolean" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>If power comes from PowerSupply instead of Port 0</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="MaxCurrent" type="xs:float" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Default 3A</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="Resistance" type="xs:float"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -965,9 +1289,16 @@ in bytes</xs:documentation>
 				<xs:restriction base="xs:NMTOKEN">
 					<xs:enumeration value="SLOTGROUP"/>
 					<xs:enumeration value="SLOT"/>
+					<xs:enumeration value="SLOTCOMPACT"/>
 					<xs:enumeration value="PDO"/>
 				</xs:restriction>
 			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Default" type="HexDecValue" use="optional"/>
+		<xs:attribute name="Fallback" type="HexDecValue" use="optional">
+			<xs:annotation>
+				<xs:documentation>automatically plugged when no other module is plugged to this slot</xs:documentation>
+			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
 </xs:schema>

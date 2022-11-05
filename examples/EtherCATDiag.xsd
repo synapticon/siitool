@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--1.17-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="EtherCATBase.xsd"/>
+	<xs:element name="EtherCATDiag">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DiagMessages" type="DiagnosticsType"/>
+			</xs:sequence>
+			<xs:attribute name="Version" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
