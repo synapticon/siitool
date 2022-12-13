@@ -1,3 +1,7 @@
+v2.2:
+- Add feature MBoxState FMMU setting.
+- Fix printout of PDOs from ESI file.
+
 v2.1:
 - Bugfix: CoE attributes are now detected properly
 
