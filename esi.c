@@ -827,6 +827,12 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	}
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
+	if (type == SII_CAT_RXPDO)
+		pdo->type = RxPDO; //SII_RX_PDO;
+	else if (type == SII_CAT_TXPDO)
+		pdo->type = TxPDO; //SII_TX_PDO;
+	else
+		pdo->type = 0;
 
 	size_t pdosize = 8; /* base size of pdo */
 
