@@ -162,7 +162,8 @@ static void parse_example(xmlNode *root)
 
 static int parse_boolean(xmlChar *boolean)
 {
-	if (xmlStrcmp(boolean, Char2xmlChar("1")) == 0)
+	if (xmlStrcmp(boolean, Char2xmlChar("1")) == 0 ||
+	    xmlStrcmp(boolean, Char2xmlChar("true")) == 0)
 		return 1;
 
 	return 0;
