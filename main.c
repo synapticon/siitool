@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define MAX_BUFFER_SIZE    (1000*1024)
+#define MAX_BUFFER_SIZE    (2*1000*1000)
 #define MAX_FILENAME_SIZE  (256)
 
 enum eInputFileType {
