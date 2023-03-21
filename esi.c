@@ -357,15 +357,16 @@ static struct _sii_stdconfig *parse_config(xmlNode *root, xmlNode *device)
 		if (xmlStrncmp(tmp->name, Char2xmlChar("Sm"), xmlStrlen(tmp->name)) == 0) {
 			xmlNode *smchild = tmp->children;
 			while (smchild != NULL) {
+				uint32_t atmp = 0;
 				if (xmlStrncmp(smchild->content, Char2xmlChar("MBoxOut"), xmlStrlen(smchild->content))== 0) {
 					xmlAttr *p = tmp->properties;
 					while (p!=NULL) {
 						if (xmlStrncmp(p->name, Char2xmlChar("DefaultSize"), xmlStrlen(p->name)) == 0) {
-							sc->std_rec_mbox_size = (uint16_t)atoi((const char *)p->children->content);
+							scan_hex_dec((const char *)p->children->content, &atmp);
+							sc->std_rec_mbox_size = (uint16_t)atmp;
 						}
 
 						if (xmlStrncmp(p->name, Char2xmlChar("StartAddress"), xmlStrlen(p->name)) == 0) {
-							unsigned int atmp = 0;
 							scan_hex_dec((const char *)p->children->content, &atmp);
 							sc->std_rec_mbox_offset = atmp;
 						}
@@ -379,11 +380,11 @@ static struct _sii_stdconfig *parse_config(xmlNode *root, xmlNode *device)
 					xmlAttr *p = tmp->properties;
 					while (p!=NULL) {
 						if (xmlStrncmp(p->name, Char2xmlChar("DefaultSize"), xmlStrlen(p->name)) == 0) {
-							sc->std_snd_mbox_size = (uint16_t)atoi((const char *)p->children->content);
+							scan_hex_dec((const char *)p->children->content, &atmp);
+							sc->std_snd_mbox_size = (uint16_t)atmp;
 						}
 
 						if (xmlStrncmp(p->name, Char2xmlChar("StartAddress"), xmlStrlen(p->name)) == 0) {
-							unsigned int atmp = 0;
 							scan_hex_dec((const char *)p->children->content, &atmp);
 							sc->std_snd_mbox_offset = atmp;
 						}
