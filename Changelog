@@ -1,3 +1,9 @@
+v2.3:
+- Fix Github issue #17: wrong parsing of hexdec value.
+- Fix Github issue #18: incomplete parsing of xs:boolean types.
+- Increased max filesize to 2MB.
+- Remove PDO strings from SII binary if no PDO mapping is generated.
+
 v2.2:
 - Add feature MBoxState FMMU setting.
 - Fix printout of PDOs from ESI file.
