@@ -200,7 +200,8 @@ static int parse_xml_input(const unsigned char *buffer, size_t length, unsigned 
 	EsiData *esi = esi_init_string(buffer, length);
 	//esi_print_xml(esi);
 
-	if (esi_parse(esi, device)) {
+	int include_pdo_strings = g_add_pdo_mapping || g_print_content;
+	if (esi_parse(esi, device, include_pdo_strings)) {
 		fprintf(stderr, "Error something went wrong in XML parsing\n");
 		esi_release(esi);
 		return -1;

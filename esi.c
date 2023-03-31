@@ -754,7 +754,7 @@ static int parse_pdo_get_data_type(char *xmldatatype)
 	return -1; /* unrecognized */
 }
 
-static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
+static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii, int include_pdo_strings)
 {
 	struct _pdo_entry *entry = calloc(1, sizeof(struct _pdo_entry));
 
@@ -777,7 +777,10 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 				fprintf(stderr, "[WARNING] Reading child content of size 0 (line: %d)\n", child->line);
 				tmp = -1;
 			} else {
-				tmp = sii_strings_add(sii, (char *)child->children->content);
+				if (include_pdo_strings)
+					tmp = sii_strings_add(sii, (char *)child->children->content);
+				else
+					tmp = 0;
 			}
 
 			if (tmp < 0) {
@@ -808,7 +811,7 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii)
 	return entry;
 }
 
-static void parse_pdo(xmlNode *current, SiiInfo *sii)
+static void parse_pdo(xmlNode *current, SiiInfo *sii, int include_pdo_strings)
 {
 	enum eSection type;
 	if (xmlStrcmp(current->name, Char2xmlChar("RxPdo")) == 0)
@@ -857,7 +860,9 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 	/* then parse the pdo list - all <Entry> children */
 	for (xmlNode *val = current->children; val; val = val->next) {
 		if (xmlStrncmp(val->name, Char2xmlChar("Name"), xmlStrlen(val->name)) == 0) {
-			int tmp = sii_strings_add(sii, (char *)val->children->content);
+			int tmp = 0;
+            if (include_pdo_strings)
+			    tmp = sii_strings_add(sii, (char *)val->children->content);
 			if (tmp < 0) {
 				fprintf(stderr, "Error creating input string!\n");
 				pdo->name_index = 0;
@@ -871,7 +876,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii)
 		} else if (xmlStrncmp(val->name, Char2xmlChar("Entry"), xmlStrlen(val->name)) == 0) {
 			/* add new pdo entry */
 			pdo->entries += 1;
-			struct _pdo_entry *entry = parse_pdo_entry(val, sii);
+			struct _pdo_entry *entry = parse_pdo_entry(val, sii, include_pdo_strings);
 			pdo_entry_add(pdo, entry);
 			pdosize += 8; /* size of every pdo entry */
 		}
@@ -996,7 +1001,7 @@ void esi_release(struct _esi_data *esi)
 	free(esi);
 }
 
-int esi_parse(EsiData *esi, int device_number)
+int esi_parse(EsiData *esi, int device_number, int include_pdo_strings)
 {
 	xmlNode *root = xmlDocGetRootElement(esi->doc);
 
@@ -1038,9 +1043,9 @@ int esi_parse(EsiData *esi, int device_number)
 			parse_dclock(current, esi->sii);
 #endif
 		} else if (xmlStrncmp(current->name, Char2xmlChar("RxPdo"), xmlStrlen(current->name)) == 0) {
-			parse_pdo(current, esi->sii);
+			parse_pdo(current, esi->sii, include_pdo_strings);
 		} else if (xmlStrncmp(current->name, Char2xmlChar("TxPdo"), xmlStrlen(current->name)) == 0) {
-			parse_pdo(current, esi->sii);
+			parse_pdo(current, esi->sii, include_pdo_strings);
 		}
 	}
 
