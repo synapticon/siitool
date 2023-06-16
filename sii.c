@@ -1303,6 +1303,25 @@ static void cat_print_pdo(struct _sii_cat *cat)
 
 	struct _sii_pdo *pdo = (struct _sii_pdo *)cat->data;
 
+	const char *pdo_flags_description[] = {
+	    "PDO is Mandatory",
+	    "PDO is Default",
+	    "Reserved (PdoOversample)",
+	    "undefined",
+	    "PDO is Fixed",
+	    "PDO is Virtual",
+	    "Reserved (PDO Download Anyway)",
+	    "Reserved (PDO From Module)",
+	    "PDO is Module Align",
+	    "PDO is Depend on Slot",
+	    "PDO is Depend on Slot Group",
+	    "PDO is Overwritten by Module",
+	    "Reserved (PdoConfigurable)",
+	    "Reserved (PdoAutoPdoName)",
+	    "Reserved (PdoDisAutoExclude)",
+	    "Reserved (PdoWritable)"
+	};
+
 	char *pdostr = NULL;
 	switch (pdo->type) {
 	case RxPDO:
@@ -1321,7 +1340,11 @@ static void cat_print_pdo(struct _sii_cat *cat)
 	printf("    SyncM: ...................... %d\n", pdo->syncmanager);
 	printf("    Synchronization: ............ 0x%02x\n", pdo->dcsync);
 	printf("    Name Index: ................. %d\n", pdo->name_index);
-	printf("    Flags for future use: ....... 0x%04x\n", pdo->flags);
+	printf("    Flags ....................... 0x%04x\n", pdo->flags);
+	for (int i=0; i<16; i++) {
+		if (pdo->flags&(1<<i))
+			printf("                                  %s\n", pdo_flags_description[i]);
+	}
 
 	struct _pdo_entry *list = pdo->list;
 	struct _sii_cat *sc = sii_category_find_neighbor(cat, SII_CAT_STRINGS);
@@ -1339,7 +1362,6 @@ static void cat_print_pdo(struct _sii_cat *cat)
 		printf("      String Index: ............. %d (%s)\n", list->string_index, tmpstr);
 		printf("      Data Type: ................ 0x%02x (Index in CoE Object Dictionary)\n", list->data_type);
 		printf("      Bitlength: ................ %d\n", list->bit_length);
-		printf("      Flags (for future use): ... 0x%04x\n", list->flags);
 
 		list = list->next;
 	}

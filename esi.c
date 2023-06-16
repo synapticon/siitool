@@ -31,6 +31,18 @@ static inline void scan_hex_dec(const char *str, uint32_t *value)
 	}
 }
 
+static inline int scan_bool_value(const char *str)
+{
+	int ret = 0;
+	if (strncmp(str, "True", 4) == 0 ||
+		strncmp(str, "true", 4) == 0 ||
+		strncmp(str, "1", 1) == 0) {
+		ret = 1;
+	}
+
+	return ret;
+}
+
 static char *type2str(int type)
 {
 	switch (type) {
@@ -806,7 +818,43 @@ static struct _pdo_entry *parse_pdo_entry(xmlNode *val, SiiInfo *sii, int includ
 		}
 	}
 
+	/* ETG2000 describes the fixed flag for PDO entries but in ETG2010 the
+	 * PDO entries don't have the flags described. */
+	for (xmlAttr *attr = val->properties; attr; attr = attr->next) {
+		if (xmlStrncmp(attr->name, Char2xmlChar("Fixed"), xmlStrlen(attr->name)) == 0) {
+			int tmp = scan_bool_value((const char *)attr->children->content);
+			entry->flags |= (tmp<<4)&0xff;
+		}
+	}
+
 	return entry;
+}
+
+static void parse_pdo_attribute_flags(xmlNode *current, struct _sii_pdo *pdo)
+{
+	int tmp = 0;
+	/* Get Arguments for SyncManager */
+	for (xmlAttr *attr = current->properties; attr; attr = attr->next) {
+		if (xmlStrncmp(attr->name, Char2xmlChar("Sm"), xmlStrlen(attr->name)) == 0) {
+			pdo->syncmanager = atoi((char *)attr->children->content);
+		}
+		else if (xmlStrncmp(attr->name, Char2xmlChar("Fixed"), xmlStrlen(attr->name)) == 0) {
+			tmp = scan_bool_value((const char *)attr->children->content);
+			pdo->flags |= (tmp<<4)&0xff;
+		}
+		else if (xmlStrncmp(attr->name, Char2xmlChar("Mandatory"), xmlStrlen(attr->name)) == 0) {
+			tmp = scan_bool_value((const char *)attr->children->content);
+			pdo->flags |= (tmp<<0)&0xff;
+		}
+		else if (xmlStrncmp(attr->name, Char2xmlChar("Virtual"), xmlStrlen(attr->name)) == 0) {
+			tmp = scan_bool_value((const char *)attr->children->content);
+			pdo->flags |= (tmp<<5)&0xff;
+		}
+		else if (xmlStrncmp(attr->name, Char2xmlChar("OverwrittenByModule"), xmlStrlen(attr->name)) == 0) {
+			tmp = scan_bool_value((const char *)attr->children->content);
+			pdo->flags |= (tmp<<7)&0xff;
+		}
+	}
 }
 
 static void parse_pdo(xmlNode *current, SiiInfo *sii, int include_pdo_strings)
@@ -837,22 +885,12 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii, int include_pdo_strings)
 	else
 		pdo->type = 0;
 
-	size_t pdosize = 8; /* base size of pdo */
-
-	/* get Arguments for syncmanager */
-	for (xmlAttr *attr = current->properties; attr; attr = attr->next) {
-		if (xmlStrncmp(attr->name, Char2xmlChar("Sm"), xmlStrlen(attr->name)) == 0) {
-			pdo->syncmanager = atoi((char *)attr->children->content);
-		}
-		/* currently fixed is unhandled - check where this setting should reside
-		else if (xmlStrncmp(attr->name, Char2xmlChar("Fixed"), xmlStrlen(attr->name))) {
-		}
-		 */
-	}
-
-	/* set uncrecognized values to default */
 	pdo->dcsync = 0;
 	pdo->flags = 0;
+
+	size_t pdosize = 8; /* base size of pdo */
+
+	parse_pdo_attribute_flags(current, pdo);
 
 	/* get node Name and node Index */
 	/* then parse the pdo list - all <Entry> children */
