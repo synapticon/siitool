@@ -615,57 +615,22 @@ static struct _sii_dclock *parse_dclock_section(const unsigned char *buffer, siz
 
 	struct _sii_dclock *dc = calloc(1, sizeof(struct _sii_dclock));
 
-	b++; /* first byte is reserved */
-
-	dc->cyclic_op_enabled = (*b & 0x01) == 0 ? 0 : 1;
-	dc->sync0_active = (*b & 0x02) == 0 ? 0 : 1;
-	dc->sync1_active = (*b & 0x04) == 0 ? 0 : 1;
-	b++; /* next 5 bit reserved */
-
-	dc->sync_pulse = BYTES_TO_WORD(*b, *(b+1));
+	dc->cycleTime0 = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
+	b+=4;
+	dc->shiftTime0 = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
+	b+=4;
+	dc->shiftTime1 = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
+	b+=4;
+	dc->sync1CycleFactor = BYTES_TO_WORD(*b, *(b+1));
 	b+=2;
-
-	dc->int0_status = (*b & 0x01) == 0 ? 0 : 1;
+	dc->assignActivate = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+	dc->sync0CycleFactor = BYTES_TO_WORD(*b, *(b+1));
+	b+=2;
+	dc->nameIdx = *b;
 	b++;
-	dc->int1_status = (*b & 0x01) == 0 ? 0 : 1;
-	b++;
-
-	dc->cyclic_op_starttime = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
-
-	dc->sync0_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
-	dc->sync1_cycle_time = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
-
-	dc->latch0_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
-	dc->latch0_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
-	b+=1;
-
-	dc->latch1_pos_edge = (*b & 0x01) == 0 ? 0 : 1;
-	dc->latch1_neg_edge = (*b & 0x02) == 0 ? 0 : 1;
-	b+=1;
-
-	dc->latch0_pos_event = (*b & 0x01) == 0 ? 0 : 1;
-	dc->latch0_neg_event = (*b & 0x02) == 0 ? 0 : 1;
-	b+=1;
-
-	dc->latch1_pos_event = (*b & 0x01) == 0 ? 0 : 1;
-	dc->latch1_neg_event = (*b & 0x02) == 0 ? 0 : 1;
-	b+=1;
-
-	b+=10; /* reserved */
-	dc->latch0_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
-
-	dc->latch0_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
-
-	dc->latch1_pos_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
-
-	dc->latch1_neg_edge_value = BYTES_TO_DWORD(*b, *(b+1), *(b+2), *(b+3));
-	b+=4;
+	dc->descIdx = *b;
+	b += 5; // don't forget the 4 reserved bytes
 
 	size_t count = b-buffer;
 	if (size != count)
@@ -697,14 +662,6 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 	struct _sii_cat *newcat;
 
-	struct _sii_strings *strings;
-	struct _sii_general *general;
-	struct _sii_fmmu *fmmu;
-	struct _sii_syncm *syncmanager;
-	struct _sii_pdo *txpdo;
-	struct _sii_pdo *rxpdo;
-	struct _sii_dclock *distributedclock;
-
 	while (max_bytes_size > (size_t)(buffer - eeprom)) {
 		switch (section) {
 		case SII_PREAMBLE:
@@ -722,8 +679,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_STRINGS:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			strings = parse_string_section(buffer, secsize);
-			newcat->data = (void *)strings;
+			newcat->data = (void *)parse_string_section(buffer, secsize);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added string section\n");
@@ -743,8 +699,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_GENERAL:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			general = parse_general_section(buffer, secsize);
-			newcat->data = (void *)general;
+			newcat->data = (void *)parse_general_section(buffer, secsize);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added general section\n");
@@ -757,8 +712,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_FMMU:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			fmmu = parse_fmmu_section(buffer, secsize);
-			newcat->data = (void *)fmmu;
+			newcat->data = (void *)parse_fmmu_section(buffer, secsize);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added fmmu section\n");
@@ -771,8 +725,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_SYNCM:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			syncmanager = parse_syncm_section(buffer, secsize);
-			newcat->data = (void *)syncmanager;
+			newcat->data = (void *)parse_syncm_section(buffer, secsize);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added syncm section\n");
@@ -785,8 +738,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_TXPDO:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			txpdo = parse_pdo_section(buffer, secsize, TxPDO);
-			newcat->data = (void *)txpdo;
+			newcat->data = (void *)parse_pdo_section(buffer, secsize, TxPDO);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added txpdo section\n");
@@ -799,8 +751,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_RXPDO:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			rxpdo = parse_pdo_section(buffer, secsize, RxPDO);
-			newcat->data = (void *)rxpdo;
+			newcat->data = (void *)parse_pdo_section(buffer, secsize, RxPDO);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added rxpdo section\n");
@@ -813,8 +764,7 @@ static int parse_content(struct _sii *sii, const unsigned char *eeprom, size_t m
 
 		case SII_CAT_DCLOCK:
 			newcat = cat_new((uint16_t)(section&0xffff), (uint16_t)(secsize&0xffff));
-			distributedclock = parse_dclock_section(buffer, secsize);
-			newcat->data = (void *)distributedclock;
+			newcat->data = (void *)parse_dclock_section(buffer, secsize);
 			cat_add(sii, newcat);
 #if DEBUG == 1
 			printf("DEBUG Added dclock section\n");
@@ -1375,31 +1325,19 @@ static void cat_print_dc(struct _sii_cat *cat)
 	printf("Size: %d Bytes\n", cat->size);
 
 	struct _sii_dclock *dc = (struct _sii_dclock *)cat->data;
+	struct _sii_cat *sc = sii_category_find_neighbor(cat, SII_CAT_STRINGS);
+	const char *name = string_search_id((struct _sii_strings *)sc->data, dc->nameIdx);
+	const char *desc = string_search_id((struct _sii_strings *)sc->data, dc->descIdx);
 
-	printf("  Cyclic Operation Enable: ...... %s\n",       dc->cyclic_op_enabled == 0 ? "no" : "yes");
-	printf("  SYNC0 activate: ............... %s\n",       dc->sync0_active == 0      ? "no" : "yes");
-	printf("  SYNC1 activate: ............... %s\n",       dc->sync1_active == 0      ? "no" : "yes");
-	printf("  SYNC Pulse: ................... %d (ns?)\n", dc->sync_pulse);
-	printf("  Interrupt 0 Status: ........... %s\n",       dc->int0_status == 0       ? "not active" : "active");
-	printf("  Interrupt 1 Status: ........... %s\n",       dc->int1_status == 0       ? "not active" : "active");
-	printf("  Cyclic Operation Startime: .... %d ns\n",    dc->cyclic_op_starttime);
-	printf("  SYNC0 Cycle Time: ............. %d (ns?)\n", dc->sync0_cycle_time);
-	printf("  SYNC0 Cycle Time: ............. %d (ns?)\n", dc->sync1_cycle_time);
-	printf("\n");
+	printf("  Cycle Time 0 .................. %d\n", dc->cycleTime0);
+	printf("  Shift Time 0 .................. %d\n", dc->shiftTime0);
+	printf("  Shift Time 1 .................. %d\n", dc->shiftTime1);
+	printf("  Sync1 Cycle Factor ............ %d\n", dc->sync1CycleFactor);
+	printf("  Assign Activate ............... %d\n", dc->assignActivate);
+	printf("  Sync0 Cylce Factor ............ %d\n", dc->sync0CycleFactor);
+	printf("  Name Index .................... %d (%s)\n", dc->nameIdx, name);
+	printf("  Description Index ............. %d (%s)\n", dc->descIdx, desc);
 
-	printf("  Latch Description\n");
-	printf("    Latch 0 PosEdge: ............ %s\n",       dc->latch0_pos_edge == 0   ? "continous" : "single");
-	printf("    Latch 0 NegEdge: ............ %s\n",       dc->latch0_neg_edge == 0   ? "continous" : "single");
-	printf("    Latch 1 PosEdge: ............ %s\n",       dc->latch1_pos_edge == 0   ? "continous" : "single");
-	printf("    Latch 1 NegEdge: ............ %s\n",       dc->latch1_neg_edge == 0   ? "continous" : "single");
-	printf("    Latch 0 PosEvnt: ............ %s\n",       dc->latch0_pos_event == 0  ? "no Event" : "Event stored");
-	printf("    Latch 0 NegEvnt: ............ %s\n",       dc->latch0_neg_event == 0  ? "no Event" : "Event stored");
-	printf("    Latch 1 PosEvnt: ............ %s\n",       dc->latch1_pos_event == 0  ? "no Event" : "Event stored");
-	printf("    Latch 1 NegEvnt: ............ %s\n",       dc->latch1_neg_event == 0  ? "no Event" : "Event stored");
-	printf("    Latch0PosEdgeValue: ......... 0x%08x\n",   dc->latch0_pos_edge_value);
-	printf("    Latch0NegEdgeValue: ......... 0x%08x\n",   dc->latch0_neg_edge_value);
-	printf("    Latch1PosEdgeValue: ......... 0x%08x\n",   dc->latch1_pos_edge_value);
-	printf("    Latch1NegEdgeValue: ......... 0x%08x\n",   dc->latch1_neg_edge_value);
 	printf("\n");
 }
 
@@ -1563,58 +1501,37 @@ static uint16_t sii_cat_write_dc(struct _sii_cat *cat, unsigned char *buf)
 	unsigned char *b = buf;
 	struct _sii_dclock *dc = cat->data;
 
-	*b++ = 0; /* reserved */
-	*b++ = (dc->cyclic_op_enabled&0x01) |
-		((dc->sync0_active<<1)&0x02) |
-		((dc->sync1_active<<2)&0x04);
-	*b++ = dc->sync_pulse&0xff;
-	*b++ = (dc->sync_pulse>>8)&0xff;
-	*b++ = (dc->int0_status&0x01);
-	*b++ = (dc->int1_status&0x01);
+	*b++ = dc->cycleTime0&0xff;
+	*b++ = (dc->cycleTime0>>8)&0xff;
+	*b++ = (dc->cycleTime0>>16)&0xff;
+	*b++ = (dc->cycleTime0>>24)&0xff;
 
-	*b++ = dc->cyclic_op_starttime&0xff;
-	*b++ = (dc->cyclic_op_starttime>>8)&0xff;
-	*b++ = (dc->cyclic_op_starttime>>16)&0xff;
-	*b++ = (dc->cyclic_op_starttime>>24)&0xff;
+	*b++ = dc->shiftTime0&0xff;
+	*b++ = (dc->shiftTime0>>8)&0xff0;
+	*b++ = (dc->shiftTime0>>16)&0xff0;
+	*b++ = (dc->shiftTime0>>24)&0xff0;
 
-	*b++ = dc->sync0_cycle_time&0xff;
-	*b++ = (dc->sync0_cycle_time>>8)&0xff;
-	*b++ = (dc->sync0_cycle_time>>16)&0xff;
-	*b++ = (dc->sync0_cycle_time>>24)&0xff;
+	*b++ = dc->shiftTime1&0xff;
+	*b++ = (dc->shiftTime1>>8)&0xff;
+	*b++ = (dc->shiftTime1>>16)&0xff;
+	*b++ = (dc->shiftTime1>>24)&0xff;
 
-	*b++ = dc->sync1_cycle_time&0xff;
-	*b++ = (dc->sync1_cycle_time>>8)&0xff;
-	*b++ = (dc->sync1_cycle_time>>16)&0xff;
-	*b++ = (dc->sync1_cycle_time>>24)&0xff;
+	*b++ = dc->sync1CycleFactor&0xff;
+	*b++ = (dc->sync1CycleFactor>>8)&0xff;
 
-	*b++ = (dc->latch0_pos_edge&0x01) | ((dc->latch0_neg_edge<<1)&0x02);
+	*b++ = dc->assignActivate&0xff;
+	*b++ = (dc->assignActivate>>8)&0xff;
 
-	*b++ = (dc->latch1_pos_edge&0x01) | ((dc->latch1_neg_edge<<1)&0x02);
+	*b++ = dc->sync0CycleFactor&0xff;
+	*b++ = (dc->sync0CycleFactor>>8)&0xff;
 
-	*b++ = (dc->latch0_pos_event&0x01) | ((dc->latch0_neg_event<<1)&0x02);
-	*b++ = (dc->latch1_pos_event&0x01) | ((dc->latch1_neg_event<<1)&0x02);
+	*b++ = dc->nameIdx;
+	*b++ = dc->descIdx;
 
-	b+=10; /* reserved */
-
-	*b++ = dc->latch0_pos_edge_value&0xff;
-	*b++ = (dc->latch0_pos_edge_value>>8)&0xff;
-	*b++ = (dc->latch0_pos_edge_value>>16)&0xff;
-	*b++ = (dc->latch0_pos_edge_value>>24)&0xff;
-
-	*b++ = dc->latch0_neg_edge_value&0xff;
-	*b++ = (dc->latch0_neg_edge_value>>8)&0xff;
-	*b++ = (dc->latch0_neg_edge_value>>16)&0xff;
-	*b++ = (dc->latch0_neg_edge_value>>24)&0xff;
-
-	*b++ = dc->latch1_pos_edge_value&0xff;
-	*b++ = (dc->latch1_pos_edge_value>>8)&0xff;
-	*b++ = (dc->latch1_pos_edge_value>>16)&0xff;
-	*b++ = (dc->latch1_pos_edge_value>>24)&0xff;
-
-	*b++ = dc->latch1_neg_edge_value&0xff;
-	*b++ = (dc->latch1_neg_edge_value>>8)&0xff;
-	*b++ = (dc->latch1_neg_edge_value>>16)&0xff;
-	*b++ = (dc->latch1_neg_edge_value>>24)&0xff;
+	*b++ = 0;
+	*b++ = 0;
+	*b++ = 0;
+	*b++ = 0;
 
 	return (uint16_t)(b-buf);
 #else
@@ -1817,7 +1734,7 @@ static void sii_write(SiiInfo *sii, unsigned int add_pdo_mapping)
 {
 	unsigned char *outbuf = sii->rawbytes;
 	uint8_t crc = 0xff;
-    uint16_t skip_mask = SKIP_DC | SKIP_TXPDO | SKIP_RXPDO;
+    uint16_t skip_mask = !SKIP_DC | SKIP_TXPDO | SKIP_RXPDO;
 	if (add_pdo_mapping) {
 		skip_mask &= ~(SKIP_TXPDO | SKIP_RXPDO);
 	}
@@ -2312,44 +2229,4 @@ void sii_cat_sort(SiiInfo *sii)
 	}
 
 	sii->cat_head = new;
-}
-
-struct _sii_dclock *dclock_get_default(void)
-{
-	static struct _sii_dclock dcproto = {
-		.reserved1 = 0, /* shall be zero */
-		.cyclic_op_enabled = 0,
-		.sync0_active = 0,
-		.sync1_active = 0,
-		.reserved2 = 0,
-		.sync_pulse = 0,
-		.int0_status = 0,
-		.reserved4 = 0,
-		.int1_status = 0,
-		.reserved5 = 0,
-		.cyclic_op_starttime = 0,
-		.sync0_cycle_time = 0,
-		.sync1_cycle_time = 0x10000,
-		.latch0_pos_edge = 1,
-		.latch0_neg_edge = 0,
-		.reserved6 = 0,
-		.latch1_pos_edge = 0,
-		.latch1_neg_edge = 0,
-		.reserved7 = 0,
-		.latch0_pos_event = 0,
-		.latch0_neg_event = 0,
-		.reserved9 = 0,
-		.latch1_pos_event = 0,
-		.latch1_neg_event = 0,
-		.reserved10 = 0,
-		.latch0_pos_edge_value = 0,
-		.latch0_neg_edge_value = 0x01000000,
-		.latch1_pos_edge_value = 0x00060001,
-		.latch1_neg_edge_value = 0,
-	};
-
-	struct _sii_dclock *dc = malloc(sizeof(struct _sii_dclock));
-	memmove(dc, &dcproto, sizeof(struct _sii_dclock));
-
-	return dc;
 }

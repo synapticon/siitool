@@ -38,7 +38,7 @@ enum eSection {
 	,SII_CAT_SYNCM = 41
 	,SII_CAT_TXPDO = 50
 	,SII_CAT_RXPDO = 51
-	,SII_CAT_DCLOCK = 60/* future use */
+	,SII_CAT_DCLOCK = 60
 	,SII_END = 0xffff
 };
 
@@ -225,41 +225,19 @@ struct _sii_pdo {
 	struct _pdo_entry *list;
 };
 
-/* FIXME currently this struct is a assumption how the
- * distributed clock could look like.
- * Further versions of the ETG specs should clearify
- * this issue. */
+/* FIXME Question asked to ETG aobut hte missing 'cycleTime1' parameter in the
+ * SII description. */
 struct _sii_dclock {
-	uint8_t reserved1; /* shall be zero */
-	uint8_t cyclic_op_enabled:1;
-	uint8_t sync0_active:1;
-	uint8_t sync1_active:1;
-	uint8_t reserved2:5;
-	uint16_t sync_pulse;
-	uint8_t int0_status:1;
-	uint8_t reserved4:7;
-	uint8_t int1_status:1;
-	uint8_t reserved5:7;
-	uint32_t cyclic_op_starttime;
-	uint32_t sync0_cycle_time;
-	uint32_t sync1_cycle_time;
-	uint16_t latch0_pos_edge:1;
-	uint16_t latch0_neg_edge:1;
-	uint16_t reserved6:6;
-	uint16_t latch1_pos_edge:1;
-	uint16_t latch1_neg_edge:1;
-	uint16_t reserved7:6;
-	uint8_t latch0_pos_event:1;
-	uint8_t latch0_neg_event:1;
-	uint8_t reserved9:6;
-	uint8_t latch1_pos_event:1;
-	uint8_t latch1_neg_event:1;
-	uint8_t reserved10:6;
-	uint8_t reservedc[10];
-	uint32_t latch0_pos_edge_value;
-	uint32_t latch0_neg_edge_value;
-	uint32_t latch1_pos_edge_value;
-	uint32_t latch1_neg_edge_value;
+	uint32_t cycleTime0;
+	uint32_t shiftTime0;
+	uint32_t cycleTime1;
+	uint32_t shiftTime1;
+	int16_t sync1CycleFactor;
+	uint16_t assignActivate;
+	int16_t sync0CycleFactor;
+	uint8_t nameIdx;
+	uint8_t descIdx;
+	/* uint8_t reserved[4] */
 };
 
 /* a single category */
@@ -349,11 +327,4 @@ char *cat2string(enum eSection cat);
 /* sort the categories in increasing order of cathegories type */
 void sii_cat_sort(SiiInfo *sii);
 
-/* Attention: Since the documentation of the distributed clock is not very
- * clear and marked as "for future use" (as to date 2013-10-22) the category
- * is fixed with a default value found on the EEPROM file of one of our
- * evaluation boards. As soon as the descirption is fixed and the future use
- * note disappeared the need for the default setting will become obsolete.
- */
-struct _sii_dclock *dclock_get_default(void);
 #endif /* SII_H */

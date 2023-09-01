@@ -661,60 +661,48 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	cat->size += 8; /* a syncmanager entry is 8 bytes */
 }
 
-static void get_dc_proto(SiiInfo *sii)
-{
-	struct _sii_cat *cat = calloc(1, sizeof(struct _sii_cat));
-	cat->type = SII_CAT_DCLOCK;
-
-	/* now fetch the data */
-	struct _sii_dclock *dc = dclock_get_default();
-
-	cat->data = (void *)dc;
-	cat->size = 48;
-	sii_category_add(sii, cat);
-}
-
-#if 0 // FIXME this is a future feature - don't remove
 static void parse_dclock(xmlNode *current, SiiInfo *sii)
 {
-	struct _sii_cat *cat = calloc(1, sizeof(struct _sii_cat));
-	cat->type = SII_CAT_DCLOCK;
-
-	/* now fetch the data */
 	size_t dcsize = 0;
-	struct _sii_dclock *dc = calloc(1, sizeof(struct _sii_dclock));
 
-	/* FIXME add entries, only use the first (default) OpMode */
-	printf("[DEBUG %s] FIXME implementation of dclock parsing is incomplete!\n", __func__);
+    for (xmlNode *op = search_node(current, "OpMode"); op ; op = op->next) {
+        if (xmlStrncmp(op->name, Char2xmlChar("OpMode"), xmlStrlen(op->name)) != 0) {
+            continue;
+        }
 
-	xmlNode *op = search_node(current, "OpMode");
-	for (xmlNode *vals = op->children; vals; vals = vals->next) {
-		if (xmlStrncmp(vals->name, Char2xmlChar("Name"), xmlStrlen(vals->name)) == 0) {
-			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("Desc"), xmlStrlen(vals->name)) == 0) {
-			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("AssignActivate"), xmlStrlen(vals->name)) == 0) {
-			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync0"), xmlStrlen(vals->name)) == 0) {
-			int tmp = atoi((char *)vals->children->content);
-			dc->sync0_cycle_time = (uint32_t)tmp;
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync0"), xmlStrlen(vals->name)) == 0) {
-			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync1"), xmlStrlen(vals->name))) {
-			int tmp = atoi((char *)vals->children->content);
-			dc->sync1_cycle_time = (uint32_t)tmp;
-		} else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync1"), xmlStrlen(vals->name)) == 0) {
-			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		} else {
-			//fprintf(stderr, "[DistributedClock] Warning, unknown handling of '%s'\n", (char *)vals->name);
-		}
-	}
+        struct _sii_cat *cat = calloc(1, sizeof(struct _sii_cat));
+        cat->type = SII_CAT_DCLOCK;
+        struct _sii_dclock *dc = calloc(1, sizeof(struct _sii_dclock));
 
-	cat->data = (void *)dc;
-	cat->size = dcsize;
-	sii_category_add(sii, cat);
+        for (xmlNode *vals = op->children; vals; vals = vals->next) {
+            int tmp = 0;
+            if (xmlStrncmp(vals->name, Char2xmlChar("Name"), xmlStrlen(vals->name)) == 0) {
+                dc->nameIdx = (uint8_t)sii_strings_add(sii, (char *)vals->children->content);
+            } else if (xmlStrncmp(vals->name, Char2xmlChar("Desc"), xmlStrlen(vals->name)) == 0) {
+                dc->descIdx = (uint8_t)sii_strings_add(sii, (char *)vals->children->content);
+            } else if (xmlStrncmp(vals->name, Char2xmlChar("AssignActivate"), xmlStrlen(vals->name)) == 0) {
+                sscanf((char *)vals->children->content, "%d", &tmp);
+                dc->assignActivate = (uint16_t)tmp;
+            } else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync0"), xmlStrlen(vals->name)) == 0) {
+                sscanf((char *)vals->children->content, "%d", &tmp);
+                dc->cycleTime0 = (uint32_t)tmp;
+            } else if (xmlStrncmp(vals->name, Char2xmlChar("CycleTimeSync1"), xmlStrlen(vals->name)) == 0) {
+                sscanf((char *)vals->children->content, "%d", &tmp);
+                dc->cycleTime1 = (uint32_t)tmp;
+            } else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync0"), xmlStrlen(vals->name)) == 0) {
+                sscanf((char *)vals->children->content, "%d", &tmp);
+                dc->shiftTime0 = (uint32_t)tmp;
+            } else if (xmlStrncmp(vals->name, Char2xmlChar("ShiftTimeSync1"), xmlStrlen(vals->name)) == 0) {
+                sscanf((char *)vals->children->content, "%d", &tmp);
+                dc->shiftTime1 = (uint32_t)tmp;
+            }
+        }
+
+        cat->data = (void *)dc;
+        cat->size = dcsize;
+        sii_category_add(sii, cat);
+    }
 }
-#endif
 
 struct _coe_datatypes {
 	int index;
@@ -897,7 +885,7 @@ static void parse_pdo(xmlNode *current, SiiInfo *sii, int include_pdo_strings)
 	for (xmlNode *val = current->children; val; val = val->next) {
 		if (xmlStrncmp(val->name, Char2xmlChar("Name"), xmlStrlen(val->name)) == 0) {
 			int tmp = 0;
-            if (include_pdo_strings)
+			if (include_pdo_strings)
 			    tmp = sii_strings_add(sii, (char *)val->children->content);
 			if (tmp < 0) {
 				fprintf(stderr, "Error creating input string!\n");
@@ -1074,19 +1062,14 @@ int esi_parse(EsiData *esi, int device_number, int include_pdo_strings)
 			parse_fmmu(current, esi->sii);
 		} else if (xmlStrncmp(current->name, Char2xmlChar("Sm"), xmlStrlen(current->name)) == 0) {
 			parse_syncm(current, esi->sii);
-#if 0 /* FIXME DC should be added again! */
 		} else if (xmlStrncmp(current->name, Char2xmlChar("Dc"), xmlStrlen(current->name)) == 0) {
 			parse_dclock(current, esi->sii);
-#endif
 		} else if (xmlStrncmp(current->name, Char2xmlChar("RxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii, include_pdo_strings);
 		} else if (xmlStrncmp(current->name, Char2xmlChar("TxPdo"), xmlStrlen(current->name)) == 0) {
 			parse_pdo(current, esi->sii, include_pdo_strings);
 		}
 	}
-
-	/* as last action, add the distributed clock settings. */
-	get_dc_proto(esi->sii); /* FIXME see comment on sii.c:get_dc_proto() */
 
 	return 0;
 }
