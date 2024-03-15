@@ -263,8 +263,8 @@ static struct _sii_preamble *parse_preamble(xmlNode *node)
 {
 	struct _sii_preamble *pa = calloc(1, sizeof(struct _sii_preamble));
 
-	char string[1024];
-	strncpy(string, (char *)node->children->content, 1024);
+	char string[1025];
+	strncpy(string, (char *)node->children->content, sizeof(string) - 1);
 
 	unsigned int lowbyte=0, highbyte=0;
 	char *b = string;
