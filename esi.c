@@ -614,7 +614,9 @@ static void parse_syncm(xmlNode *current, SiiInfo *sii)
 	xmlAttr *args = current->properties;
 	for (xmlAttr *a = args; a ; a = a->next) {
 		if (xmlStrncmp(a->name, Char2xmlChar("DefaultSize"), xmlStrlen(a->name)) == 0) {
-			entry->length = atoi((char *)a->children->content);
+			uint32_t tmp = 0;
+			scan_hex_dec((char *)a->children->content, &tmp);
+			entry->length = tmp&0xffff;
 		} else if (xmlStrncmp(a->name, Char2xmlChar("StartAddress"), xmlStrlen(a->name)) == 0) {
 			uint32_t tmp = 0;
 			scan_hex_dec((char *)a->children->content, &tmp);
