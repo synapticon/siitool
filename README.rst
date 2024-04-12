@@ -7,9 +7,7 @@ This tool can View and print to screen theh contents of SII/EEPROM files and
 ESI/XML files.  In addition it is possible to generate a valid SII binary from
 a supported ESI file.
 
-For more information please refer to the main documentation_.
-
-.. _documentation : https://doc.synapticon.com/tools/siitool/doc/index.html
+For more information please refer see the man page.
 
 Install
 =======
