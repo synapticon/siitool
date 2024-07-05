@@ -1,13 +1,19 @@
 [DESCRIPTION]
 Read XML or binary SII information from the input file and generates a binary
 EEPROM file.  If no input file is provided the program reads from stdin. With
--p no output is generated.
+-p option the content of the ESI or SII is printed in human readable format. No
+further output is generated.
+
+Writing of the Rx- and TxPDO into the SII file is optional.
+
+The siitool supports ESI fiels with multiple devices described. If no device is
+selected the first device is used.
 
 [AUTHOR]
 Frank Jeschke <fjeschke@synapticon.com>
 
 [COPYRIGHTS]
-  Copyright (c) 2013, Synapticon GmbH
+  Copyright (c) 2024, Synapticon GmbH
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without

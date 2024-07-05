@@ -55,7 +55,7 @@ man: $(TARGET).1
 $(TARGET): $(OBJECTS)
 	$(LD) -o $@ $^ $(LDFLAGS)
 
-$(TARGET).1:
+$(TARGET).1: $(TARGET) misc/mansections.txt
 	help2man -o $@ $(H2MFLAGS) -i misc/mansections.txt ./${TARGET}
 
 .PHONY: clean cleanall install install-man install-prg uninstall lint tarball help
