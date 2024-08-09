@@ -279,10 +279,11 @@ void sii_release(SiiInfo *sii);
  * \brief Generate binary sii file
  *
  * \param *sii  pointer to sii structure
- * \param outfile  output filename
+ * \param add_pdo_mapping  add PDO mapping to the output SII
+ * \param add_dc_config  add the DC configuration to the SII
  * \return number of bytes written
  */
-size_t sii_generate(SiiInfo *sii, unsigned int add_pdo_mapping);
+size_t sii_generate(SiiInfo *sii, unsigned int add_pdo_mapping, unsigned int add_dc_config);
 
 void sii_print(SiiInfo *sii);
 
