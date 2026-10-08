@@ -192,7 +192,7 @@ static unsigned char * read_input(FILE *f, unsigned char *bufptr, size_t *size)
 
 	/* Fill the last part of the buffer capacity with zero */
 	memset((buffer+count), 0, capacity-count);
-	*size = capacity;
+	*size = count;
 
 	return buffer;
 }

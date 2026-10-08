@@ -979,16 +979,33 @@ EsiData *esi_init_string(const unsigned char *buf, size_t size)
 		}
 		break;
 
-	case XML:
+	//case XML:
 		/* init with xml */
+	//	LIBXML_TEST_VERSION
+
+	//	esi->sii = sii_init();
+	//	esi->doc = xmlReadMemory((const char *)buf, size, "noname.xml", NULL, 0);
+
+	//	if (esi->doc == NULL) {
+	//		fprintf(stderr, "Failed to parse XML.\n");
+	//		sii_release(esi->sii);
+	//		esi_release(esi);
+	//		return NULL;
+	//	}
+	//	break;
+
+	case XML:
 		LIBXML_TEST_VERSION
 
 		esi->sii = sii_init();
-		esi->doc = xmlReadMemory((const char *)buf, size, "noname.xml", NULL, 0);
+		{
+			size_t xml_size = strnlen((const char *)buf, size);
+			esi->doc = xmlReadMemory((const char *)buf, xml_size,
+			                         "noname.xml", NULL, 0);
+		}
 		if (esi->doc == NULL) {
 			fprintf(stderr, "Failed to parse XML.\n");
-			sii_release(esi->sii);
-			esi_release(esi);
+			esi_release(esi);      /* без отдельного sii_release */
 			return NULL;
 		}
 		break;
